@@ -72,7 +72,8 @@ public class SecurityConfig {
 
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/auth/signup").permitAll()
+                .requestMatchers("/**").permitAll()
+//                .requestMatchers("/auth/signup").permitAll()
                 .anyRequest().authenticated());
 
         //세션 설정
