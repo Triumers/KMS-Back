@@ -90,4 +90,14 @@ public class CmdAnonymousBoardCommentServiceImplTests {
         assertEquals(1, result.getAnonymousBoardId());
         verify(cmdAnonymousBoardCommentRepository, times(1)).save(any(CmdAnonymousBoardComment.class));
     }
+
+    // 댓글 삭제
+    @Test
+    void deleteAnonymousBoardComment_shouldDeleteCmdAnonymousBoardComment() {
+        int id = 1;
+
+        cmdAnonymousBoardCommentService.deleteAnonymousBoardComment(id);
+
+        verify(cmdAnonymousBoardCommentRepository, times(1)).deleteById(eq(id));
+    }
 }

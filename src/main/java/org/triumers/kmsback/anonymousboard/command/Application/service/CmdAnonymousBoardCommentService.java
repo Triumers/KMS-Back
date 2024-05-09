@@ -9,4 +9,6 @@ public interface CmdAnonymousBoardCommentService {
     Page<CmdAnonymousBoardCommentDTO> findAllAnonymousBoardComment(int anonymousBoardId, Pageable pageable);
 
     CmdAnonymousBoardCommentDTO saveAnonymousBoardComment(CmdAnonymousBoardCommentDTO cmdAnonymousBoardCommentDTO);
+
+    void deleteAnonymousBoardComment(int id);
 }

@@ -61,4 +61,10 @@ public class CmdAnonymousBoardCommentServiceImpl implements CmdAnonymousBoardCom
             throw new RuntimeException("Failed to get MAC address.", e);
         }
     }
+
+    // 댓글 삭제
+    @Transactional
+    public void deleteAnonymousBoardComment(int id) {
+        cmdAnonymousBoardCommentRepository.deleteById(id);
+    }
 }
