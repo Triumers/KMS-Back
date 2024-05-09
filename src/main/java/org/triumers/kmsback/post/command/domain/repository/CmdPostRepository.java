@@ -6,6 +6,4 @@ import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
 
 @Repository
 public interface CmdPostRepository  extends JpaRepository<CmdPost, Integer> {
-
-
 }
