@@ -32,6 +32,13 @@ jobs:
           DB_USER_NAME: USER = ${{ secrets.DB_USER_NAME }}
           DB_PASSWORD: PSW = ${{ secrets.DB_PASSWORD }}
 
+      - name: Test Code 빌드
+        run: ./gradlew test
+        env:
+          DB_URL: DB URL = ${{ secrets.DB_URL }}
+          DB_USER_NAME: USER = ${{ secrets.DB_USER_NAME }}
+          DB_PASSWORD: PSW = ${{ secrets.DB_PASSWORD }}
+
 
   dependency-submission:
 
