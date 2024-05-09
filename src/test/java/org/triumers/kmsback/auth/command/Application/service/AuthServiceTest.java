@@ -25,7 +25,7 @@ class AuthServiceTest {
 
         // given
         AuthDTO newEmployee =
-                new AuthDTO("test@gmail.com", null, "테스트유저", null, "NORMAL", null, null, "010-1234-5678", 1, 1, 1);
+                new AuthDTO("test@gmail.com", "12341234", "테스트유저", null, "NORMAL", null, null, "010-1234-5678", 1, 1, 1);
 
         // when, then
         assertDoesNotThrow(() -> authService.signup(newEmployee));
