@@ -26,8 +26,6 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<CmdResponseMessageVO> signup(@RequestBody CmdRequestAuthVO request) {
         AuthDTO authDTO = authDtoMapper(request);
-
-        System.out.println("authDTO = " + authDTO);
         try {
             authService.signup(authDTO);
         } catch (Exception e) {
