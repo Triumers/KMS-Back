@@ -59,7 +59,7 @@ public class CmdPostApplicationTests {
         tags.add(new CmdTagDTO("newtag5"));
 
         CmdPostAndTagsDTO post = new CmdPostAndTagsDTO("modifyTitle", "modifyContent", LocalDate.now(),
-                1, 11, 1, tags);
+                1, 1, 1, tags);
 
         CmdPost modifyPost = cmdPostService.modifyPost(post);
 
@@ -77,8 +77,8 @@ public class CmdPostApplicationTests {
     }
 
     @Test
-    @DisplayName("게시글 좋아요")
-    void likePost(){
+    @DisplayName("게시글 좋아요/삭제")
+    void likePost() {
 
         CmdLikeDTO like = new CmdLikeDTO(1, 1);
         CmdLike likePost = cmdPostService.likePost(like);
@@ -87,17 +87,7 @@ public class CmdPostApplicationTests {
     }
 
     @Test
-    @DisplayName("게시글 좋아요 삭제")
-    void unlikePost(){
-
-        CmdLikeDTO like = new CmdLikeDTO(1, 1, 1);
-        CmdLike likePost = cmdPostService.likePost(like);
-
-        assertThat(likePost.getId()).isNotNull();
-    }
-
-    @Test
-    @DisplayName("게시글 즐겨찾기")
+    @DisplayName("게시글 즐겨찾기/삭제")
     void favoritePost(){
 
         CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, 1);
@@ -106,14 +96,5 @@ public class CmdPostApplicationTests {
         assertThat(likePost.getId()).isNotNull();
     }
 
-    @Test
-    @DisplayName("게시글 즐겨찾기 삭제")
-    void unfavoritePost(){
-
-        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, 1, 1);
-        CmdFavorites likePost = cmdPostService.favoritePost(favorite);
-
-        assertThat(likePost.getId()).isNotNull();
-    }
 
 }
