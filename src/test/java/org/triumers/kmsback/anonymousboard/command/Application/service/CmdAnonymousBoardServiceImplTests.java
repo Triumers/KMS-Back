@@ -59,5 +59,19 @@ public class CmdAnonymousBoardServiceImplTests {
         verify(cmdAnonymousBoardRepository, times(1)).findAll(any(Pageable.class));
     }
 
+    // 2-1. searchAnonymousBoardByTitle 메서드가 제목으로 검색한 CmdAnonymousBoard 목록을 페이징 처리하여 반환하는지 확인
+    @Test
+    void searchAnonymousBoardByTitle_shouldReturnPageOfCmdAnonymousBoardDTO() {
+        String title = "Title";
+        List<CmdAnonymousBoard> cmdAnonymousBoardList = Arrays.asList(cmdAnonymousBoard1, cmdAnonymousBoard2);
+        Page<CmdAnonymousBoard> cmdAnonymousBoardPage = new PageImpl<>(cmdAnonymousBoardList);
 
+        when(cmdAnonymousBoardRepository.findByTitleContaining(eq(title), any(Pageable.class))).thenReturn(cmdAnonymousBoardPage);
+
+        Page<CmdAnonymousBoardDTO> result = cmdAnonymousBoardService.searchAnonymousBoardByTitle(title, Pageable.unpaged());
+
+        assertNotNull(result);
+        assertEquals(2, result.getTotalElements());
+        verify(cmdAnonymousBoardRepository, times(1)).findByTitleContaining(eq(title), any(Pageable.class));
+    }
 }
