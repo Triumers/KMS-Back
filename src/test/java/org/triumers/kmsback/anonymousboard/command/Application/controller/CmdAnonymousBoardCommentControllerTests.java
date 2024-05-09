@@ -59,4 +59,32 @@ class CmdAnonymousBoardCommentControllerTests {
         verify(cmdAnonymousBoardCommentService, times(1)).findAllAnonymousBoardComment(eq(anonymousBoardId), any(Pageable.class));
     }
 
+    // 댓글 작성 테스트
+    @Test
+    void createAnonymousBoardComment_shouldReturnCreatedAnonymousBoardCommentDTO() throws Exception {
+        int anonymousBoardId = 1;
+        CmdAnonymousBoardCommentDTO anonymousBoardCommentDTO = new CmdAnonymousBoardCommentDTO();
+        anonymousBoardCommentDTO.setNickname("익명");
+        anonymousBoardCommentDTO.setContent("댓글 내용");
+
+        CmdAnonymousBoardCommentDTO savedAnonymousBoardCommentDTO = new CmdAnonymousBoardCommentDTO();
+        savedAnonymousBoardCommentDTO.setId(1);
+        savedAnonymousBoardCommentDTO.setNickname("익명");
+        savedAnonymousBoardCommentDTO.setContent("댓글 내용");
+        savedAnonymousBoardCommentDTO.setAnonymousBoardId(anonymousBoardId);
+
+        when(cmdAnonymousBoardCommentService.saveAnonymousBoardComment(any(CmdAnonymousBoardCommentDTO.class)))
+                .thenReturn(savedAnonymousBoardCommentDTO);
+
+        mockMvc.perform(post("/anonymous-board/{anonymousBoardId}/comments", anonymousBoardId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(anonymousBoardCommentDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.nickname").value("익명"))
+                .andExpect(jsonPath("$.content").value("댓글 내용"))
+                .andExpect(jsonPath("$.anonymousBoardId").value(anonymousBoardId));
+
+        verify(cmdAnonymousBoardCommentService, times(1)).saveAnonymousBoardComment(any(CmdAnonymousBoardCommentDTO.class));
+    }
+
 }

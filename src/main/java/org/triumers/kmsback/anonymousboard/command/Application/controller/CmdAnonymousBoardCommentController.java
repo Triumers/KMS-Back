@@ -25,5 +25,13 @@ public class CmdAnonymousBoardCommentController {
         return ResponseEntity.ok(anonymousBoardCommentList);
     }
 
-
+    // 댓글 작성
+    @PostMapping
+    public ResponseEntity<CmdAnonymousBoardCommentDTO> createAnonymousBoardComment(
+            @PathVariable int anonymousBoardId,
+            @RequestBody CmdAnonymousBoardCommentDTO cmdAnonymousBoardCommentDTO) {
+        cmdAnonymousBoardCommentDTO.setAnonymousBoardId(anonymousBoardId);
+        CmdAnonymousBoardCommentDTO savedAnonymousBoardComment = cmdAnonymousBoardCommentService.saveAnonymousBoardComment(cmdAnonymousBoardCommentDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedAnonymousBoardComment);
+    }
 }
