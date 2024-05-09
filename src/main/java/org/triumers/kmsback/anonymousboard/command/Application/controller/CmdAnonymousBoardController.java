@@ -62,5 +62,12 @@ public class CmdAnonymousBoardController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedAnonymousBoard);
     }
 
+    // 4. 게시글 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAnonymousBoard(@PathVariable int id) {
+        cmdAnonymousBoardService.deleteAnonymousBoard(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

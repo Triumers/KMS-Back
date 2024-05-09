@@ -95,4 +95,15 @@ public class CmdAnonymousBoardControllerTests {
 
         verify(cmdAnonymousBoardService, times(1)).saveAnonymousBoard(any(CmdAnonymousBoardDTO.class));
     }
+
+    // 익명 게시글 삭제 테스트
+    @Test
+    void deleteAnonymousBoard_shouldDeleteAnonymousBoard() throws Exception {
+        int id = 1;
+
+        mockMvc.perform(delete("/anonymous-board/{id}", id))
+                .andExpect(status().isNoContent());
+
+        verify(cmdAnonymousBoardService, times(1)).deleteAnonymousBoard(eq(id));
+    }
 }
