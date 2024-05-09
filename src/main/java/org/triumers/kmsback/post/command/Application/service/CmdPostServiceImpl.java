@@ -3,6 +3,7 @@ package org.triumers.kmsback.post.command.Application.service;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.post.command.Application.dto.*;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.*;
@@ -37,7 +38,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     public CmdPost registPost(CmdPostAndTagsDTO post) {
 
         CmdPost registPost = new CmdPost(post.getTitle(), post.getContent(), post.getCreatedAt(),
-                                         post.getAuthorId(), post.getOriginId(), post.getTabRelationId());
+                post.getAuthorId(), post.getOriginId(), post.getTabRelationId());
         cmdPostRepository.save(registPost);
 
         registTag(post.getTags(), registPost.getId());
@@ -45,12 +46,12 @@ public class CmdPostServiceImpl implements CmdPostService {
         return registPost;
     }
 
-    public void registTag(List<CmdTagDTO> tags, int postId){
+    public void registTag(List<CmdTagDTO> tags, int postId) {
 
         for (int i = 0; i < tags.size(); i++) {
             CmdTagDTO tagDTO = tags.get(i);
 
-            CmdTag tag = new CmdTag(tagDTO.getId(),tagDTO.getName());
+            CmdTag tag = new CmdTag(tagDTO.getId(), tagDTO.getName());
             cmdTagRepository.save(tag);
 
             CmdPostTag postTag = new CmdPostTag(tag.getId(), postId);
@@ -81,26 +82,35 @@ public class CmdPostServiceImpl implements CmdPostService {
     @Override
     public CmdLike likePost(CmdLikeDTO like) {
 
-        CmdLike likePost = new CmdLike(like.getId(), like.getEmployeeId(), like.getPostId());
-        if(likePost.getId() != null){  // unlike
-            cmdLikeRepository.deleteById(likePost.getId());
-            return likePost;
+        try {
+            CmdLike likePost = cmdLikeRepository.findByEmployeeIdAndPostId(like.getEmployeeId(), like.getPostId());
+
+            if (likePost != null) { //unlike
+                cmdLikeRepository.deleteById(likePost.getId());
+                return likePost;
+            }
+        } catch (Exception e) {
+
         }
 
         // like
+        CmdLike likePost = new CmdLike(like.getEmployeeId(), like.getPostId());
         return cmdLikeRepository.save(likePost);
     }
 
     @Override
     public CmdFavorites favoritePost(CmdFavoritesDTO favorite) {
-
-        CmdFavorites favoritePost = new CmdFavorites(favorite.getId(), favorite.getEmployeeId(), favorite.getPostId());
-        if(favoritePost.getId() != null){  // unfavorite
-            cmdFavoritesRepository.deleteById(favoritePost.getId());
-            return favoritePost;
+        try {
+            CmdFavorites favoritePost = cmdFavoritesRepository.findByEmployeeIdAndPostId(favorite.getEmployeeId(), favorite.getPostId());
+            if (favoritePost != null) {  // unfavorite
+                cmdFavoritesRepository.deleteById(favoritePost.getId());
+                return favoritePost;
+            }
+        } catch (Exception e) {
         }
 
         // favorite
+        CmdFavorites favoritePost = new CmdFavorites(favorite.getEmployeeId(), favorite.getPostId());
         return cmdFavoritesRepository.save(favoritePost);
     }
 
