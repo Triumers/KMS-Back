@@ -12,4 +12,6 @@ public interface CmdAnonymousBoardService {
 
     Page<CmdAnonymousBoardDTO> searchAnonymousBoardByContent(String content, Pageable pageable);
 
+    Page<CmdAnonymousBoardDTO> searchAnonymousBoardByTitleAndContent(String keyword, Pageable pageable);
+
 }

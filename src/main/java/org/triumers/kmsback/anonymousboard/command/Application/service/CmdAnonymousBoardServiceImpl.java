@@ -53,4 +53,11 @@ public class CmdAnonymousBoardServiceImpl implements CmdAnonymousBoardService {
         return cmdAnonymousBoardPage.map(this::convertToDto);
     }
 
+    // 2-3. 제목+내용으로 게시글 검색
+    @Transactional(readOnly = true)
+    public Page<CmdAnonymousBoardDTO> searchAnonymousBoardByTitleAndContent(String keyword, Pageable pageable) {
+        Page<CmdAnonymousBoard> cmdAnonymousBoardPage = cmdAnonymousBoardRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
+        return cmdAnonymousBoardPage.map(this::convertToDto);
+    }
+
 }
