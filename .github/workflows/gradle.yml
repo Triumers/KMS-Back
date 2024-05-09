@@ -22,16 +22,14 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
-      - name: Make application.yml
-        run: |
-            cd ./src/main/resources
-            touch ./application.yml
-            
-            echo "${{ secrets.DB_YML }}" >> ./application.yml
-        shell: bash
-
       - name: Gradle 설정
         uses: gradle/actions/setup-gradle@v3
+
+      - name: Make application.yml
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.DB_YML }}" | base64 --decode > src/main/resources/application.yml
+          find src
 
       - name: Gradle 빌드
         run: ./gradlew build
