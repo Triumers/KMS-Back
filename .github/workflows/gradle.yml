@@ -1,4 +1,3 @@
-
 name: CI with Gradle
 
 on:
@@ -25,7 +24,7 @@ jobs:
     - name: DB setting
     - run: |
          cd ./src/main/resources
-         touch ./application.properties
+         touch ./application.yml
          echo "${{ secrets.DB_YML }}" >> ./application.yml
       shell: bash
 
