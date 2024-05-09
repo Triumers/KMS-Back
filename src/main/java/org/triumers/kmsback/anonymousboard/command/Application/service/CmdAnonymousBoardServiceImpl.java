@@ -60,4 +60,27 @@ public class CmdAnonymousBoardServiceImpl implements CmdAnonymousBoardService {
         return cmdAnonymousBoardPage.map(this::convertToDto);
     }
 
+    // 3. 게시글 작성
+    @Transactional
+    public CmdAnonymousBoardDTO saveAnonymousBoard(CmdAnonymousBoardDTO cmdAnonymousBoardDTO) {
+        try {
+            // MAC 주소 가져오기
+            String macAddress = MacAddressUtil.getMacAddress();
+
+            CmdAnonymousBoard cmdAnonymousBoard = new CmdAnonymousBoard(
+                    cmdAnonymousBoardDTO.getTitle(),
+                    cmdAnonymousBoardDTO.getContent(),
+                    macAddress
+            );
+
+            CmdAnonymousBoard savedCmdAnonymousBoard = cmdAnonymousBoardRepository.save(cmdAnonymousBoard);
+            return convertToDto(savedCmdAnonymousBoard);
+        } catch (Exception e) {
+            // MAC 주소를 가져오는 과정에서 예외 발생 시 처리
+            // 예외 처리 로직 추가
+            e.printStackTrace();
+            throw new RuntimeException("Failed to get MAC address.", e);
+        }
+    }
+
 }
