@@ -76,4 +76,23 @@ public class CmdAnonymousBoardControllerTests {
 
         verify(cmdAnonymousBoardService, times(1)).searchAnonymousBoardByTitle(eq("keyword"), any(Pageable.class));
     }
+
+    // 익명 게시글 작성 테스트
+    @Test
+    void createAnonymousBoard_shouldReturnCreatedAnonymousBoardDTO() throws Exception {
+        CmdAnonymousBoardDTO anonymousBoardDTO = new CmdAnonymousBoardDTO();
+        anonymousBoardDTO.setTitle("Title");
+        anonymousBoardDTO.setContent("Content");
+
+        when(cmdAnonymousBoardService.saveAnonymousBoard(any(CmdAnonymousBoardDTO.class))).thenReturn(anonymousBoardDTO);
+
+        mockMvc.perform(post("/anonymous-board")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(anonymousBoardDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.title").value("Title"))
+                .andExpect(jsonPath("$.content").value("Content"));
+
+        verify(cmdAnonymousBoardService, times(1)).saveAnonymousBoard(any(CmdAnonymousBoardDTO.class));
+    }
 }

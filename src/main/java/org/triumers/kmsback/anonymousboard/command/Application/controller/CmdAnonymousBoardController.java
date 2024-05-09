@@ -55,5 +55,12 @@ public class CmdAnonymousBoardController {
         return ResponseEntity.ok(searchResult);
     }
 
+    // 3. 게시글 작성
+    @PostMapping
+    public ResponseEntity<CmdAnonymousBoardDTO> createAnonymousBoard(@RequestBody CmdAnonymousBoardDTO cmdAnonymousBoardDTO) {
+        CmdAnonymousBoardDTO savedAnonymousBoard = cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedAnonymousBoard);
+    }
+
 
 }
