@@ -4,28 +4,26 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdPostDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdTagDTO;
 import org.triumers.kmsback.post.command.Application.service.CmdPostService;
+import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdLike;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTag;
-import org.triumers.kmsback.post.command.domain.aggregate.vo.CmdRequestPost;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class PostApplicationTests {
+public class CmdPostApplicationTests {
 
     private final CmdPostService cmdPostService;
 
     @Autowired
-    public PostApplicationTests(CmdPostService cmdPostService) {
+    public CmdPostApplicationTests(CmdPostService cmdPostService) {
         this.cmdPostService = cmdPostService;
     }
 
@@ -74,6 +72,26 @@ public class PostApplicationTests {
         CmdPost deletedPost = cmdPostService.deletePost(postId);
 
         assertThat(deletedPost.getDeletedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("게시글 좋아요")
+    void likePost(){
+
+        CmdLikeDTO like = new CmdLikeDTO(1, 1);
+        CmdLike likePost = cmdPostService.likePost(like);
+
+        assertThat(likePost.getId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("게시글 좋아요 취소")
+    void unlikePost(){
+
+        CmdLikeDTO like = new CmdLikeDTO(1, 1, 1);
+        CmdLike likePost = cmdPostService.likePost(like);
+
+        assertThat(likePost.getId()).isNotNull();
     }
 
 }
