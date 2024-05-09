@@ -1,9 +1,7 @@
 package org.triumers.kmsback.post.command.Application.service;
 
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.post.command.Application.dto.*;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.*;
@@ -15,7 +13,6 @@ import java.util.List;
 @Service
 public class CmdPostServiceImpl implements CmdPostService {
 
-    private final ModelMapper mapper;
     private final CmdPostRepository cmdPostRepository;
     private final CmdTagRepository cmdTagRepository;
     private final CmdPostTagRepository cmdPostTagRepository;
@@ -23,9 +20,8 @@ public class CmdPostServiceImpl implements CmdPostService {
     private final CmdFavoritesRepository cmdFavoritesRepository;
 
     @Autowired
-    public CmdPostServiceImpl(ModelMapper mapper, CmdPostRepository cmdPostRepository,
+    public CmdPostServiceImpl(CmdPostRepository cmdPostRepository,
                               CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository) {
-        this.mapper = mapper;
         this.cmdPostRepository = cmdPostRepository;
         this.cmdTagRepository = cmdTagRepository;
         this.cmdPostTagRepository = cmdPostTagRepository;
@@ -60,6 +56,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     }
 
     @Override
+    @Transactional
     public CmdPost modifyPost(CmdPostAndTagsDTO post) {
 
         CmdPost modifypost = registPost(post);
@@ -71,6 +68,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     }
 
     @Override
+    @Transactional
     public CmdPost deletePost(int postId) {
 
         CmdPost deletePost = cmdPostRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
@@ -80,6 +78,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     }
 
     @Override
+    @Transactional
     public CmdLike likePost(CmdLikeDTO like) {
 
         try {
@@ -99,6 +98,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     }
 
     @Override
+    @Transactional
     public CmdFavorites favoritePost(CmdFavoritesDTO favorite) {
         try {
             CmdFavorites favoritePost = cmdFavoritesRepository.findByEmployeeIdAndPostId(favorite.getEmployeeId(), favorite.getPostId());
@@ -113,6 +113,5 @@ public class CmdPostServiceImpl implements CmdPostService {
         CmdFavorites favoritePost = new CmdFavorites(favorite.getEmployeeId(), favorite.getPostId());
         return cmdFavoritesRepository.save(favoritePost);
     }
-
 
 }

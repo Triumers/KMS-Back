@@ -52,9 +52,9 @@ public class CmdPostApplicationTests {
     void modifyPost() {
 
         List<CmdTagDTO> tags = new ArrayList<>();
-        tags.add(new CmdTagDTO(4, "tag1"));
-        tags.add(new CmdTagDTO(5, "tag2"));
-        tags.add(new CmdTagDTO(6, "tag3"));
+        tags.add(new CmdTagDTO(1, "tag1"));
+        tags.add(new CmdTagDTO(2, "tag2"));
+        tags.add(new CmdTagDTO(3, "tag3"));
         tags.add(new CmdTagDTO("newtag4"));
         tags.add(new CmdTagDTO("newtag5"));
 
