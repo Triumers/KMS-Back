@@ -31,12 +31,13 @@ public class CmdPostAndTagsDTO {
     }
 
     public CmdPostAndTagsDTO(String title, String content, LocalDate createdAt, Integer authorId,
-                             Integer originId, Integer tabRelationId) {
+                             Integer originId, Integer tabRelationId, List<CmdTagDTO> tags) {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
         this.authorId = authorId;
         this.originId = originId;
         this.tabRelationId = tabRelationId;
+        this.tags = tags;
     }
 }

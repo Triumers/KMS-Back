@@ -7,7 +7,7 @@ import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
 public interface CmdPostService {
     CmdPost registPost(CmdPostAndTagsDTO post);
 
-    CmdPost modifyPost(CmdPostDTO post);
+    CmdPost modifyPost(CmdPostAndTagsDTO post);
 
     CmdPost deletePost(int postId);
 }
