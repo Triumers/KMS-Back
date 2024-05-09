@@ -5,12 +5,15 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdTagDTO;
+import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdLike;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPostTag;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTag;
+import org.triumers.kmsback.post.command.domain.repository.CmdLikeRepository;
 import org.triumers.kmsback.post.command.domain.repository.CmdPostRepository;
 import org.triumers.kmsback.post.command.domain.repository.CmdPostTagRepository;
 import org.triumers.kmsback.post.command.domain.repository.CmdTagRepository;
@@ -25,14 +28,16 @@ public class CmdPostServiceImpl implements CmdPostService {
     private final CmdPostRepository cmdPostRepository;
     private final CmdTagRepository cmdTagRepository;
     private final CmdPostTagRepository cmdPostTagRepository;
+    private final CmdLikeRepository cmdLikeRepository;
 
     @Autowired
     public CmdPostServiceImpl(ModelMapper mapper, CmdPostRepository cmdPostRepository,
-                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository) {
+                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository) {
         this.mapper = mapper;
         this.cmdPostRepository = cmdPostRepository;
         this.cmdTagRepository = cmdTagRepository;
         this.cmdPostTagRepository = cmdPostTagRepository;
+        this.cmdLikeRepository = cmdLikeRepository;
     }
 
     @Override
@@ -80,5 +85,19 @@ public class CmdPostServiceImpl implements CmdPostService {
 
         return cmdPostRepository.save(deletePost);
     }
+
+    @Override
+    public CmdLike likePost(CmdLikeDTO like) {
+
+        CmdLike likePost = new CmdLike(like.getId(), like.getEmployeeId(), like.getPostId());
+        if(likePost.getId() != null){  // unlike
+            cmdLikeRepository.deleteById(likePost.getId());
+            return likePost;
+        }
+
+        // like
+        return cmdLikeRepository.save(likePost);
+    }
+
 
 }
