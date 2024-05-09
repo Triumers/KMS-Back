@@ -57,4 +57,23 @@ public class CmdAnonymousBoardControllerTests {
         verify(cmdAnonymousBoardService, times(1)).findAllAnonymousBoard(any(Pageable.class));
     }
 
+    // 익명 게시판 검색 테스트
+    @Test
+    void searchAnonymousBoard_shouldReturnAnonymousBoardDTOList() throws Exception {
+        List<CmdAnonymousBoardDTO> anonymousBoardDTOList = Arrays.asList(
+                new CmdAnonymousBoardDTO(),
+                new CmdAnonymousBoardDTO()
+        );
+        Page<CmdAnonymousBoardDTO> anonymousBoardDTOPage = new PageImpl<>(anonymousBoardDTOList);
+
+        when(cmdAnonymousBoardService.searchAnonymousBoardByTitle(eq("keyword"), any(Pageable.class))).thenReturn(anonymousBoardDTOPage);
+
+        mockMvc.perform(get("/anonymous-board/search")
+                        .param("type", "title")
+                        .param("keyword", "keyword"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2));
+
+        verify(cmdAnonymousBoardService, times(1)).searchAnonymousBoardByTitle(eq("keyword"), any(Pageable.class));
+    }
 }

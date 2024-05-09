@@ -28,5 +28,32 @@ public class CmdAnonymousBoardController {
         return ResponseEntity.ok(anonymousBoardList);
     }
 
+    // 2-1. 제목으로 게시글 검색
+    // 2-2. 내용으로 게시글 검색
+    // 2-3. 제목+내용으로 게시글 검색
+    // 게시글 검색
+    @GetMapping("/search")
+    public ResponseEntity<Page<CmdAnonymousBoardDTO>> searchAnonymousBoard(
+            @RequestParam String type,
+            @RequestParam String keyword,
+            Pageable pageable) {
+        Page<CmdAnonymousBoardDTO> searchResult;
+
+        switch (type) {
+            case "title":
+                searchResult = cmdAnonymousBoardService.searchAnonymousBoardByTitle(keyword, pageable);
+                break;
+            case "content":
+                searchResult = cmdAnonymousBoardService.searchAnonymousBoardByContent(keyword, pageable);
+                break;
+            case "titleAndContent":
+                searchResult = cmdAnonymousBoardService.searchAnonymousBoardByTitleAndContent(keyword, pageable);
+                break;
+            default:
+                return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(searchResult);
+    }
+
 
 }
