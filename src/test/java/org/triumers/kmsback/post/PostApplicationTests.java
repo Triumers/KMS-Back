@@ -31,7 +31,7 @@ public class PostApplicationTests {
 
     @Test
     @DisplayName("게시글 저장")
-    void registPost(){
+    void registPost() {
 
         List<CmdTagDTO> tags = new ArrayList<>();
         tags.add(new CmdTagDTO("tag1"));
@@ -49,7 +49,7 @@ public class PostApplicationTests {
 
     @Test
     @DisplayName("게시글 수정")
-    void modifyPost(){
+    void modifyPost() {
 
         List<CmdTagDTO> tags = new ArrayList<>();
         tags.add(new CmdTagDTO(4, "tag1"));
@@ -59,11 +59,21 @@ public class PostApplicationTests {
         tags.add(new CmdTagDTO("newtag5"));
 
         CmdPostAndTagsDTO post = new CmdPostAndTagsDTO("modifyTitle", "modifyContent", LocalDate.now(),
-                                                1, 11, 1, tags);
+                1, 11, 1, tags);
 
         CmdPost modifyPost = cmdPostService.modifyPost(post);
 
         assertThat(modifyPost.getRecentId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("게시글 삭제")
+    void deletePost(){
+
+        int postId = 2;
+        CmdPost deletedPost = cmdPostService.deletePost(postId);
+
+        assertThat(deletedPost.getDeletedAt()).isNotNull();
     }
 
 }

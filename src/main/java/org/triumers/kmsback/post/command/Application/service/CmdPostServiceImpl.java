@@ -15,6 +15,7 @@ import org.triumers.kmsback.post.command.domain.repository.CmdPostRepository;
 import org.triumers.kmsback.post.command.domain.repository.CmdPostTagRepository;
 import org.triumers.kmsback.post.command.domain.repository.CmdTagRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -73,7 +74,11 @@ public class CmdPostServiceImpl implements CmdPostService {
 
     @Override
     public CmdPost deletePost(int postId) {
-        return null;
+
+        CmdPost deletePost = cmdPostRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
+        deletePost.setDeletedAt(LocalDate.now());
+
+        return cmdPostRepository.save(deletePost);
     }
 
 }
