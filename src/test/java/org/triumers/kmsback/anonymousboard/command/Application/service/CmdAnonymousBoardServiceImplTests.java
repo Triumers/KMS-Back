@@ -129,4 +129,14 @@ public class CmdAnonymousBoardServiceImplTests {
         assertNotNull(result.getMacAddress());
         verify(cmdAnonymousBoardRepository, times(1)).save(any(CmdAnonymousBoard.class));
     }
+
+    // 4. deleteAnonymousBoard 메서드가 주어진 id에 해당하는 CmdAnonymousBoard를 삭제하는지 확인
+    @Test
+    void deleteAnonymousBoard_shouldDeleteCmdAnonymousBoard() {
+        int id = 1;
+
+        cmdAnonymousBoardService.deleteAnonymousBoard(id);
+
+        verify(cmdAnonymousBoardRepository, times(1)).deleteById(eq(id));
+    }
 }

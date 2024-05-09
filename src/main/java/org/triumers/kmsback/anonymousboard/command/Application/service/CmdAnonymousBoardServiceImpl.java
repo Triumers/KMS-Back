@@ -83,4 +83,10 @@ public class CmdAnonymousBoardServiceImpl implements CmdAnonymousBoardService {
         }
     }
 
+    // 4. 게시글 삭제
+    @Transactional
+    public void deleteAnonymousBoard(int id) {
+        cmdAnonymousBoardRepository.deleteById(id);
+    }
+
 }

@@ -16,4 +16,5 @@ public interface CmdAnonymousBoardService {
 
     CmdAnonymousBoardDTO saveAnonymousBoard(CmdAnonymousBoardDTO cmdAnonymousBoardDTO);
 
+    void deleteAnonymousBoard(int id);
 }
