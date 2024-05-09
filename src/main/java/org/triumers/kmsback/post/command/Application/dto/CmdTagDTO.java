@@ -4,13 +4,13 @@ import lombok.Data;
 
 @Data
 public class CmdTagDTO {
-    private int id;
+    private Integer id;
     private String name;
 
     public CmdTagDTO() {
     }
 
-    public CmdTagDTO(int id, String name) {
+    public CmdTagDTO(Integer id, String name) {
         this.id = id;
         this.name = name;
     }

@@ -54,5 +54,12 @@ public class CmdPost {
         this.tabRelationId = tabRelationId;
     }
 
-
+    public CmdPost(String title, String content, LocalDate createdAt, Integer authorId, Integer originId, Integer tabRelationId) {
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.authorId = authorId;
+        this.originId = originId;
+        this.tabRelationId = tabRelationId;
+    }
 }

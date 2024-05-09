@@ -1,5 +1,6 @@
 package org.triumers.kmsback.post.command.Application.service;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,28 +35,40 @@ public class CmdPostServiceImpl implements CmdPostService {
     }
 
     @Override
+    @Transactional
     public CmdPost registPost(CmdPostAndTagsDTO post) {
 
         CmdPost registPost = new CmdPost(post.getTitle(), post.getContent(), post.getCreatedAt(),
-                                         post.getAuthorId(), post.getTabRelationId());
+                                         post.getAuthorId(), post.getOriginId(), post.getTabRelationId());
         cmdPostRepository.save(registPost);
-        System.out.println(registPost.getId());
 
-        List<CmdTagDTO> tags = post.getTags();
-        for (int i = 0; i < tags.size(); i++) {
-            CmdTag tag = new CmdTag(tags.get(i).getName());
-            cmdTagRepository.save(tag);
-
-            CmdPostTag postTag = new CmdPostTag(tag.getId(), registPost.getId());
-            cmdPostTagRepository.save(postTag);
-        }
+        registTag(post.getTags(), registPost.getId());
 
         return registPost;
     }
 
+    public void registTag(List<CmdTagDTO> tags, int postId){
+
+        for (int i = 0; i < tags.size(); i++) {
+            CmdTagDTO tagDTO = tags.get(i);
+
+            CmdTag tag = new CmdTag(tagDTO.getId(),tagDTO.getName());
+            cmdTagRepository.save(tag);
+
+            CmdPostTag postTag = new CmdPostTag(tag.getId(), postId);
+            cmdPostTagRepository.save(postTag);
+        }
+    }
+
     @Override
-    public CmdPost modifyPost(CmdPostDTO post) {
-        return null;
+    public CmdPost modifyPost(CmdPostAndTagsDTO post) {
+
+        CmdPost modifypost = registPost(post);
+        CmdPost originPost = cmdPostRepository.findById(post.getOriginId()).orElseThrow(IllegalArgumentException::new);
+        originPost.setRecentId(modifypost.getId());
+
+        return cmdPostRepository.save(originPost);
+
     }
 
     @Override
@@ -63,19 +76,4 @@ public class CmdPostServiceImpl implements CmdPostService {
         return null;
     }
 
-//    @Override
-//    public CmdPost modifyPost(CmdPostDTO post) {
-//
-//        CmdPost modifypost = registPost(post);
-//        CmdPost originPost = cmdPostRepository.findById(post.getOriginId()).orElseThrow(IllegalArgumentException::new);
-//        originPost.setRecentId(modifypost.getId());
-//
-//        return cmdPostRepository.save(originPost);
-//
-//    }
-//
-//    @Override
-//    public CmdPost deletePost(int postId) {
-//        return null;
-//    }
 }

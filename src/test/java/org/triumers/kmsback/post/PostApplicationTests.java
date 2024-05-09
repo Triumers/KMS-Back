@@ -14,6 +14,7 @@ import org.triumers.kmsback.post.command.domain.aggregate.vo.CmdRequestPost;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,6 +45,25 @@ public class PostApplicationTests {
         CmdPost savedPost = cmdPostService.registPost(post);
 
         assertThat(savedPost.getId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("게시글 수정")
+    void modifyPost(){
+
+        List<CmdTagDTO> tags = new ArrayList<>();
+        tags.add(new CmdTagDTO(4, "tag1"));
+        tags.add(new CmdTagDTO(5, "tag2"));
+        tags.add(new CmdTagDTO(6, "tag3"));
+        tags.add(new CmdTagDTO("newtag4"));
+        tags.add(new CmdTagDTO("newtag5"));
+
+        CmdPostAndTagsDTO post = new CmdPostAndTagsDTO("modifyTitle", "modifyContent", LocalDate.now(),
+                                                1, 11, 1, tags);
+
+        CmdPost modifyPost = cmdPostService.modifyPost(post);
+
+        assertThat(modifyPost.getRecentId()).isNotNull();
     }
 
 }
