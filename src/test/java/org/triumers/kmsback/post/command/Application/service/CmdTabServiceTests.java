@@ -5,8 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.triumers.kmsback.post.command.Application.dto.CmdJoinEmployeeDTO;
+import org.triumers.kmsback.post.command.Application.dto.CmdTabRelationDTO;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdJoinEmployee;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
+import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTabRelation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,5 +45,21 @@ class CmdTabServiceTests {
         CmdJoinEmployee deletedEmployee = cmdTabService.deleteEmployeeTab(employee);
 
         assertThat(deletedEmployee.getId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("탭 추가")
+    void registTab(){
+
+        int employeeId = 1;
+
+        int topId = 1;
+        int bottomId = 1;
+        boolean isPublic = false;
+        CmdTabRelationDTO tabRelation = new CmdTabRelationDTO(isPublic, bottomId, topId);
+
+        CmdTabRelation registTab = cmdTabService.registTab(tabRelation, employeeId);
+
+        assertThat(registTab.getId()).isNotNull();
     }
 }
