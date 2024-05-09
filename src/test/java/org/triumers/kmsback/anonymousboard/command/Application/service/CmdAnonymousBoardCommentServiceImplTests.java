@@ -68,4 +68,26 @@ public class CmdAnonymousBoardCommentServiceImplTests {
         assertEquals(2, result.getTotalElements());
         verify(cmdAnonymousBoardCommentRepository, times(1)).findByAnonymousBoardId(eq(anonymousBoardId), any(Pageable.class));
     }
+
+    // 댓글 작성
+    @Test
+    void saveAnonymousBoardComment_shouldSaveCmdAnonymousBoardComment() throws Exception {
+        CmdAnonymousBoardCommentDTO cmdAnonymousBoardCommentDTO = new CmdAnonymousBoardCommentDTO();
+        cmdAnonymousBoardCommentDTO.setNickname("익명");
+        cmdAnonymousBoardCommentDTO.setContent("댓글 내용");
+        cmdAnonymousBoardCommentDTO.setAnonymousBoardId(1);
+
+        when(cmdAnonymousBoardCommentRepository.save(any(CmdAnonymousBoardComment.class))).thenAnswer(invocation -> {
+            CmdAnonymousBoardComment savedCmdAnonymousBoardComment = invocation.getArgument(0);
+            assertNotNull(savedCmdAnonymousBoardComment.getMacAddress());
+            return savedCmdAnonymousBoardComment;
+        });
+
+        CmdAnonymousBoardCommentDTO result = cmdAnonymousBoardCommentService.saveAnonymousBoardComment(cmdAnonymousBoardCommentDTO);
+
+        assertNotNull(result);
+        assertNotNull(result.getMacAddress());
+        assertEquals(1, result.getAnonymousBoardId());
+        verify(cmdAnonymousBoardCommentRepository, times(1)).save(any(CmdAnonymousBoardComment.class));
+    }
 }

@@ -39,4 +39,26 @@ public class CmdAnonymousBoardCommentServiceImpl implements CmdAnonymousBoardCom
         return cmdAnonymousBoardCommentPage.map(this::convertToDto);
     }
 
+    // 댓글 작성
+    @Transactional
+    public CmdAnonymousBoardCommentDTO saveAnonymousBoardComment(CmdAnonymousBoardCommentDTO cmdAnonymousBoardCommentDTO) {
+        try {
+            // MAC 주소 가져오기
+            String macAddress = MacAddressUtil.getMacAddress();
+
+            CmdAnonymousBoardComment cmdAnonymousBoardComment = new CmdAnonymousBoardComment();
+            cmdAnonymousBoardComment.setNickname(cmdAnonymousBoardCommentDTO.getNickname());
+            cmdAnonymousBoardComment.setContent(cmdAnonymousBoardCommentDTO.getContent());
+            cmdAnonymousBoardComment.setMacAddress(macAddress);
+            cmdAnonymousBoardComment.setAnonymousBoardId(cmdAnonymousBoardCommentDTO.getAnonymousBoardId());
+
+            CmdAnonymousBoardComment savedCmdAnonymousBoardComment = cmdAnonymousBoardCommentRepository.save(cmdAnonymousBoardComment);
+            return convertToDto(savedCmdAnonymousBoardComment);
+        } catch (Exception e) {
+            // MAC 주소를 가져오는 과정에서 예외 발생 시 처리
+            // 예외 처리 로직 추가
+            e.printStackTrace();
+            throw new RuntimeException("Failed to get MAC address.", e);
+        }
+    }
 }
