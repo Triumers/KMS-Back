@@ -4,11 +4,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostDTO;
+import org.triumers.kmsback.post.command.Application.dto.CmdTagDTO;
 import org.triumers.kmsback.post.command.Application.service.CmdPostService;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
+import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTag;
+import org.triumers.kmsback.post.command.domain.aggregate.vo.CmdRequestPost;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +32,14 @@ public class PostApplicationTests {
     @DisplayName("게시글 저장")
     void registPost(){
 
-        CmdPostDTO post = new CmdPostDTO("newTitle", "newContent", LocalDate.now(), 1, 1);
+        List<CmdTagDTO> tags = new ArrayList<>();
+        tags.add(new CmdTagDTO("tag1"));
+        tags.add(new CmdTagDTO("tag2"));
+        tags.add(new CmdTagDTO("tag3"));
+        tags.add(new CmdTagDTO("tag4"));
+        tags.add(new CmdTagDTO("tag5"));
+
+        CmdPostAndTagsDTO post = new CmdPostAndTagsDTO("newTitle", "newContent", LocalDate.now(), 1, 1, tags);
 
         CmdPost savedPost = cmdPostService.registPost(post);
 

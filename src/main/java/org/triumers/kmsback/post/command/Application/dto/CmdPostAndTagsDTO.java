@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-public class CmdPostDTO {
+public class CmdPostAndTagsDTO {
     private Integer id;
     private String title;
     private String content;
@@ -16,20 +16,22 @@ public class CmdPostDTO {
     private Integer originId;
     private Integer recentId;
     private Integer tabRelationId;
+    private List<CmdTagDTO> tags;
 
-    public CmdPostDTO() {
+    public CmdPostAndTagsDTO() {
     }
 
-    public CmdPostDTO(String title, String content, LocalDate createdAt, Integer authorId, Integer tabRelationId) {
+    public CmdPostAndTagsDTO(String title, String content, LocalDate createdAt, Integer authorId, Integer tabRelationId, List<CmdTagDTO> tags) {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
         this.authorId = authorId;
         this.tabRelationId = tabRelationId;
+        this.tags = tags;
     }
 
-    public CmdPostDTO(String title, String content, LocalDate createdAt, Integer authorId,
-                      Integer originId, Integer tabRelationId) {
+    public CmdPostAndTagsDTO(String title, String content, LocalDate createdAt, Integer authorId,
+                             Integer originId, Integer tabRelationId) {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
@@ -37,5 +39,4 @@ public class CmdPostDTO {
         this.originId = originId;
         this.tabRelationId = tabRelationId;
     }
-
 }
