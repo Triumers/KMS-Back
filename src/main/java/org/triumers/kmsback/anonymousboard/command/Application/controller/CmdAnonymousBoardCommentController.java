@@ -34,4 +34,11 @@ public class CmdAnonymousBoardCommentController {
         CmdAnonymousBoardCommentDTO savedAnonymousBoardComment = cmdAnonymousBoardCommentService.saveAnonymousBoardComment(cmdAnonymousBoardCommentDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedAnonymousBoardComment);
     }
+
+    // 댓글 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAnonymousBoardComment(@PathVariable int id) {
+        cmdAnonymousBoardCommentService.deleteAnonymousBoardComment(id);
+        return ResponseEntity.noContent().build();
+    }
 }

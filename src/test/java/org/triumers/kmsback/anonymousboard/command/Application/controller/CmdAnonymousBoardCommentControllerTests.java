@@ -87,4 +87,16 @@ class CmdAnonymousBoardCommentControllerTests {
         verify(cmdAnonymousBoardCommentService, times(1)).saveAnonymousBoardComment(any(CmdAnonymousBoardCommentDTO.class));
     }
 
+    // 댓글 삭제 테스트
+    @Test
+    void deleteAnonymousBoardComment_shouldDeleteAnonymousBoardComment() throws Exception {
+        int anonymousBoardId = 1;
+        int id = 1;
+
+        mockMvc.perform(delete("/anonymous-board/{anonymousBoardId}/comments/{id}", anonymousBoardId, id))
+                .andExpect(status().isNoContent());
+
+        verify(cmdAnonymousBoardCommentService, times(1)).deleteAnonymousBoardComment(eq(id));
+    }
+
 }
