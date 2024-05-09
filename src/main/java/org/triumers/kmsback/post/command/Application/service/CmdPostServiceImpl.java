@@ -2,21 +2,11 @@ package org.triumers.kmsback.post.command.Application.service;
 
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdPostDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdTagDTO;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdLike;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPostTag;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTag;
-import org.triumers.kmsback.post.command.domain.repository.CmdLikeRepository;
-import org.triumers.kmsback.post.command.domain.repository.CmdPostRepository;
-import org.triumers.kmsback.post.command.domain.repository.CmdPostTagRepository;
-import org.triumers.kmsback.post.command.domain.repository.CmdTagRepository;
+import org.triumers.kmsback.post.command.Application.dto.*;
+import org.triumers.kmsback.post.command.domain.aggregate.entity.*;
+import org.triumers.kmsback.post.command.domain.repository.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,15 +19,17 @@ public class CmdPostServiceImpl implements CmdPostService {
     private final CmdTagRepository cmdTagRepository;
     private final CmdPostTagRepository cmdPostTagRepository;
     private final CmdLikeRepository cmdLikeRepository;
+    private final CmdFavoritesRepository cmdFavoritesRepository;
 
     @Autowired
     public CmdPostServiceImpl(ModelMapper mapper, CmdPostRepository cmdPostRepository,
-                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository) {
+                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository) {
         this.mapper = mapper;
         this.cmdPostRepository = cmdPostRepository;
         this.cmdTagRepository = cmdTagRepository;
         this.cmdPostTagRepository = cmdPostTagRepository;
         this.cmdLikeRepository = cmdLikeRepository;
+        this.cmdFavoritesRepository = cmdFavoritesRepository;
     }
 
     @Override
@@ -97,6 +89,19 @@ public class CmdPostServiceImpl implements CmdPostService {
 
         // like
         return cmdLikeRepository.save(likePost);
+    }
+
+    @Override
+    public CmdFavorites favoritePost(CmdFavoritesDTO favorite) {
+
+        CmdFavorites favoritePost = new CmdFavorites(favorite.getId(), favorite.getEmployeeId(), favorite.getPostId());
+        if(favoritePost.getId() != null){  // unfavorite
+            cmdFavoritesRepository.deleteById(favoritePost.getId());
+            return favoritePost;
+        }
+
+        // favorite
+        return cmdFavoritesRepository.save(favoritePost);
     }
 
 

@@ -18,4 +18,18 @@ public class CmdFavorites {
 
     @Column(name = "POST_ID", nullable = false)
     private Integer postId;
+
+    public CmdFavorites() {
+    }
+
+    public CmdFavorites(Integer employeeId, Integer postId) {
+        this.employeeId = employeeId;
+        this.postId = postId;
+    }
+
+    public CmdFavorites(Integer id, Integer employeeId, Integer postId) {
+        this.id = id;
+        this.employeeId = employeeId;
+        this.postId = postId;
+    }
 }

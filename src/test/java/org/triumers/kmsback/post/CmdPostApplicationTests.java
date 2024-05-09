@@ -4,10 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdTagDTO;
 import org.triumers.kmsback.post.command.Application.service.CmdPostService;
+import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdFavorites;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdLike;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
 
@@ -85,11 +87,31 @@ public class CmdPostApplicationTests {
     }
 
     @Test
-    @DisplayName("게시글 좋아요 취소")
+    @DisplayName("게시글 좋아요 삭제")
     void unlikePost(){
 
         CmdLikeDTO like = new CmdLikeDTO(1, 1, 1);
         CmdLike likePost = cmdPostService.likePost(like);
+
+        assertThat(likePost.getId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("게시글 즐겨찾기")
+    void favoritePost(){
+
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, 1);
+        CmdFavorites likePost = cmdPostService.favoritePost(favorite);
+
+        assertThat(likePost.getId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("게시글 즐겨찾기 삭제")
+    void unfavoritePost(){
+
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, 1, 1);
+        CmdFavorites likePost = cmdPostService.favoritePost(favorite);
 
         assertThat(likePost.getId()).isNotNull();
     }
