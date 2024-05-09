@@ -24,4 +24,20 @@ public class CmdTabRelation {
 
     @Column(name = "TEAM_ID")
     private Integer teamId;
+
+    public CmdTabRelation() {
+    }
+
+    public CmdTabRelation(Boolean isPublic, Integer bottomTabId, Integer topTabId) {
+        this.isPublic = isPublic;
+        this.bottomTabId = bottomTabId;
+        this.topTabId = topTabId;
+    }
+
+    public CmdTabRelation(Boolean isPublic, Integer bottomTabId, Integer topTabId, Integer teamId) {
+        this.isPublic = isPublic;
+        this.bottomTabId = bottomTabId;
+        this.topTabId = topTabId;
+        this.teamId = teamId;
+    }
 }
