@@ -18,4 +18,12 @@ public class CmdPostTag {
 
     @Column(name = "POST_ID", nullable = false)
     private Integer postId;
+
+    public CmdPostTag() {
+    }
+
+    public CmdPostTag(Integer tagId, Integer postId) {
+        this.tagId = tagId;
+        this.postId = postId;
+    }
 }
