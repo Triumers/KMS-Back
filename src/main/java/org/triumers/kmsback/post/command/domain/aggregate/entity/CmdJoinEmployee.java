@@ -21,4 +21,13 @@ public class CmdJoinEmployee {
 
     @Column(name = "TAB_ID", nullable = false)
     private Integer tabId;
+
+    public CmdJoinEmployee() {
+    }
+
+    public CmdJoinEmployee(Boolean isLeader, Integer employeeId, Integer tabId) {
+        this.isLeader = isLeader;
+        this.employeeId = employeeId;
+        this.tabId = tabId;
+    }
 }

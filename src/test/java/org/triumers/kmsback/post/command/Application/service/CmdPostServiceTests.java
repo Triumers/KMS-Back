@@ -1,4 +1,4 @@
-package org.triumers.kmsback.post;
+package org.triumers.kmsback.post.command.Application.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,6 @@ import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdTagDTO;
-import org.triumers.kmsback.post.command.Application.service.CmdPostService;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdFavorites;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdLike;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
@@ -20,12 +19,12 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class CmdPostApplicationTests {
+public class CmdPostServiceTests {
 
     private final CmdPostService cmdPostService;
 
     @Autowired
-    public CmdPostApplicationTests(CmdPostService cmdPostService) {
+    public CmdPostServiceTests(CmdPostService cmdPostService) {
         this.cmdPostService = cmdPostService;
     }
 
