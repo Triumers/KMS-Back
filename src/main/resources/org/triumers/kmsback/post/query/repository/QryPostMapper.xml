@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.triumers.kmsback.post.query.repository.QryPostMapper">
+
+
+    <resultMap id="tagResultMap" type="org.triumers.kmsback.post.query.aggregate.entity.QryTag">
+        <id property="id" column="TAG_ID"/>
+        <result property="name" column="NAME"/>
+    </resultMap>
+
+    <resultMap id="postResultMap" type="org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag">
+        <id property="id" column="POST_ID"/>
+        <result property="isEditing" column="IS_EDITING"/>
+        <result property="title" column="TITLE"/>
+        <result property="content" column="CONTENT"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="deletedAt" column="DELETED_AT"/>
+        <result property="authorId" column="AUTHOR_ID"/>
+        <result property="originId" column="ORIGIN_ID"/>
+        <result property="recentId" column="RECENT_ID"/>
+        <result property="tabRelationId" column="TAB_RELATION_ID"/>
+        <collection property="tags" resultMap="tagResultMap"/>
+    </resultMap>
+
+    <select id="selectTabPostList" parameterType="_int" resultMap="postResultMap">
+        SELECT
+               A.ID AS POST_ID,
+               A.TITLE,
+               A.CONTENT,
+               A.CREATED_AT,
+               A.AUTHOR_ID,
+               A.ORIGIN_ID,
+               A.RECENT_ID,
+               A.TAB_RELATION_ID,
+               C.ID AS TAG_ID,
+               C.NAME
+          FROM tbl_post A
+          JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
+          JOIN tbl_tag C ON (B.TAG_ID = C.ID)
+         WHERE ((A.ORIGIN_ID IS NULL AND A.RECENT_ID IS NULL AND A.DELETED_AT IS NULL)
+            OR A.ID IN (
+                         SELECT RECENT_ID
+                         FROM tbl_post
+                         WHERE (ORIGIN_ID IS NULL AND RECENT_ID IS NOT NULL AND DELETED_AT IS NULL)
+                         ))
+           AND TAB_RELATION_ID = #{tabId};
+    </select>
+
+    <select id="selectPostById" parameterType="_int" resultMap="postResultMap">
+        SELECT
+               A.ID AS POST_ID,
+               A.TITLE,
+               A.CONTENT,
+               A.CREATED_AT,
+               A.AUTHOR_ID,
+               A.ORIGIN_ID,
+               A.RECENT_ID,
+               A.TAB_RELATION_ID,
+               C.ID AS TAG_ID,
+               C.NAME
+          FROM tbl_post A
+          JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
+          JOIN tbl_tag C ON (B.TAG_ID = C.ID)
+         WHERE CASE
+          WHEN (SELECT D.recent_id FROM tbl_post D WHERE D.id = #{postId}) IS NULL THEN A.id = #{postId}
+         ELSE A.id IN (SELECT D.recent_id FROM tbl_post D WHERE D.id = #{postId})
+         END;
+    </select>
+
+
+</mapper>
