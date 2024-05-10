@@ -6,4 +6,5 @@ import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
 
 @Repository
 public interface AuthRepository extends JpaRepository<Auth, Integer> {
+    Auth findByEmail(String email);
 }
