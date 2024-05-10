@@ -1,9 +1,12 @@
 package org.triumers.kmsback.post.query.service;
 
 import org.springframework.stereotype.Service;
+import org.triumers.kmsback.employee.query.dto.QryEmployeeDTO;
 import org.triumers.kmsback.employee.query.service.QryEmployeeService;
+import org.triumers.kmsback.post.query.aggregate.entity.QryLike;
 import org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag;
 import org.triumers.kmsback.post.query.aggregate.entity.QryTag;
+import org.triumers.kmsback.post.query.dto.QryLikeDTO;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
 import org.triumers.kmsback.post.query.dto.QryPostDTO;
 import org.triumers.kmsback.post.query.dto.QryTagDTO;
@@ -38,6 +41,7 @@ public class QryPostServiceImpl implements QryPostService {
                 post.getRecentId(), post.getTabRelationId());
 
         postDTO.setTags(convertTagToTagDTO(post.getTags()));
+        postDTO.setHistory(findHistoryListByOriginId(postId));
 
         return postDTO;
     }
@@ -47,6 +51,20 @@ public class QryPostServiceImpl implements QryPostService {
         List<QryPostAndTag> historyList = qryPostMapper.selectHistoryListByOriginId(originId);
 
         return QryPostAndTagListToDTOList(historyList);
+    }
+
+    @Override
+    public List<QryEmployeeDTO> findLikeListByPostId(int postId) {
+
+        List<QryLike> likeList = qryPostMapper.selectLikeListByPostId(postId);
+
+        List<QryEmployeeDTO> likeMemberList = new ArrayList<>();
+        for (int i = 0; i < likeList.size(); i++) {
+            int memberId = likeList.get(i).getEmployeeId();
+            // Employee쪽에서 멤버 정보 가져오기
+//            likeMemberList.add();
+        }
+        return null;
     }
 
     private List<QryPostAndTagsDTO> QryPostAndTagListToDTOList(List<QryPostAndTag> postList){
@@ -60,7 +78,6 @@ public class QryPostServiceImpl implements QryPostService {
             postDTO.setTags(convertTagToTagDTO(post.getTags()));
             postDTOList.add(postDTO);
         }
-
         return postDTOList;
     }
 

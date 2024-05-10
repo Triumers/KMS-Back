@@ -16,7 +16,7 @@ public class QryPostAndTagsDTO {
     private Integer recentId;
     private Integer tabRelationId;
     private List<QryTagDTO> tags;
-    private List<QryPostDTO> history;
+    private List<QryPostAndTagsDTO> history;
 
     public QryPostAndTagsDTO(Integer id, String title, String content, LocalDate createdAt, Integer authorId,
                              Integer originId, Integer recentId, Integer tabRelationId) {
@@ -30,23 +30,5 @@ public class QryPostAndTagsDTO {
         this.tabRelationId = tabRelationId;
     }
 
-    public QryPostAndTagsDTO(String title, String content, LocalDate createdAt, Integer authorId, Integer tabRelationId, List<QryTagDTO> tags) {
-        this.title = title;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.authorId = authorId;
-        this.tabRelationId = tabRelationId;
-        this.tags = tags;
-    }
 
-    public QryPostAndTagsDTO(String title, String content, LocalDate createdAt, Integer authorId,
-                             Integer originId, Integer tabRelationId, List<QryTagDTO> tags) {
-        this.title = title;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.authorId = authorId;
-        this.originId = originId;
-        this.tabRelationId = tabRelationId;
-        this.tags = tags;
-    }
 }
