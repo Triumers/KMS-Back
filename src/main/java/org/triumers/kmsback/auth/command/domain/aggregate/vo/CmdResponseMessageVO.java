@@ -7,6 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CmdResponseMessageVO {// Git 충돌 복구용 주석
+public class CmdResponseMessageVO {
     private String message;
 }

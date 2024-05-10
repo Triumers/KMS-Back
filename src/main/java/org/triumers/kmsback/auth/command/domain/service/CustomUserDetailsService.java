@@ -10,7 +10,7 @@ import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
 import org.triumers.kmsback.auth.command.domain.repository.AuthRepository;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {// Git 충돌 복구용 주석
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final AuthRepository userRepository;
 

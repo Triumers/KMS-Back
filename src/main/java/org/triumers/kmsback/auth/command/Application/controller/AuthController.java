@@ -11,7 +11,7 @@ import org.triumers.kmsback.auth.command.Application.dto.AuthDTO;
 import org.triumers.kmsback.auth.command.Application.service.AuthService;
 import org.triumers.kmsback.auth.command.domain.aggregate.vo.CmdRequestAuthVO;
 import org.triumers.kmsback.auth.command.domain.aggregate.vo.CmdResponseMessageVO;
-// Git 충돌 복구용 주석
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {

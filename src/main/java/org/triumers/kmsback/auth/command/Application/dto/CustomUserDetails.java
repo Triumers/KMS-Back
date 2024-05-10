@@ -7,7 +7,7 @@ import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class CustomUserDetails implements UserDetails {// Git 충돌 복구용 주석
+public class CustomUserDetails implements UserDetails {
 
     private final Auth user;
 

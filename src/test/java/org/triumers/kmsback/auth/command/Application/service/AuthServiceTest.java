@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class AuthServiceTest {// Git 충돌 복구용 주석
+class AuthServiceTest {
 
     @Autowired
     private AuthService authService;
