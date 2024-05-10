@@ -25,7 +25,7 @@ class CmdTabServiceTests {
     @DisplayName("탭 참여자 등록")
     void addEmployeeTab(){
 
-        int tabRelationId = 1;
+        int tabRelationId = 2;
         int employeeId = 1;
         CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(employeeId, tabRelationId);
 
@@ -41,6 +41,7 @@ class CmdTabServiceTests {
         int tabRelationId = 1;
         int employeeId = 1;
         CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(employeeId, tabRelationId);
+        cmdTabService.addEmployeeTab(employee);
 
         CmdJoinEmployee deletedEmployee = cmdTabService.deleteEmployeeTab(employee);
 

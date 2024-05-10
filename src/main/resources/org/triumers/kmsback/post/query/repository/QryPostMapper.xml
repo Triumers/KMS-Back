@@ -6,12 +6,12 @@
 
 
     <resultMap id="tagResultMap" type="org.triumers.kmsback.post.query.aggregate.entity.QryTag">
-        <id property="id" column="ID"/>
+        <id property="id" column="TAG_ID"/>
         <result property="name" column="NAME"/>
     </resultMap>
 
     <resultMap id="postResultMap" type="org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag">
-        <id property="id" column="ID"/>
+        <id property="id" column="POST_ID"/>
         <result property="isEditing" column="IS_EDITING"/>
         <result property="title" column="TITLE"/>
         <result property="content" column="CONTENT"/>
@@ -24,12 +24,9 @@
         <collection property="tags" resultMap="tagResultMap"/>
     </resultMap>
 
-
-
-
     <select id="selectTabPostList" parameterType="_int" resultMap="postResultMap">
         SELECT
-               A.ID,
+               A.ID AS POST_ID,
                A.TITLE,
                A.CONTENT,
                A.CREATED_AT,
@@ -37,7 +34,7 @@
                A.ORIGIN_ID,
                A.RECENT_ID,
                A.TAB_RELATION_ID,
-               C.ID,
+               C.ID AS TAG_ID,
                C.NAME
           FROM tbl_post A
           JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
@@ -53,7 +50,7 @@
 
     <select id="selectPostById" parameterType="_int" resultMap="postResultMap">
         SELECT
-               A.ID,
+               A.ID AS POST_ID,
                A.TITLE,
                A.CONTENT,
                A.CREATED_AT,
@@ -61,15 +58,16 @@
                A.ORIGIN_ID,
                A.RECENT_ID,
                A.TAB_RELATION_ID,
-               C.ID,
+               C.ID AS TAG_ID,
                C.NAME
           FROM tbl_post A
           JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
           JOIN tbl_tag C ON (B.TAG_ID = C.ID)
-         WHERE A.ID = #{postId}
+         WHERE CASE
+          WHEN (SELECT D.recent_id FROM tbl_post D WHERE D.id = #{postId}) IS NULL THEN A.id = #{postId}
+         ELSE A.id IN (SELECT D.recent_id FROM tbl_post D WHERE D.id = #{postId})
+         END;
     </select>
-
-
 
 
 </mapper>
