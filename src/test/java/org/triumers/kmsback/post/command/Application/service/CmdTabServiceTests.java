@@ -31,8 +31,6 @@ class CmdTabServiceTests {
 
         CmdJoinEmployee savedEmployee = cmdTabService.addEmployeeTab(employee);
 
-        cmdTabService.deleteEmployeeTab(employee);
-
         assertThat(savedEmployee.getId()).isNotNull();
     }
 
