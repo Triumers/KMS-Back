@@ -63,7 +63,10 @@
           FROM tbl_post A
           JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
           JOIN tbl_tag C ON (B.TAG_ID = C.ID)
-         WHERE A.ID = #{postId}
+         WHERE CASE
+          WHEN (SELECT D.recent_id FROM tbl_post D WHERE D.id = #{postId}) IS NULL THEN A.id = #{postId}
+         ELSE A.id IN (SELECT D.recent_id FROM tbl_post D WHERE D.id = #{postId})
+         END;
     </select>
 
 
