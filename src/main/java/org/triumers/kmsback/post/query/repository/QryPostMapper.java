@@ -10,4 +10,6 @@ public interface QryPostMapper {
     List<QryPostAndTag> selectTabPostList(int tabId);
 
     QryPostAndTag selectPostById(int postId);
+
+    List<QryPostAndTag> selectHistoryListByOriginId(int originId);
 }

@@ -28,19 +28,29 @@ class QryPostServiceTest {
 
         int tabId = 1;
         List<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(tabId);
-        System.out.println("postList = " + postList);
+
         assertFalse(postList.isEmpty());
     }
 
     @Test
-    @DisplayName("게시글 조회")
+    @DisplayName("단일 게시글 조회")
     void findPostById() {
 
         int postId = 20;
         QryPostAndTagsDTO post = qryPostService.findPostById(postId);
-        System.out.println("post = " + post);
+
         assertThat(post.getId()).isNotNull();
     }
 
+    @Test
+    @DisplayName("게시글 히스토리 조회")
+    void findHistoryListByOriginId() {
+
+        int originId = 16;
+        List<QryPostAndTagsDTO> history = qryPostService.findHistoryListByOriginId(originId);
+        System.out.println("history = " + history);
+        
+        assertFalse(history.isEmpty());
+    }
 
 }

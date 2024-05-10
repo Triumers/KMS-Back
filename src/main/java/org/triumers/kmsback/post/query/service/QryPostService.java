@@ -10,4 +10,6 @@ public interface QryPostService {
     List<QryPostAndTagsDTO> findPostListByTab(int tabId);
 
     QryPostAndTagsDTO findPostById(int postId);
+
+    List<QryPostAndTagsDTO> findHistoryListByOriginId(int originId);
 }

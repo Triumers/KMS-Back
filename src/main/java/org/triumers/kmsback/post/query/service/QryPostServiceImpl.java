@@ -23,14 +23,40 @@ public class QryPostServiceImpl implements QryPostService {
 
     @Override
     public List<QryPostAndTagsDTO> findPostListByTab(int tabId) {
+
         List<QryPostAndTag> postList = qryPostMapper.selectTabPostList(tabId);
+
+        return QryPostAndTagListToDTOList(postList);
+    }
+
+    @Override
+    public QryPostAndTagsDTO findPostById(int postId) {
+        QryPostAndTag post = qryPostMapper.selectPostById(postId);
+
+        QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
+                post.getCreatedAt(), post.getAuthorId(), post.getOriginId(),
+                post.getRecentId(), post.getTabRelationId());
+
+        postDTO.setTags(convertTagToTagDTO(post.getTags()));
+
+        return postDTO;
+    }
+
+    @Override
+    public List<QryPostAndTagsDTO> findHistoryListByOriginId(int originId) {
+        List<QryPostAndTag> historyList = qryPostMapper.selectHistoryListByOriginId(originId);
+
+        return QryPostAndTagListToDTOList(historyList);
+    }
+
+    private List<QryPostAndTagsDTO> QryPostAndTagListToDTOList(List<QryPostAndTag> postList){
 
         List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
         for (int i = 0; i < postList.size(); i++) {
             QryPostAndTag post = postList.get(i);
             QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
-                                                              post.getCreatedAt(), post.getAuthorId(), post.getOriginId(),
-                                                              post.getRecentId(), post.getTabRelationId());
+                    post.getCreatedAt(), post.getAuthorId(), post.getOriginId(),
+                    post.getRecentId(), post.getTabRelationId());
             postDTO.setTags(convertTagToTagDTO(post.getTags()));
             postDTOList.add(postDTO);
         }
@@ -47,18 +73,5 @@ public class QryPostServiceImpl implements QryPostService {
             tagDTOList.add(tagDTO);
         }
         return tagDTOList;
-    }
-
-    @Override
-    public QryPostAndTagsDTO findPostById(int postId) {
-        QryPostAndTag post = qryPostMapper.selectPostById(postId);
-
-        QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
-                post.getCreatedAt(), post.getAuthorId(), post.getOriginId(),
-                post.getRecentId(), post.getTabRelationId());
-        System.out.println("post 22222 = " + post);
-        postDTO.setTags(convertTagToTagDTO(post.getTags()));
-
-        return postDTO;
     }
 }
