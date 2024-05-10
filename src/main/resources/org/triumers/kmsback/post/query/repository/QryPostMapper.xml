@@ -30,25 +30,44 @@
 
     <select id="selectTabPostList" parameterType="_int" resultMap="postResultMap">
         SELECT
-        A.ID,
-        A.TITLE,
-        A.CONTENT,
-        A.CREATED_AT,
-        A.AUTHOR_ID,
-        A.ORIGIN_ID,
-        A.RECENT_ID,
-        A.TAB_RELATION_ID,
-        C.ID,
-        C.NAME
-        FROM tbl_post A
-        JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
-        JOIN tbl_tag C ON (B.TAG_ID = C.ID)
-        WHERE ((A.ORIGIN_ID IS NULL AND A.RECENT_ID IS NULL AND A.DELETED_AT IS NULL)
-        OR A.ID IN (
-        SELECT RECENT_ID
-        FROM tbl_post
-        WHERE (ORIGIN_ID IS NULL AND RECENT_ID IS NOT NULL AND DELETED_AT IS NULL)
-        )) AND TAB_RELATION_ID = #{tabId};
+               A.ID,
+               A.TITLE,
+               A.CONTENT,
+               A.CREATED_AT,
+               A.AUTHOR_ID,
+               A.ORIGIN_ID,
+               A.RECENT_ID,
+               A.TAB_RELATION_ID,
+               C.ID,
+               C.NAME
+          FROM tbl_post A
+          JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
+          JOIN tbl_tag C ON (B.TAG_ID = C.ID)
+         WHERE ((A.ORIGIN_ID IS NULL AND A.RECENT_ID IS NULL AND A.DELETED_AT IS NULL)
+            OR A.ID IN (
+                         SELECT RECENT_ID
+                         FROM tbl_post
+                         WHERE (ORIGIN_ID IS NULL AND RECENT_ID IS NOT NULL AND DELETED_AT IS NULL)
+                         ))
+           AND TAB_RELATION_ID = #{tabId};
+    </select>
+
+    <select id="selectPostById" parameterType="_int" resultMap="postResultMap">
+        SELECT
+               A.ID,
+               A.TITLE,
+               A.CONTENT,
+               A.CREATED_AT,
+               A.AUTHOR_ID,
+               A.ORIGIN_ID,
+               A.RECENT_ID,
+               A.TAB_RELATION_ID,
+               C.ID,
+               C.NAME
+          FROM tbl_post A
+          JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
+          JOIN tbl_tag C ON (B.TAG_ID = C.ID)
+         WHERE A.ID = #{postId}
     </select>
 
 

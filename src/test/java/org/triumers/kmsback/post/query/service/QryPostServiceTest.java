@@ -4,13 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdTagDTO;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
 import org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag;
+import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,10 +24,23 @@ class QryPostServiceTest {
 
     @Test
     @DisplayName("tab 게시글 리스트 조회")
-    void getPostListByTab() {
+    void findPostListByTab() {
 
         int tabId = 1;
-        List<QryPostAndTag> postList = qryPostService.getPostListByTab(tabId);
+        List<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(tabId);
 
+        assertFalse(postList.isEmpty());
     }
+
+    @Test
+    @DisplayName("게시글 조회")
+    void findPostById() {
+
+        int postId = 20;
+        QryPostAndTagsDTO post = qryPostService.findPostById(postId);
+        System.out.println("post = " + post);
+        assertThat(post.getId()).isNotNull();
+    }
+
+
 }
