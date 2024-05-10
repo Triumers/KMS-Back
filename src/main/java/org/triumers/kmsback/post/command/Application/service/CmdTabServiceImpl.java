@@ -1,5 +1,6 @@
 package org.triumers.kmsback.post.command.Application.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.post.command.Application.dto.CmdJoinEmployeeDTO;
@@ -22,6 +23,7 @@ public class CmdTabServiceImpl implements CmdTabService{
     }
 
     @Override
+    @Transactional
     public CmdJoinEmployee addEmployeeTab(CmdJoinEmployeeDTO employee) {
         CmdJoinEmployee newEmployee = new CmdJoinEmployee(employee.getIsLeader(),employee.getEmployeeId(),
                                                           employee.getTabId());
@@ -29,6 +31,7 @@ public class CmdTabServiceImpl implements CmdTabService{
     }
 
     @Override
+    @Transactional
     public CmdJoinEmployee deleteEmployeeTab(CmdJoinEmployeeDTO employee) {
 
         CmdJoinEmployee deleteEmployee = cmdJoinEmployeeRepository
@@ -40,6 +43,7 @@ public class CmdTabServiceImpl implements CmdTabService{
     }
 
     @Override
+    @Transactional
     public CmdTabRelation registTab(CmdTabRelationDTO tabRelation, int employeeId) {
 
         CmdTabRelation newTab = new CmdTabRelation(tabRelation.getIsPublic(), tabRelation.getBottomTabId(),

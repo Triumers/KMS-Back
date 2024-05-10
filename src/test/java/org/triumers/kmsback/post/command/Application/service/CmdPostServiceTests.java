@@ -1,5 +1,6 @@
 package org.triumers.kmsback.post.command.Application.service;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class CmdPostServiceTests {
 
     @Test
     @DisplayName("게시글 저장")
+    @Transactional
     void registPost() {
 
         List<CmdTagDTO> tags = new ArrayList<>();
@@ -48,6 +50,7 @@ public class CmdPostServiceTests {
 
     @Test
     @DisplayName("게시글 수정")
+    @Transactional
     void modifyPost() {
 
         List<CmdTagDTO> tags = new ArrayList<>();
@@ -58,7 +61,7 @@ public class CmdPostServiceTests {
         tags.add(new CmdTagDTO("newtag5"));
 
         CmdPostAndTagsDTO post = new CmdPostAndTagsDTO("modifyTitle", "modifyContent", LocalDate.now(),
-                1, 16, 1, tags);
+                1, 20, 1, tags);
 
         CmdPost modifyPost = cmdPostService.modifyPost(post);
 
@@ -67,9 +70,10 @@ public class CmdPostServiceTests {
 
     @Test
     @DisplayName("게시글 삭제")
+    @Transactional
     void deletePost(){
 
-        int postId = 16;
+        int postId = 23;
         CmdPost deletedPost = cmdPostService.deletePost(postId);
 
         assertThat(deletedPost.getDeletedAt()).isNotNull();
