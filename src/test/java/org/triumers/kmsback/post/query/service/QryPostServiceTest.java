@@ -28,7 +28,7 @@ class QryPostServiceTest {
 
         int tabId = 1;
         List<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(tabId);
-
+        System.out.println("postList = " + postList);
         assertFalse(postList.isEmpty());
     }
 
