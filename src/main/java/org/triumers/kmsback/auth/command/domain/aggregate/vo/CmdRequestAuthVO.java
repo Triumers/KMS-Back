@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CmdRequestAuthVO {
+public class CmdRequestAuthVO {// Git 충돌 복구용 주석
     private String email;
     private String password;
     private String name;

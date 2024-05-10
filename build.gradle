@@ -7,7 +7,7 @@ plugins {
 group = 'org.triumers'
 version = '0.0.1-SNAPSHOT'
 
-java {
+java {// Git 충돌 복구용 주석
     sourceCompatibility = '17'
 }
 

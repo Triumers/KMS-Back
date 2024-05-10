@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString
 @Table(name = "tbl_employee")
-public class Auth {
+public class Auth {// Git 충돌 복구용 주석
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

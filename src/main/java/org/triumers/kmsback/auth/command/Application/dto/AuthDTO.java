@@ -4,7 +4,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-@Getter
+@Getter// Git 충돌 복구용 주석
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor

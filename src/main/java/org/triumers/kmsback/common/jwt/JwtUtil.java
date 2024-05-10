@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Component
-public class JwtUtil {
+public class JwtUtil {// Git 충돌 복구용 주석
 
     private final SecretKey secretKey;
     private final Long expiredMs;

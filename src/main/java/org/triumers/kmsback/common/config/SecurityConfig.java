@@ -21,7 +21,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig {// Git 충돌 복구용 주석
 
     private final AuthenticationConfiguration authenticationConfiguration;
 

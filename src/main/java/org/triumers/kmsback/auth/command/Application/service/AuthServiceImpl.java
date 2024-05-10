@@ -10,7 +10,7 @@ import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.auth.command.domain.repository.AuthRepository;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+public class AuthServiceImpl implements AuthService {// Git 충돌 복구용 주석
     private final String DEFAULT_PASSWORD;
 
     private final AuthRepository authRepository;
