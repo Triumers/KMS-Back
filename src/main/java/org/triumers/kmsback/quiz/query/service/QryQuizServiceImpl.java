@@ -57,4 +57,5 @@ public class QryQuizServiceImpl implements QryQuizService {
 
         return qryQuizDTO;
     }
+
 }
