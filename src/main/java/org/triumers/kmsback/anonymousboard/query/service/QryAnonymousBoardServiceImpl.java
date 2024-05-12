@@ -9,6 +9,7 @@ import org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO;
 import org.triumers.kmsback.anonymousboard.query.repository.QryAnonymousBoardMapper;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class QryAnonymousBoardServiceImpl implements QryAnonymousBoardService {
@@ -52,6 +53,10 @@ public class QryAnonymousBoardServiceImpl implements QryAnonymousBoardService {
 
     @Override
     public QryAnonymousBoardDTO findAnonymousBoardById(int id) {
-        return qryAnonymousBoardMapper.findAnonymousBoardById(id);
+        QryAnonymousBoardDTO anonymousBoard = qryAnonymousBoardMapper.findAnonymousBoardById(id);
+        if (anonymousBoard == null) {
+            throw new NoSuchElementException("Anonymous board not found with id: " + id);
+        }
+        return anonymousBoard;
     }
 }
