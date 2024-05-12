@@ -1,8 +1,6 @@
 package org.triumers.kmsback.anonymousboard.command.Application.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardCommentDTO;
@@ -30,13 +28,6 @@ public class CmdAnonymousBoardCommentServiceImpl implements CmdAnonymousBoardCom
         dto.setMacAddress(cmdAnonymousBoardComment.getMacAddress());
         dto.setAnonymousBoardId(cmdAnonymousBoardComment.getAnonymousBoardId());
         return dto;
-    }
-
-    // 댓글 조회(페이징 처리까지)
-    @Transactional(readOnly = true)
-    public Page<CmdAnonymousBoardCommentDTO> findAllAnonymousBoardComment(int anonymousBoardId, Pageable pageable) {
-        Page<CmdAnonymousBoardComment> cmdAnonymousBoardCommentPage = cmdAnonymousBoardCommentRepository.findByAnonymousBoardId(anonymousBoardId, pageable);
-        return cmdAnonymousBoardCommentPage.map(this::convertToDto);
     }
 
     // 댓글 작성
