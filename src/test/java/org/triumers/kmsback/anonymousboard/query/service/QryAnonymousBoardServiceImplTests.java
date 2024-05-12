@@ -12,9 +12,11 @@ import org.triumers.kmsback.anonymousboard.query.repository.QryAnonymousBoardMap
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -105,6 +107,19 @@ class QryAnonymousBoardServiceImplTests {
     }
 
     @Test
+    void searchAnonymousBoard_InvalidType() {
+        // given
+        String type = "invalid";
+        String keyword = "검색어";
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        // when, then
+        assertThatThrownBy(() -> qryAnonymousBoardService.searchAnonymousBoard(type, keyword, pageRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid search type: " + type);
+    }
+
+    @Test
     void findAnonymousBoardById() {
         // given
         int id = 1;
@@ -117,5 +132,17 @@ class QryAnonymousBoardServiceImplTests {
         // then
         assertThat(result).isNotNull();
         assertThat(result).isEqualTo(anonymousBoard);
+    }
+
+    @Test
+    void findAnonymousBoardById_NotFound() {
+        // given
+        int id = 1;
+        given(qryAnonymousBoardMapper.findAnonymousBoardById(id)).willReturn(null);
+
+        // when, then
+        assertThatThrownBy(() -> qryAnonymousBoardService.findAnonymousBoardById(id))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("Anonymous board not found with id: " + id);
     }
 }
