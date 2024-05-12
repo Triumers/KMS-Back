@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardCommentDTO;
 import org.triumers.kmsback.anonymousboard.command.Application.service.CmdAnonymousBoardCommentService;
 
+import java.util.NoSuchElementException;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -62,6 +64,21 @@ class CmdAnonymousBoardCommentControllerTests {
         verify(cmdAnonymousBoardCommentService, times(1)).saveAnonymousBoardComment(any(CmdAnonymousBoardCommentDTO.class));
     }
 
+    // 댓글 작성 실패 테스트 (내용 누락)
+    @Test
+    void createAnonymousBoardComment_shouldReturnBadRequest_whenContentIsMissing() throws Exception {
+        int anonymousBoardId = 1;
+        CmdAnonymousBoardCommentDTO anonymousBoardCommentDTO = new CmdAnonymousBoardCommentDTO();
+        anonymousBoardCommentDTO.setNickname("익명");
+
+        mockMvc.perform(post("/anonymous-board/{anonymousBoardId}/comments", anonymousBoardId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(anonymousBoardCommentDTO)))
+                .andExpect(status().isBadRequest());
+
+        verify(cmdAnonymousBoardCommentService, never()).saveAnonymousBoardComment(any(CmdAnonymousBoardCommentDTO.class));
+    }
+
     // 댓글 삭제 테스트
     @Test
     void deleteAnonymousBoardComment_shouldDeleteAnonymousBoardComment() throws Exception {
@@ -74,4 +91,19 @@ class CmdAnonymousBoardCommentControllerTests {
         verify(cmdAnonymousBoardCommentService, times(1)).deleteAnonymousBoardComment(eq(id));
     }
 
+    // 댓글 삭제 실패 테스트 (댓글 없음)
+    @Test
+    void deleteAnonymousBoardComment_shouldReturnNotFound_whenAnonymousBoardCommentNotFound() throws Exception {
+        int anonymousBoardId = 1;
+        int id = 1;
+
+        doThrow(new NoSuchElementException("Anonymous board comment not found with id: " + id))
+                .when(cmdAnonymousBoardCommentService).deleteAnonymousBoardComment(eq(id));
+
+        mockMvc.perform(delete("/anonymous-board/{anonymousBoardId}/comments/{id}", anonymousBoardId, id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Anonymous board comment not found with id: " + id));
+
+        verify(cmdAnonymousBoardCommentService, times(1)).deleteAnonymousBoardComment(eq(id));
+    }
 }
