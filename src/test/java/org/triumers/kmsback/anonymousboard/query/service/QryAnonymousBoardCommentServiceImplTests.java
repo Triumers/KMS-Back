@@ -12,8 +12,10 @@ import org.triumers.kmsback.anonymousboard.query.repository.QryAnonymousBoardCom
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
@@ -43,5 +45,19 @@ class QryAnonymousBoardCommentServiceImplTests {
         assertThat(result).isNotNull();
         assertThat(result.getContent()).isEqualTo(anonymousBoardCommentList);
         assertThat(result.getTotalElements()).isEqualTo(1L);
+    }
+
+    @Test
+    void findAllAnonymousBoardComment_NotFound() {
+        // given
+        int anonymousBoardId = 1;
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        given(qryAnonymousBoardCommentMapper.findAllAnonymousBoardComment(eq(anonymousBoardId), eq(pageRequest))).willReturn(new ArrayList<>());
+        given(qryAnonymousBoardCommentMapper.countAnonymousBoardComment(anonymousBoardId)).willReturn(0L);
+
+        // when, then
+        assertThatThrownBy(() -> qryAnonymousBoardCommentService.findAllAnonymousBoardComment(anonymousBoardId, pageRequest))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("Anonymous board comments not found for anonymousBoardId: " + anonymousBoardId);
     }
 }
