@@ -14,6 +14,7 @@ import org.triumers.kmsback.anonymousboard.query.service.QryAnonymousBoardServic
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -98,6 +99,22 @@ class QryAnonymousBoardControllerTests {
     }
 
     @Test
+    void searchAnonymousBoard_InvalidType() throws Exception {
+        // given
+        String type = "invalid";
+        String keyword = "검색어";
+        given(qryAnonymousBoardService.searchAnonymousBoard(eq(type), eq(keyword), any(PageRequest.class)))
+                .willThrow(new IllegalArgumentException("Invalid search type: " + type));
+
+        // when, then
+        mockMvc.perform(get("/anonymous-board")
+                        .param("type", type)
+                        .param("keyword", keyword))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Invalid search type: " + type));
+    }
+
+    @Test
     void getAnonymousBoardById() throws Exception {
         // given
         int id = 1;
@@ -115,10 +132,11 @@ class QryAnonymousBoardControllerTests {
     void getAnonymousBoardById_NotFound() throws Exception {
         // given
         int id = 1;
-        given(qryAnonymousBoardService.findAnonymousBoardById(id)).willReturn(null);
+        given(qryAnonymousBoardService.findAnonymousBoardById(id)).willThrow(new NoSuchElementException("Anonymous board not found with id: " + id));
 
         // when, then
         mockMvc.perform(get("/anonymous-board/{id}", id))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Anonymous board not found with id: " + id));
     }
 }
