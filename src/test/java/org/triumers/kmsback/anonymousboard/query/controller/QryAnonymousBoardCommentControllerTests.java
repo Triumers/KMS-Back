@@ -14,13 +14,13 @@ import org.triumers.kmsback.anonymousboard.query.service.QryAnonymousBoardCommen
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(value = QryAnonymousBoardCommentController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
 class QryAnonymousBoardCommentControllerTests {
@@ -44,5 +44,18 @@ class QryAnonymousBoardCommentControllerTests {
         mockMvc.perform(get("/anonymous-board/{anonymousBoardId}/comments", anonymousBoardId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray());
+    }
+
+    @Test
+    void getAnonymousBoardCommentList_NotFound() throws Exception {
+        // given
+        int anonymousBoardId = 1;
+        given(qryAnonymousBoardCommentService.findAllAnonymousBoardComment(eq(anonymousBoardId), any(PageRequest.class)))
+                .willThrow(new NoSuchElementException("Anonymous board comments not found for anonymousBoardId: " + anonymousBoardId));
+
+        // when, then
+        mockMvc.perform(get("/anonymous-board/{anonymousBoardId}/comments", anonymousBoardId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Anonymous board comments not found for anonymousBoardId: " + anonymousBoardId));
     }
 }
