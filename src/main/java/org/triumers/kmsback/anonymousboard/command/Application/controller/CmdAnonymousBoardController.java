@@ -26,6 +26,9 @@ public class CmdAnonymousBoardController {
         if (cmdAnonymousBoardDTO.getTitle() == null || cmdAnonymousBoardDTO.getTitle().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+        if (cmdAnonymousBoardDTO.getContent() == null || cmdAnonymousBoardDTO.getContent().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         CmdAnonymousBoardDTO savedAnonymousBoard = cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedAnonymousBoard);
     }
