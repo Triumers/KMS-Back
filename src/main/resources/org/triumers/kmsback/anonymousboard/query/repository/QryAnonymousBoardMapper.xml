@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.triumers.kmsback.anonymousboard.query.mapper.QryAnonymousBoardMapper">
+
+    <select id="findAllAnonymousBoard" resultType="org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO">
+        SELECT id, nickname, title, content, created_date, mac_address
+        FROM anonymous_board
+        ORDER BY id DESC
+            LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+    <select id="countAllAnonymousBoard" resultType="long">
+        SELECT COUNT(*) FROM anonymous_board
+    </select>
+
+    <select id="searchAnonymousBoardByTitle" resultType="org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO">
+        SELECT id, nickname, title, content, created_date, mac_address
+        FROM anonymous_board
+        WHERE title LIKE CONCAT('%', #{title}, '%')
+        ORDER BY id DESC
+            LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+    <select id="countAnonymousBoardByTitle" resultType="long">
+        SELECT COUNT(*)
+        FROM anonymous_board
+        WHERE title LIKE CONCAT('%', #{title}, '%')
+    </select>
+
+    <select id="searchAnonymousBoardByContent" resultType="org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO">
+        SELECT id, nickname, title, content, created_date, mac_address
+        FROM anonymous_board
+        WHERE content LIKE CONCAT('%', #{content}, '%')
+        ORDER BY id DESC
+            LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+    <select id="countAnonymousBoardByContent" resultType="long">
+        SELECT COUNT(*)
+        FROM anonymous_board
+        WHERE content LIKE CONCAT('%', #{content}, '%')
+    </select>
+
+    <select id="searchAnonymousBoardByTitleAndContent" resultType="org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO">
+        SELECT id, nickname, title, content, created_date, mac_address
+        FROM anonymous_board
+        WHERE title LIKE CONCAT('%', #{keyword}, '%') OR content LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY id DESC
+            LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+    </select>
+
+    <select id="countAnonymousBoardByTitleAndContent" resultType="long">
+        SELECT COUNT(*)
+        FROM anonymous_board
+        WHERE title LIKE CONCAT('%', #{keyword}, '%') OR content LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="findAnonymousBoardById" resultType="org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO">
+        SELECT id, nickname, title, content, created_date, mac_address
+        FROM anonymous_board
+        WHERE id = #{id}
+    </select>
+
+</mapper>
