@@ -29,4 +29,14 @@ class CmdQuizServiceImplTest {
         // when, then
         assertDoesNotThrow(() -> cmdQuizService.registQuiz(quiz));
     }
+
+    @DisplayName("퀴즈 수정 테스트")
+    @Test
+    void editQuiz() {
+        // given
+        CmdRequestQuizVo quiz = new CmdRequestQuizVo(1, "수정한 문제", "수정한 정답", "수정한 참고 자료", false, 5, 16, 2);
+
+        // when, then
+        assertDoesNotThrow(() -> cmdQuizService.editQuiz(quiz));
+    }
 }

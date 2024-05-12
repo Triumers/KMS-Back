@@ -27,8 +27,11 @@ public class CmdQuizController {
     }
 
     /* 설명. 퀴즈 수정 */
-//    @PutMapping("/edit")
-
+    @PutMapping("/edit")
+    public ResponseEntity<CmdQuizDTO> editQuiz(@RequestBody CmdRequestQuizVo request) {
+        CmdQuizDTO editQuiz = cmdQuizService.editQuiz(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(editQuiz);
+    }
 
     /* 설명. 퀴즈 삭제 */
 //    @DeleteMapping("/delete")

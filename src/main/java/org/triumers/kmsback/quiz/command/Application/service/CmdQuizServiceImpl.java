@@ -6,6 +6,9 @@ import org.triumers.kmsback.quiz.command.Application.dto.CmdQuizDTO;
 import org.triumers.kmsback.quiz.command.domain.aggregate.entity.CmdQuiz;
 import org.triumers.kmsback.quiz.command.domain.aggregate.vo.CmdRequestQuizVo;
 import org.triumers.kmsback.quiz.command.domain.repository.CmdQuizRepository;
+import org.triumers.kmsback.quiz.query.aggregate.entity.QryQuiz;
+
+import java.util.Optional;
 
 @Service
 public class CmdQuizServiceImpl implements CmdQuizService {
@@ -52,5 +55,33 @@ public class CmdQuizServiceImpl implements CmdQuizService {
             throw new RuntimeException("Error while saving quiz", e);
         }
 
+    }
+
+    @Override
+    public CmdQuizDTO editQuiz(CmdRequestQuizVo request) {
+        // 퀴즈 ID를 조회
+        Optional<CmdQuiz> quizOptional = cmdQuizRepository.findById(Long.valueOf(request.getId()));
+        // 존재하는 경우
+        if (quizOptional.isPresent()) {
+            try {
+                CmdQuiz cmdQuiz = new CmdQuiz(
+                        request.getId(),
+                        request.getContent(),
+                        request.getAnswer(),
+                        request.getCommentary(),
+                        request.isStatus(),
+                        request.getQuestionerId(),
+                        request.getPostId(),
+                        request.getTopTapId()
+                );
+                CmdQuiz editedQuiz = cmdQuizRepository.save(cmdQuiz);
+                return toDto(editedQuiz);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Error while saving quiz", e);
+            }
+        } else { // 퀴즈가 존재하지 않는 경우 예외 던지기
+            throw new RuntimeException("Quiz with id " + request.getId() + " not found");
+        }
     }
 }
