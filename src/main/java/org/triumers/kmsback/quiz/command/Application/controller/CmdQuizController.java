@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.triumers.kmsback.quiz.command.Application.dto.CmdQuizDTO;
 import org.triumers.kmsback.quiz.command.Application.service.CmdQuizService;
 import org.triumers.kmsback.quiz.command.domain.aggregate.vo.CmdRequestQuizVo;
+import org.triumers.kmsback.quiz.command.domain.aggregate.vo.CmdRequestRemoveQuizVo;
 
 @RestController
 @RequestMapping("/quiz")
@@ -34,5 +35,10 @@ public class CmdQuizController {
     }
 
     /* 설명. 퀴즈 삭제 */
-//    @DeleteMapping("/delete")
+    @DeleteMapping("/remove")
+    public ResponseEntity<CmdQuizDTO> deleteQuiz(@RequestBody CmdRequestRemoveQuizVo request) {
+        cmdQuizService.removeQuiz(request.getId());
+        return ResponseEntity.noContent().build();
+    }
 }
+

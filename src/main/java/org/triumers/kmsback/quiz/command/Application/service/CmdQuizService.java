@@ -7,4 +7,6 @@ public interface CmdQuizService {
     CmdQuizDTO registQuiz(CmdRequestQuizVo request);
 
     CmdQuizDTO editQuiz(CmdRequestQuizVo request);
+
+    CmdQuizDTO removeQuiz(int id);
 }

@@ -21,6 +21,7 @@ public class CmdQuizServiceImpl implements CmdQuizService {
         this.cmdQuizRepository = cmdQuizRepository;
     }
 
+    // Entity to DTO
     private CmdQuizDTO toDto(CmdQuiz cmdQuiz) {
         CmdQuizDTO dto = new CmdQuizDTO();
         dto.setId(cmdQuiz.getId());
@@ -54,7 +55,6 @@ public class CmdQuizServiceImpl implements CmdQuizService {
             e.printStackTrace();
             throw new RuntimeException("Error while saving quiz", e);
         }
-
     }
 
     @Override
@@ -82,6 +82,25 @@ public class CmdQuizServiceImpl implements CmdQuizService {
             }
         } else { // 퀴즈가 존재하지 않는 경우 예외 던지기
             throw new RuntimeException("Quiz with id " + request.getId() + " not found");
+        }
+    }
+
+    @Override
+    public CmdQuizDTO removeQuiz(int id) {
+        // 퀴즈 ID를 조회
+        Optional<CmdQuiz> quizOptional = cmdQuizRepository.findById(Long.valueOf(id));
+        // 존재하는 경우
+        if (quizOptional.isPresent()) {
+            CmdQuiz cmdQuiz = quizOptional.get();
+            try {
+                cmdQuizRepository.delete(cmdQuiz);
+                return toDto(cmdQuiz);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Error while removing quiz", e);
+            }
+        } else {
+            throw new RuntimeException("Quiz with id " + id + " not found");
         }
     }
 }

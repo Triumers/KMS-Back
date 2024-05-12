@@ -39,4 +39,10 @@ class CmdQuizServiceImplTest {
         // when, then
         assertDoesNotThrow(() -> cmdQuizService.editQuiz(quiz));
     }
+
+    @DisplayName("퀴즈 삭제 테스트")
+    @Test
+    void removeQuiz() {
+        cmdQuizService.removeQuiz(1);
+    }
 }
