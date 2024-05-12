@@ -11,6 +11,8 @@ import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAn
 import org.triumers.kmsback.anonymousboard.command.domain.repository.CmdAnonymousBoardRepository;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -60,13 +62,53 @@ public class CmdAnonymousBoardServiceImplTests {
         verify(cmdAnonymousBoardRepository, times(1)).save(any(CmdAnonymousBoard.class));
     }
 
+    // saveAnonymousBoard 메서드에서 제목이 없는 경우 IllegalArgumentException이 발생하는지 확인
+    @Test
+    void saveAnonymousBoard_shouldThrowIllegalArgumentException_whenTitleIsMissing() {
+        CmdAnonymousBoardDTO cmdAnonymousBoardDTO = new CmdAnonymousBoardDTO();
+        cmdAnonymousBoardDTO.setContent("Content");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
+        });
+
+        verify(cmdAnonymousBoardRepository, never()).save(any(CmdAnonymousBoard.class));
+    }
+
+    // saveAnonymousBoard 메서드에서 내용이 없는 경우 IllegalArgumentException이 발생하는지 확인
+    @Test
+    void saveAnonymousBoard_shouldThrowIllegalArgumentException_whenContentIsMissing() {
+        CmdAnonymousBoardDTO cmdAnonymousBoardDTO = new CmdAnonymousBoardDTO();
+        cmdAnonymousBoardDTO.setTitle("Title");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
+        });
+
+        verify(cmdAnonymousBoardRepository, never()).save(any(CmdAnonymousBoard.class));
+    }
+
     // deleteAnonymousBoard 메서드가 주어진 id에 해당하는 CmdAnonymousBoard를 삭제하는지 확인
     @Test
     void deleteAnonymousBoard_shouldDeleteCmdAnonymousBoard() {
         int id = 1;
+        when(cmdAnonymousBoardRepository.findById(eq(id))).thenReturn(Optional.of(cmdAnonymousBoard1));
 
         cmdAnonymousBoardService.deleteAnonymousBoard(id);
 
-        verify(cmdAnonymousBoardRepository, times(1)).deleteById(eq(id));
+        verify(cmdAnonymousBoardRepository, times(1)).delete(eq(cmdAnonymousBoard1));
+    }
+
+    // deleteAnonymousBoard 메서드에서 주어진 id에 해당하는 CmdAnonymousBoard가 없는 경우 NoSuchElementException이 발생하는지 확인
+    @Test
+    void deleteAnonymousBoard_shouldThrowNoSuchElementException_whenAnonymousBoardNotFound() {
+        int id = 1;
+        when(cmdAnonymousBoardRepository.findById(eq(id))).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> {
+            cmdAnonymousBoardService.deleteAnonymousBoard(id);
+        });
+
+        verify(cmdAnonymousBoardRepository, never()).delete(any(CmdAnonymousBoard.class));
     }
 }
