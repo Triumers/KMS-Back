@@ -11,6 +11,8 @@ import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAn
 import org.triumers.kmsback.anonymousboard.command.domain.repository.CmdAnonymousBoardCommentRepository;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,13 +72,41 @@ public class CmdAnonymousBoardCommentServiceImplTests {
         verify(cmdAnonymousBoardCommentRepository, times(1)).save(any(CmdAnonymousBoardComment.class));
     }
 
+    // 댓글 작성 실패 (내용 누락)
+    @Test
+    void saveAnonymousBoardComment_shouldThrowIllegalArgumentException_whenContentIsMissing() {
+        CmdAnonymousBoardCommentDTO cmdAnonymousBoardCommentDTO = new CmdAnonymousBoardCommentDTO();
+        cmdAnonymousBoardCommentDTO.setNickname("익명");
+        cmdAnonymousBoardCommentDTO.setAnonymousBoardId(1);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            cmdAnonymousBoardCommentService.saveAnonymousBoardComment(cmdAnonymousBoardCommentDTO);
+        });
+
+        verify(cmdAnonymousBoardCommentRepository, never()).save(any(CmdAnonymousBoardComment.class));
+    }
+
     // 댓글 삭제
     @Test
     void deleteAnonymousBoardComment_shouldDeleteCmdAnonymousBoardComment() {
         int id = 1;
+        when(cmdAnonymousBoardCommentRepository.findById(eq(id))).thenReturn(Optional.of(cmdAnonymousBoardComment1));
 
         cmdAnonymousBoardCommentService.deleteAnonymousBoardComment(id);
 
-        verify(cmdAnonymousBoardCommentRepository, times(1)).deleteById(eq(id));
+        verify(cmdAnonymousBoardCommentRepository, times(1)).delete(eq(cmdAnonymousBoardComment1));
+    }
+
+    // 댓글 삭제 실패 (댓글 없음)
+    @Test
+    void deleteAnonymousBoardComment_shouldThrowNoSuchElementException_whenAnonymousBoardCommentNotFound() {
+        int id = 1;
+        when(cmdAnonymousBoardCommentRepository.findById(eq(id))).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> {
+            cmdAnonymousBoardCommentService.deleteAnonymousBoardComment(id);
+        });
+
+        verify(cmdAnonymousBoardCommentRepository, never()).delete(any(CmdAnonymousBoardComment.class));
     }
 }
