@@ -18,7 +18,7 @@ class QryAnswerSubmitterServiceImplTest {
     @Autowired
     private QryAnswerSubmitterService  qryAnswerSubmitterService;
 
-    @DisplayName("문제 ID로 문제 제출자 조회")
+    @DisplayName("문제 ID로 문제 답 제출자 조회")
     @Test
     void findSubmitterByQuizId() {
         List<QryAnswerSubmitterDTO> qryAnswerSubmitterDTOs = qryAnswerSubmitterService.findSubmitterByQuizId(1);

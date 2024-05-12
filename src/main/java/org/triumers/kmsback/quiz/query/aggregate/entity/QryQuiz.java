@@ -6,20 +6,20 @@ public class QryQuiz {
     private String answer;
     private String commentary;
     private boolean status;
-    private int questionId;
+    private int questionerId;
     private int postId;
     private int topTapId;
 
     public QryQuiz(boolean status) {
     }
 
-    public QryQuiz(int id, String content, String answer, String commentary, boolean status, int questionId, int postId, int topTapId) {
+    public QryQuiz(int id, String content, String answer, String commentary, boolean status, int questionerId, int postId, int topTapId) {
         this.id = id;
         this.content = content;
         this.answer = answer;
         this.commentary = commentary;
         this.status = status;
-        this.questionId = questionId;
+        this.questionerId = questionerId;
         this.postId = postId;
         this.topTapId = topTapId;
     }
@@ -44,8 +44,8 @@ public class QryQuiz {
         return status;
     }
 
-    public int getQuestionId() {
-        return questionId;
+    public int getQuestionerId() {
+        return questionerId;
     }
 
     public int getPostId() {
@@ -76,8 +76,8 @@ public class QryQuiz {
         this.status = status;
     }
 
-    public void setQuestionId(int questionId) {
-        this.questionId = questionId;
+    public void setQuestionerId(int questionerId) {
+        this.questionerId = questionerId;
     }
 
     public void setPostId(int postId) {
@@ -96,7 +96,7 @@ public class QryQuiz {
                 ", answer='" + answer + '\'' +
                 ", commentary='" + commentary + '\'' +
                 ", status=" + status +
-                ", questionId=" + questionId +
+                ", questionId=" + questionerId +
                 ", postId=" + postId +
                 ", topTapId=" + topTapId +
                 '}';

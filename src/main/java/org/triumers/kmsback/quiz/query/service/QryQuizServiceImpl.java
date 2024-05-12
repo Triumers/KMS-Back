@@ -32,7 +32,7 @@ public class QryQuizServiceImpl implements QryQuizService {
             qryQuizDTO.setAnswer(qryQuiz.getAnswer());
             qryQuizDTO.setCommentary(qryQuiz.getCommentary());
             qryQuizDTO.setStatus(qryQuiz.isStatus());
-            qryQuizDTO.setQuestionId(qryQuiz.getQuestionId());
+            qryQuizDTO.setQuestionerId(qryQuiz.getQuestionerId());
             qryQuizDTO.setPostId(qryQuiz.getPostId());
             qryQuizDTO.setTopTapId(qryQuiz.getTopTapId());
 
@@ -51,7 +51,7 @@ public class QryQuizServiceImpl implements QryQuizService {
         qryQuizDTO.setAnswer(qryQuiz.getAnswer());
         qryQuizDTO.setCommentary(qryQuiz.getCommentary());
         qryQuizDTO.setStatus(qryQuiz.isStatus());
-        qryQuizDTO.setQuestionId(qryQuiz.getQuestionId());
+        qryQuizDTO.setQuestionerId(qryQuiz.getQuestionerId());
         qryQuizDTO.setPostId(qryQuiz.getPostId());
         qryQuizDTO.setTopTapId(qryQuiz.getTopTapId());
 
