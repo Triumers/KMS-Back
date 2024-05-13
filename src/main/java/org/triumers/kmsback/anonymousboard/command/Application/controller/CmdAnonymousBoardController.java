@@ -1,14 +1,13 @@
 package org.triumers.kmsback.anonymousboard.command.Application.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardDTO;
 import org.triumers.kmsback.anonymousboard.command.Application.service.CmdAnonymousBoardService;
-import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAnonymousBoard;
+
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/anonymous-board")
@@ -21,53 +20,35 @@ public class CmdAnonymousBoardController {
         this.cmdAnonymousBoardService = cmdAnonymousBoardService;
     }
 
-    // 1. 게시글 조회(페이징 처리까지)
-    @GetMapping
-    public ResponseEntity<Page<CmdAnonymousBoardDTO>> getAnonymousBoardList(Pageable pageable) {
-        Page<CmdAnonymousBoardDTO> anonymousBoardList = cmdAnonymousBoardService.findAllAnonymousBoard(pageable);
-        return ResponseEntity.ok(anonymousBoardList);
-    }
-
-    // 2-1. 제목으로 게시글 검색
-    // 2-2. 내용으로 게시글 검색
-    // 2-3. 제목+내용으로 게시글 검색
-    // 게시글 검색
-    @GetMapping("/search")
-    public ResponseEntity<Page<CmdAnonymousBoardDTO>> searchAnonymousBoard(
-            @RequestParam String type,
-            @RequestParam String keyword,
-            Pageable pageable) {
-        Page<CmdAnonymousBoardDTO> searchResult;
-
-        switch (type) {
-            case "title":
-                searchResult = cmdAnonymousBoardService.searchAnonymousBoardByTitle(keyword, pageable);
-                break;
-            case "content":
-                searchResult = cmdAnonymousBoardService.searchAnonymousBoardByContent(keyword, pageable);
-                break;
-            case "titleAndContent":
-                searchResult = cmdAnonymousBoardService.searchAnonymousBoardByTitleAndContent(keyword, pageable);
-                break;
-            default:
-                return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(searchResult);
-    }
-
-    // 3. 게시글 작성
+    // 게시글 작성
     @PostMapping
     public ResponseEntity<CmdAnonymousBoardDTO> createAnonymousBoard(@RequestBody CmdAnonymousBoardDTO cmdAnonymousBoardDTO) {
+        if (cmdAnonymousBoardDTO.getTitle() == null || cmdAnonymousBoardDTO.getTitle().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        if (cmdAnonymousBoardDTO.getContent() == null || cmdAnonymousBoardDTO.getContent().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         CmdAnonymousBoardDTO savedAnonymousBoard = cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedAnonymousBoard);
     }
 
-    // 4. 게시글 삭제
+    // 게시글 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAnonymousBoard(@PathVariable int id) {
         cmdAnonymousBoardService.deleteAnonymousBoard(id);
         return ResponseEntity.noContent().build();
     }
 
+    @ExceptionHandler(NoSuchElementException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
