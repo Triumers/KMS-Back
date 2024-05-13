@@ -52,7 +52,7 @@ class AuthServiceTest {
     @DisplayName("이메일 형식이 잘못된 회원가입 테스트")
     @ParameterizedTest
     @ValueSource(strings = {"nothing", "noAnnotation.com", "noPoint@gmail",
-                            "containKorean@지메일.com", "containSpecialChar@gmail.com!"})
+            "containKorean@지메일.com", "containSpecialChar@gmail.com!"})
     void invalidEmailSignup(String wrongEmail) {
 
         // given
@@ -96,6 +96,25 @@ class AuthServiceTest {
         AuthDTO newEmployee =
                 new AuthDTO(RIGHT_FORMAT_EMAIL, RIGHT_FORMAT_PASSWORD, wrongName, null,
                         RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
+                        1);
+
+        // when
+        assertThrows(WrongInputTypeException.class, () -> authService.signup(newEmployee));
+
+        // then
+        assertNull(authRepository.findByEmail(newEmployee.getEmail()));
+    }
+
+    @DisplayName("휴대폰 번호 형식이 잘못된 회원가입 테스트")
+    @ParameterizedTest
+    @ValueSource(strings = {"010-alph-1234", "010-!!!!-1234", "000-1234-5678", "01-1234-5678", "0100-1234-5678",
+                            "010-12-5678", "010-12345-6789", "010-1234-567", "010-1234-56789"})
+    void invalidPhoneNumberSignup(String wrongNumber) {
+
+        // given
+        AuthDTO newEmployee =
+                new AuthDTO(RIGHT_FORMAT_EMAIL, RIGHT_FORMAT_PASSWORD, RIGHT_FORMAT_NAME, null,
+                        RIGHT_FORMAT_USER_ROLE, null, null, wrongNumber, 1, 1,
                         1);
 
         // when
