@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.triumers.kmsback.quiz.query.repository.AnswerSubmitterMapper">
+
+    <resultMap id="quizResultMap" type="org.triumers.kmsback.quiz.query.aggregate.entity.QryAnswerSubmitter">
+        <id property="id" column="ID"/>
+        <result property="answer" column="ANSWER"/>
+        <result property="quizId" column="QUIZ_ID"/>
+        <result property="employeeId" column="EMPLOYEE_ID"/>
+    </resultMap>
+
+    <select id="findSubmitterByQuizId" resultMap="quizResultMap" parameterType="org.triumers.kmsback.quiz.query.aggregate.entity.QryAnswerSubmitter">
+        SELECT
+        ID
+        , ANSWER
+        , QUIZ_ID
+        , EMPLOYEE_ID
+        FROM tbl_quiz_answer_submitter
+        WHERE QUIZ_ID = #{quizId}
+    </select>
+
+</mapper>

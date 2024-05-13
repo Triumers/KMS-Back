@@ -18,21 +18,18 @@ public class QryQuizController {
         this.qryQuizService = qryQuizService;
     }
 
-
     /* 설명. 퀴즈상태로 퀴즈목록 조회 */
     @GetMapping("/status")
     public List<QryQuizDTO> findQuizByStatus(boolean status) {
-        List<QryQuizDTO> qryQuizDTOS = qryQuizService.findQuizByStatus(status);
-        return qryQuizDTOS;
+        List<QryQuizDTO> qryQuizDTOs = qryQuizService.findQuizByStatus(status);
+        return qryQuizDTOs;
     }
 
     /* 설명. 퀴즈 ID로 퀴즈 문제, 정답, 해설, 참조 게시글 조회 */
+    @GetMapping("/id")
     public QryQuizDTO findQuizById(int id) {
         QryQuizDTO qryQuizDTO = qryQuizService.findQuizById(id);
         return qryQuizDTO;
     }
-
-
-    /* 설명. 문제 ID로 문제의 정답자 조회 */
 
 }
