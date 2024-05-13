@@ -86,4 +86,22 @@ class AuthServiceTest {
         // then
         assertNull(authRepository.findByEmail(newEmployee.getEmail()));
     }
+
+    @DisplayName("이름 형식이 잘못된 회원가입 테스트")
+    @ParameterizedTest
+    @ValueSource(strings = {"ContainNumber123", "ContainSpecial!"})
+    void invalidNameSignup(String wrongName) {
+
+        // given
+        AuthDTO newEmployee =
+                new AuthDTO(RIGHT_FORMAT_EMAIL, RIGHT_FORMAT_PASSWORD, wrongName, null,
+                        RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
+                        1);
+
+        // when
+        assertThrows(WrongInputTypeException.class, () -> authService.signup(newEmployee));
+
+        // then
+        assertNull(authRepository.findByEmail(newEmployee.getEmail()));
+    }
 }
