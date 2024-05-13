@@ -67,4 +67,23 @@ class AuthServiceTest {
         // then
         assertNull(authRepository.findByEmail(newEmployee.getEmail()));
     }
+
+    @DisplayName("비밀번호 형식이 잘못된 회원가입 테스트")
+    @ParameterizedTest
+    @ValueSource(strings = {"Short1", "TooWrongPassword1234", "noNumberPwd",
+            "no1upper", "NO1SMALL", "한글포함Pwd123", "Special123!"})
+    void invalidPasswordSignup(String wrongPassword) {
+
+        // given
+        AuthDTO newEmployee =
+                new AuthDTO(RIGHT_FORMAT_EMAIL, wrongPassword, RIGHT_FORMAT_NAME, null,
+                        RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
+                        1);
+
+        // when
+        assertThrows(WrongInputTypeException.class, () -> authService.signup(newEmployee));
+
+        // then
+        assertNull(authRepository.findByEmail(newEmployee.getEmail()));
+    }
 }
