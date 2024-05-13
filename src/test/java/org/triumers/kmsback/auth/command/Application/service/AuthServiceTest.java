@@ -21,14 +21,18 @@ class AuthServiceTest {
     @Autowired
     private AuthRepository authRepository;
 
+    @DisplayName("회원가입 테스트")
     @Test
     void signup() {
 
         // given
         AuthDTO newEmployee =
-                new AuthDTO("test@gmail.com", "12341234", "테스트유저", null, UserRole.ROLE_NORMAL.name(), null, null, "010-1234-5678", 1, 1, 1);
+                new AuthDTO("testUnique@gmail.com", "aAbB1234", "테스트유저", null, UserRole.ROLE_NORMAL.name(), null, null, "010-1234-5678", 1, 1, 1);
 
-        // when, then
+        // when
         assertDoesNotThrow(() -> authService.signup(newEmployee));
+
+        // then
+        assertNotNull(authRepository.findByEmail(newEmployee.getEmail()));
     }
 }
