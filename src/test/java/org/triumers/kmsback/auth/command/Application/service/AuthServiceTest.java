@@ -164,6 +164,24 @@ class AuthServiceTest {
         assertFalse(bCryptPasswordEncoder.matches(newPassword, authRepository.findByEmail(RIGHT_FORMAT_EMAIL).getPassword()));
     }
 
+    @DisplayName("잘못된 형식의 비밀번호 변경 테스트")
+    @ParameterizedTest
+    @ValueSource(strings = {"Short1", "TooWrongPassword1234", "noNumberPwd",
+            "no1upper", "NO1SMALL", "한글포함Pwd123", "Special123!"})
+    void invalidPasswordEditPassword(String wrongPassword) throws WrongInputTypeException {
+
+        // given
+        setSecurityContextHolderByUserName();
+        PasswordDTO passwordDTO = new PasswordDTO(RIGHT_FORMAT_PASSWORD, wrongPassword);
+
+        // when
+        assertThrows(WrongInputTypeException.class, () -> authService.editPassword(passwordDTO));
+
+        // then
+        assertFalse(bCryptPasswordEncoder.matches(wrongPassword, authRepository.findByEmail(RIGHT_FORMAT_EMAIL).getPassword()));
+    }
+
+
     private AuthDTO createRightAuthDTO() {
         return new AuthDTO(RIGHT_FORMAT_EMAIL, RIGHT_FORMAT_PASSWORD, RIGHT_FORMAT_NAME, null,
                 RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
