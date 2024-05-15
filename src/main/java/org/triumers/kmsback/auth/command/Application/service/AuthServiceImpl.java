@@ -2,13 +2,16 @@ package org.triumers.kmsback.auth.command.Application.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.auth.command.Application.dto.AuthDTO;
+import org.triumers.kmsback.auth.command.Application.dto.PasswordDTO;
 import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
 import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.auth.command.domain.repository.AuthRepository;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -32,6 +35,24 @@ public class AuthServiceImpl implements AuthService {
         auth.validation(authDTO.getPassword());
 
         authRepository.save(auth);
+    }
+
+    @Override
+    public void editPassword(PasswordDTO passwordDTO) throws WrongInputTypeException, WrongInputValueException {
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Auth auth = authRepository.findByEmail(email);
+
+        if (bCryptPasswordEncoder.matches(passwordDTO.getOldPassword(), auth.getPassword())) {
+            auth.validation(passwordDTO.getNewPassword());
+            auth.setPassword(bCryptPasswordEncoder.encode(passwordDTO.getNewPassword()));
+
+            authRepository.save(auth);
+
+            return;
+        }
+        throw new WrongInputValueException();
     }
 
     private Auth authMapper(AuthDTO authDTO) {
