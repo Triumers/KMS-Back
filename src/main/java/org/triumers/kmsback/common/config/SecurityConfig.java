@@ -16,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.common.auth.JwtFilter;
 import org.triumers.kmsback.common.auth.JwtUtil;
 import org.triumers.kmsback.common.auth.LoginFilter;
@@ -51,8 +52,9 @@ public class SecurityConfig {
 
         RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
 
-        hierarchy.setHierarchy("ROLE_ADMIN > ROLE_MANAGER\n" +
-                "ROLE_MANAGER > ROLE_USER");
+        hierarchy.setHierarchy("ROLE_ADMIN > ROLE_HR_MANAGER\n" +
+                               "ROLE_HR_MANAGER > ROLE_LEADER\n" +
+                               "ROLE_LEADER > ROLE_NORMAL");
 
         return hierarchy;
     }
@@ -92,7 +94,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/**").permitAll()
-//                .requestMatchers("/auth/signup").permitAll()
+                .requestMatchers("/auth/signup").hasAnyRole("HR_MANAGER")
                 .anyRequest().authenticated());
 
         // JWT 필터

@@ -7,16 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardDTO;
 import org.triumers.kmsback.anonymousboard.command.Application.service.CmdAnonymousBoardService;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -40,44 +36,6 @@ public class CmdAnonymousBoardControllerTests {
         objectMapper = new ObjectMapper();
     }
 
-    // 익명 게시판 목록 조회 테스트
-    @Test
-    void getAnonymousBoardList_shouldReturnAnonymousBoardDTOList() throws Exception {
-        List<CmdAnonymousBoardDTO> anonymousBoardDTOList = Arrays.asList(
-                new CmdAnonymousBoardDTO(),
-                new CmdAnonymousBoardDTO()
-        );
-        Page<CmdAnonymousBoardDTO> anonymousBoardDTOPage = new PageImpl<>(anonymousBoardDTOList);
-
-        when(cmdAnonymousBoardService.findAllAnonymousBoard(any(Pageable.class))).thenReturn(anonymousBoardDTOPage);
-
-        mockMvc.perform(get("/anonymous-board"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content.length()").value(2));
-
-        verify(cmdAnonymousBoardService, times(1)).findAllAnonymousBoard(any(Pageable.class));
-    }
-
-    // 익명 게시판 검색 테스트
-    @Test
-    void searchAnonymousBoard_shouldReturnAnonymousBoardDTOList() throws Exception {
-        List<CmdAnonymousBoardDTO> anonymousBoardDTOList = Arrays.asList(
-                new CmdAnonymousBoardDTO(),
-                new CmdAnonymousBoardDTO()
-        );
-        Page<CmdAnonymousBoardDTO> anonymousBoardDTOPage = new PageImpl<>(anonymousBoardDTOList);
-
-        when(cmdAnonymousBoardService.searchAnonymousBoardByTitle(eq("keyword"), any(Pageable.class))).thenReturn(anonymousBoardDTOPage);
-
-        mockMvc.perform(get("/anonymous-board/search")
-                        .param("type", "title")
-                        .param("keyword", "keyword"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content.length()").value(2));
-
-        verify(cmdAnonymousBoardService, times(1)).searchAnonymousBoardByTitle(eq("keyword"), any(Pageable.class));
-    }
-
     // 익명 게시글 작성 테스트
     @Test
     void createAnonymousBoard_shouldReturnCreatedAnonymousBoardDTO() throws Exception {
@@ -97,6 +55,35 @@ public class CmdAnonymousBoardControllerTests {
         verify(cmdAnonymousBoardService, times(1)).saveAnonymousBoard(any(CmdAnonymousBoardDTO.class));
     }
 
+    // 익명 게시글 작성 실패 테스트 (제목 누락)
+    @Test
+    void createAnonymousBoard_shouldReturnBadRequest_whenTitleIsMissing() throws Exception {
+        CmdAnonymousBoardDTO anonymousBoardDTO = new CmdAnonymousBoardDTO();
+        anonymousBoardDTO.setContent("Content");
+
+        mockMvc.perform(post("/anonymous-board")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(anonymousBoardDTO)))
+                .andExpect(status().isBadRequest());
+
+        verify(cmdAnonymousBoardService, never()).saveAnonymousBoard(any(CmdAnonymousBoardDTO.class));
+    }
+
+    // 익명 게시글 작성 실패 테스트 (내용 누락)
+    @Test
+    void createAnonymousBoard_shouldReturnBadRequest_whenContentIsMissing() throws Exception {
+        CmdAnonymousBoardDTO anonymousBoardDTO = new CmdAnonymousBoardDTO();
+        anonymousBoardDTO.setTitle("Title");
+
+        mockMvc.perform(post("/anonymous-board")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(anonymousBoardDTO)))
+                .andExpect(status().isBadRequest());
+
+        verify(cmdAnonymousBoardService, never()).saveAnonymousBoard(any(CmdAnonymousBoardDTO.class));
+    }
+
+
     // 익명 게시글 삭제 테스트
     @Test
     void deleteAnonymousBoard_shouldDeleteAnonymousBoard() throws Exception {
@@ -104,6 +91,21 @@ public class CmdAnonymousBoardControllerTests {
 
         mockMvc.perform(delete("/anonymous-board/{id}", id))
                 .andExpect(status().isNoContent());
+
+        verify(cmdAnonymousBoardService, times(1)).deleteAnonymousBoard(eq(id));
+    }
+
+    // 익명 게시글 삭제 실패 테스트 (게시글 없음)
+    @Test
+    void deleteAnonymousBoard_shouldReturnNotFound_whenAnonymousBoardNotFound() throws Exception {
+        int id = 1;
+
+        doThrow(new NoSuchElementException("Anonymous board not found with id: " + id))
+                .when(cmdAnonymousBoardService).deleteAnonymousBoard(eq(id));
+
+        mockMvc.perform(delete("/anonymous-board/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Anonymous board not found with id: " + id));
 
         verify(cmdAnonymousBoardService, times(1)).deleteAnonymousBoard(eq(id));
     }

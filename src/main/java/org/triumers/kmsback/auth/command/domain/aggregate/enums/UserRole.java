@@ -1,7 +1,8 @@
 package org.triumers.kmsback.auth.command.domain.aggregate.enums;
 
 public enum UserRole {
-    ADMIN,
-    MANAGER,
-    NORMAL
+    ROLE_ADMIN,
+    ROLE_HR_MANAGER,
+    ROLE_LEADER,
+    ROLE_NORMAL
 }

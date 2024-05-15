@@ -8,6 +8,7 @@ import org.triumers.kmsback.auth.command.Application.dto.AuthDTO;
 import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
 import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.auth.command.domain.repository.AuthRepository;
+import org.triumers.kmsback.common.exception.WrongInputTypeException;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -24,9 +25,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void signup(AuthDTO authDTO) {
+    public void signup(AuthDTO authDTO) throws WrongInputTypeException {
 
-        authRepository.save(authMapper(authDTO));
+        Auth auth = authMapper(authDTO);
+
+        auth.validation(authDTO.getPassword());
+
+        authRepository.save(auth);
     }
 
     private Auth authMapper(AuthDTO authDTO) {
