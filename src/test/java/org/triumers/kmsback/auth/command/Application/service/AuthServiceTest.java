@@ -148,6 +148,22 @@ class AuthServiceTest {
         assertTrue(bCryptPasswordEncoder.matches(newPassword, authRepository.findByEmail(RIGHT_FORMAT_EMAIL).getPassword()));
     }
 
+    @DisplayName("잘못된 기존 비밀번호 변경 테스트")
+    @Test
+    void wrongOldPasswordEditPassword() throws WrongInputTypeException, WrongInputValueException {
+
+        // given
+        setSecurityContextHolderByUserName();
+        String newPassword = "NewPwd1234";
+        PasswordDTO passwordDTO = new PasswordDTO("wrongBefore1", newPassword);
+
+        // when
+        assertThrows(WrongInputValueException.class, () -> authService.editPassword(passwordDTO));
+
+        // then
+        assertFalse(bCryptPasswordEncoder.matches(newPassword, authRepository.findByEmail(RIGHT_FORMAT_EMAIL).getPassword()));
+    }
+
     private AuthDTO createRightAuthDTO() {
         return new AuthDTO(RIGHT_FORMAT_EMAIL, RIGHT_FORMAT_PASSWORD, RIGHT_FORMAT_NAME, null,
                 RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
