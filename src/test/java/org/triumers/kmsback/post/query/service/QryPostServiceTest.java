@@ -35,8 +35,8 @@ class QryPostServiceTest {
 
         int tabId = 1;
         PageRequest pageRequest = PageRequest.of(0, 10);
+
         Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(tabId, pageRequest);
-        System.out.println("postList = " + postList);
 
         assertFalse(postList.isEmpty());
     }

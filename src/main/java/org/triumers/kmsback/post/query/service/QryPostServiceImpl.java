@@ -39,11 +39,9 @@ public class QryPostServiceImpl implements QryPostService {
             List<QryTag> tagList = qryPostMapper.selectTagList(postList.get(i).getId());
             postList.get(i).setTags(tagList);
         }
-        System.out.println("postList = " + postList);
 
         List<QryPostAndTagsDTO> postDTOList = QryPostAndTagListToDTOList(postList);
-        System.out.println("postDTOList = " + postDTOList);
-        
+
         long total = qryPostMapper.countTabPostList(tabId);
 
         return new PageImpl<>(postDTOList, pageable, total);
