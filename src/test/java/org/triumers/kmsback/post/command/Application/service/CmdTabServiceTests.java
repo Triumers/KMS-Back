@@ -40,7 +40,7 @@ class CmdTabServiceTests {
 
         CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(EMPLOYEE_ID, TAB_RELATION_ID);
 
-        CmdJoinEmployee savedEmployee = cmdTabService.addEmployeeTab(employee);
+        CmdJoinEmployeeDTO savedEmployee = cmdTabService.addEmployeeTab(employee);
 
         assertThat(savedEmployee.getId()).isNotNull();
     }
@@ -52,7 +52,7 @@ class CmdTabServiceTests {
         CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(EMPLOYEE_ID, TAB_RELATION_ID);
         cmdTabService.addEmployeeTab(employee);
 
-        CmdJoinEmployee deletedEmployee = cmdTabService.deleteEmployeeTab(employee);
+        CmdJoinEmployeeDTO deletedEmployee = cmdTabService.deleteEmployeeTab(employee);
 
         assertThat(cmdJoinEmployeeRepository.findById(deletedEmployee.getId())).isEmpty();
     }
@@ -64,7 +64,7 @@ class CmdTabServiceTests {
         boolean isPublic = false;
         CmdTabRelationDTO tabRelation = new CmdTabRelationDTO(isPublic, BOTTOM_ID, TOP_ID);
 
-        CmdTabRelation registTab = cmdTabService.registTab(tabRelation, EMPLOYEE_ID);
+        CmdTabRelationDTO registTab = cmdTabService.registTab(tabRelation, EMPLOYEE_ID);
 
         assertThat(registTab.getId()).isNotNull();
     }
