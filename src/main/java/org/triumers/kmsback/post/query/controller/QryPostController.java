@@ -52,5 +52,4 @@ public class QryPostController {
         return ResponseEntity.status(HttpStatus.OK).body(likeList);
     }
 
-
 }

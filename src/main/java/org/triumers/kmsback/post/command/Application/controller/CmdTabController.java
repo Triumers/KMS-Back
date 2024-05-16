@@ -20,13 +20,18 @@ public class CmdTabController {
 
     @PostMapping("/regist/employee")
     public ResponseEntity<CmdJoinEmployeeDTO> registEmployeeTab(@RequestBody CmdJoinEmployeeDTO joinEmployeeDTO){
-        CmdJoinEmployeeDTO joinEmployee = cmdTabService.addEmployeeTab(joinEmployeeDTO);
 
+        if(joinEmployeeDTO.getEmployeeId() == null || joinEmployeeDTO.getTabId() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        CmdJoinEmployeeDTO joinEmployee = cmdTabService.addEmployeeTab(joinEmployeeDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(joinEmployee);
     }
 
     @DeleteMapping("/delete/employee")
     public ResponseEntity<CmdJoinEmployeeDTO> deleteEmployeeTab(@RequestBody CmdJoinEmployeeDTO joinEmployeeDTO){
+
         CmdJoinEmployeeDTO deletedEmployee = cmdTabService.deleteEmployeeTab(joinEmployeeDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(deletedEmployee);
@@ -34,8 +39,12 @@ public class CmdTabController {
 
     @PostMapping("/regist")
     public ResponseEntity<CmdTabRelationDTO> registTab(@RequestBody CmdTabRelationDTO tabRelationDTO, Integer userId){
-        CmdTabRelationDTO registTab = cmdTabService.registTab(tabRelationDTO, userId);
 
+        if(tabRelationDTO.getTopTabId() == null || userId == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        CmdTabRelationDTO registTab = cmdTabService.registTab(tabRelationDTO, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(registTab);
     }
 }

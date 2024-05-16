@@ -27,16 +27,22 @@ public class CmdPostController {
     @PostMapping("/regist")
     public ResponseEntity<CmdPostAndTagsDTO> registPost(@RequestBody CmdPostAndTagsDTO cmdPostAndTagsDTO){
 
-        CmdPostAndTagsDTO savedPost = cmdPostService.registPost(cmdPostAndTagsDTO);
+        if(cmdPostAndTagsDTO.getTitle() == null || cmdPostAndTagsDTO.getContent() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
 
+        CmdPostAndTagsDTO savedPost = cmdPostService.registPost(cmdPostAndTagsDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
 
     @PostMapping("/modify")
     public ResponseEntity<CmdPostAndTagsDTO> modifyPost(@RequestBody CmdPostAndTagsDTO cmdPostAndTagsDTO){
 
-        CmdPostAndTagsDTO modifiedPost = cmdPostService.modifyPost(cmdPostAndTagsDTO);
+        if(cmdPostAndTagsDTO.getTitle() == null || cmdPostAndTagsDTO.getContent() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
 
+        CmdPostAndTagsDTO modifiedPost = cmdPostService.modifyPost(cmdPostAndTagsDTO);
         return ResponseEntity.status(HttpStatus.OK).body(modifiedPost);
     }
 
@@ -51,16 +57,22 @@ public class CmdPostController {
     @PostMapping("like")
     public ResponseEntity<CmdLikeDTO> deletePost(@RequestBody CmdLikeDTO cmdLikeDTO){
 
-        CmdLikeDTO like = cmdPostService.likePost(cmdLikeDTO);
+        if(cmdLikeDTO.getPostId() == null || cmdLikeDTO.getEmployeeId() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
 
+        CmdLikeDTO like = cmdPostService.likePost(cmdLikeDTO);
         return ResponseEntity.status(HttpStatus.OK).body(like);
     }
 
     @PostMapping("favorite")
     public ResponseEntity<CmdFavoritesDTO> deletePost(@RequestBody CmdFavoritesDTO cmdFavoritesDTO){
 
-        CmdFavoritesDTO favorite = cmdPostService.favoritePost(cmdFavoritesDTO);
+        if(cmdFavoritesDTO.getPostId() == null || cmdFavoritesDTO.getEmployeeId() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
 
+        CmdFavoritesDTO favorite = cmdPostService.favoritePost(cmdFavoritesDTO);
         return ResponseEntity.status(HttpStatus.OK).body(favorite);
     }
 
