@@ -1,6 +1,8 @@
 package org.triumers.kmsback.post.query.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,8 +28,8 @@ public class QryPostController {
     }
 
     @GetMapping("/tab/{id}")
-    public ResponseEntity<List<QryPostAndTagsDTO>> findPostListByTab(@PathVariable int id){
-        List<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(id);
+    public ResponseEntity<Page<QryPostAndTagsDTO>> findPostListByTab(@PathVariable int id, Pageable pageable){
+        Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(id, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(postList);
     }

@@ -4,6 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.employee.query.dto.QryEmployeeDTO;
@@ -32,7 +34,9 @@ class QryPostServiceTest {
     void findPostListByTab() {
 
         int tabId = 1;
-        List<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(tabId);
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(tabId, pageRequest);
+        System.out.println("postList = " + postList);
 
         assertFalse(postList.isEmpty());
     }

@@ -1,5 +1,7 @@
 package org.triumers.kmsback.post.query.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.employee.query.dto.QryEmployeeDTO;
 import org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag;
@@ -10,7 +12,7 @@ import java.util.List;
 
 public interface QryPostService {
 
-    List<QryPostAndTagsDTO> findPostListByTab(int tabId);
+    Page<QryPostAndTagsDTO> findPostListByTab(int tabId, Pageable pageable);
 
     QryPostAndTagsDTO findPostById(int postId);
 

@@ -1,5 +1,8 @@
 package org.triumers.kmsback.post.query.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.employee.command.Application.service.CmdEmployeeService;
@@ -29,11 +32,21 @@ public class QryPostServiceImpl implements QryPostService {
     }
 
     @Override
-    public List<QryPostAndTagsDTO> findPostListByTab(int tabId) {
+    public Page<QryPostAndTagsDTO> findPostListByTab(int tabId, Pageable pageable) {
 
-        List<QryPostAndTag> postList = qryPostMapper.selectTabPostList(tabId);
+        List<QryPostAndTag> postList = qryPostMapper.selectTabPostList(tabId, pageable);
+        for (int i = 0; i < postList.size(); i++) {
+            List<QryTag> tagList = qryPostMapper.selectTagList(postList.get(i).getId());
+            postList.get(i).setTags(tagList);
+        }
+        System.out.println("postList = " + postList);
 
-        return QryPostAndTagListToDTOList(postList);
+        List<QryPostAndTagsDTO> postDTOList = QryPostAndTagListToDTOList(postList);
+        System.out.println("postDTOList = " + postDTOList);
+        
+        long total = qryPostMapper.countTabPostList(tabId);
+
+        return new PageImpl<>(postDTOList, pageable, total);
     }
 
     @Override
