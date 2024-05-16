@@ -1,6 +1,7 @@
 package org.triumers.kmsback.post.command.Application.dto;
 
 import lombok.Data;
+import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTag;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,4 +42,27 @@ public class CmdPostAndTagsDTO {
         this.tags = tags;
     }
 
+    public CmdPostAndTagsDTO(Integer id, String title, String content, LocalDateTime createdAt, Integer authorId,
+                             Integer originId, Integer tabRelationId, List<CmdTagDTO> tags) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.authorId = authorId;
+        this.originId = originId;
+        this.tabRelationId = tabRelationId;
+        this.tags = tags;
+    }
+
+    public CmdPostAndTagsDTO(Integer id, String title, String content, LocalDateTime createdAt, LocalDateTime deletedAt, Integer authorId, Integer originId, Integer recentId, Integer tabRelationId) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.deletedAt = deletedAt;
+        this.authorId = authorId;
+        this.originId = originId;
+        this.recentId = recentId;
+        this.tabRelationId = tabRelationId;
+    }
 }
