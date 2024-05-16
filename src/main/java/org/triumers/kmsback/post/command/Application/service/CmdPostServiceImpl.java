@@ -78,12 +78,14 @@ public class CmdPostServiceImpl implements CmdPostService {
         originPost.setRecentId(modifypost.getId());
         cmdPostRepository.save(originPost);
 
-        try {
-            CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(originPost.getAuthorId());
-            notificationService.sendMailMime(employeeDTO, originPost);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+
+        // 추후 yml 수정 후 주석 제거
+//        try {
+//            CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(originPost.getAuthorId());
+//            notificationService.sendMailMime(employeeDTO, originPost);
+//        } catch (MessagingException e) {
+//            throw new RuntimeException(e);
+//        }
 
         return modifypost;
 
