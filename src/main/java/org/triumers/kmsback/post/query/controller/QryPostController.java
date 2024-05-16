@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.employee.query.dto.QryEmployeeDTO;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
 import org.triumers.kmsback.post.query.service.QryPostService;
@@ -46,8 +47,8 @@ public class QryPostController {
     }
 
     @GetMapping("/{id}/like")
-    public ResponseEntity<List<QryEmployeeDTO>> findLikeListByPostId(@PathVariable int id){
-        List<QryEmployeeDTO> likeList = qryPostService.findLikeListByPostId(id);
+    public ResponseEntity<List<CmdEmployeeDTO>> findLikeListByPostId(@PathVariable int id){
+        List<CmdEmployeeDTO> likeList = qryPostService.findLikeListByPostId(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(likeList);
     }

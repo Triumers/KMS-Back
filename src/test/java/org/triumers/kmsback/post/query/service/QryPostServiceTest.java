@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.employee.query.dto.QryEmployeeDTO;
 import org.triumers.kmsback.post.query.aggregate.entity.QryLike;
 import org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag;
@@ -61,10 +62,10 @@ class QryPostServiceTest {
     void findLikeListByPostId() {
 
         int postId = 16;
-        List<QryEmployeeDTO> likeList = qryPostService.findLikeListByPostId(postId);
+        List<CmdEmployeeDTO> likeList = qryPostService.findLikeListByPostId(postId);
 
         // EMPLOYEE SERVICE 구현 완료되면 수정
-        assertThat(true);
+        assertThat(likeList).isNotNull();
     }
 
 
