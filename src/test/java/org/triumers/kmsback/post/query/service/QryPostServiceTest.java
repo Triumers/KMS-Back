@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.employee.query.dto.QryEmployeeDTO;
 import org.triumers.kmsback.post.query.aggregate.entity.QryLike;
 import org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag;
@@ -39,7 +40,7 @@ class QryPostServiceTest {
     @DisplayName("단일 게시글 조회")
     void findPostById() {
 
-        int postId = 20;
+        int postId = 16;
         QryPostAndTagsDTO post = qryPostService.findPostById(postId);
 
         assertThat(post.getId()).isNotNull();
@@ -59,7 +60,7 @@ class QryPostServiceTest {
     @DisplayName("게시글 좋아요 리스트 조회")
     void findLikeListByPostId() {
 
-        int postId = 20;
+        int postId = 16;
         List<QryEmployeeDTO> likeList = qryPostService.findLikeListByPostId(postId);
 
         // EMPLOYEE SERVICE 구현 완료되면 수정

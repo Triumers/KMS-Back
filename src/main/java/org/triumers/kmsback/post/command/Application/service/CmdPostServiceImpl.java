@@ -8,6 +8,7 @@ import org.triumers.kmsback.post.command.domain.aggregate.entity.*;
 import org.triumers.kmsback.post.command.domain.repository.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -72,7 +73,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     public CmdPost deletePost(int postId) {
 
         CmdPost deletePost = cmdPostRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
-        deletePost.setDeletedAt(LocalDate.now());
+        deletePost.setDeletedAt(LocalDateTime.now());
 
         return cmdPostRepository.save(deletePost);
     }
