@@ -1,17 +1,14 @@
 package org.triumers.kmsback.post.command.Application.service;
 
-import jakarta.transaction.Transactional;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
+import org.triumers.kmsback.employee.command.Application.service.CmdEmployeeService;
 import org.triumers.kmsback.post.command.Application.dto.*;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.*;
 import org.triumers.kmsback.post.command.domain.repository.*;
-import org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag;
-import org.triumers.kmsback.post.query.aggregate.entity.QryTag;
-import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
-import org.triumers.kmsback.post.query.dto.QryTagDTO;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +21,19 @@ public class CmdPostServiceImpl implements CmdPostService {
     private final CmdPostTagRepository cmdPostTagRepository;
     private final CmdLikeRepository cmdLikeRepository;
     private final CmdFavoritesRepository cmdFavoritesRepository;
+    private final CmdEmployeeService cmdEmployeeService;
+    private final NotificationService notificationService;
 
     @Autowired
     public CmdPostServiceImpl(CmdPostRepository cmdPostRepository,
-                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository) {
+                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository, CmdEmployeeService cmdEmployeeService, NotificationService notificationService) {
         this.cmdPostRepository = cmdPostRepository;
         this.cmdTagRepository = cmdTagRepository;
         this.cmdPostTagRepository = cmdPostTagRepository;
         this.cmdLikeRepository = cmdLikeRepository;
         this.cmdFavoritesRepository = cmdFavoritesRepository;
+        this.cmdEmployeeService = cmdEmployeeService;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -76,6 +77,13 @@ public class CmdPostServiceImpl implements CmdPostService {
         CmdPost originPost = cmdPostRepository.findById(modifypost.getOriginId()).orElseThrow(IllegalArgumentException::new);
         originPost.setRecentId(modifypost.getId());
         cmdPostRepository.save(originPost);
+
+        try {
+            CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(originPost.getAuthorId());
+            notificationService.sendMailMime(employeeDTO, originPost);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
 
         return modifypost;
 
