@@ -38,7 +38,7 @@ class CmdTabServiceTests {
     @DisplayName("탭 참여자 등록")
     void addEmployeeTab(){
 
-        CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(EMPLOYEE_ID, TAB_RELATION_ID);
+        CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(false, EMPLOYEE_ID, TAB_RELATION_ID);
 
         CmdJoinEmployeeDTO savedEmployee = cmdTabService.addEmployeeTab(employee);
 
@@ -49,7 +49,7 @@ class CmdTabServiceTests {
     @DisplayName("탭 참여자 삭제")
     void deleteEmployeeTab(){
 
-        CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(EMPLOYEE_ID, TAB_RELATION_ID);
+        CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(false, EMPLOYEE_ID, TAB_RELATION_ID);
         cmdTabService.addEmployeeTab(employee);
 
         CmdJoinEmployeeDTO deletedEmployee = cmdTabService.deleteEmployeeTab(employee);

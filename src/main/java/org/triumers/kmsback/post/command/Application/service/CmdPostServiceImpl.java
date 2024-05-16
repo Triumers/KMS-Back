@@ -72,12 +72,10 @@ public class CmdPostServiceImpl implements CmdPostService {
     public CmdPostAndTagsDTO modifyPost(CmdPostAndTagsDTO post) {
 
         CmdPostAndTagsDTO modifypost = registPost(post);
-        System.out.println("modifypost = " + modifypost);
 
         CmdPost originPost = cmdPostRepository.findById(modifypost.getOriginId()).orElseThrow(IllegalArgumentException::new);
         originPost.setRecentId(modifypost.getId());
         cmdPostRepository.save(originPost);
-        System.out.println("originPost = " + originPost);
 
         return modifypost;
 
@@ -127,8 +125,7 @@ public class CmdPostServiceImpl implements CmdPostService {
             CmdFavorites favoritePost = cmdFavoritesRepository.findByEmployeeIdAndPostId(favorite.getEmployeeId(), favorite.getPostId());
             if (favoritePost != null) {  // unfavorite
                 cmdFavoritesRepository.deleteById(favoritePost.getId());
-
-                CmdFavoritesDTO favoritesDTO = new CmdFavoritesDTO(favorite.getId(), favoritePost.getEmployeeId(), favoritePost.getPostId());
+                CmdFavoritesDTO favoritesDTO = new CmdFavoritesDTO(favoritePost.getId(), favoritePost.getEmployeeId(), favoritePost.getPostId());
                 return favoritesDTO;
             }
         } catch (Exception e) {
@@ -138,7 +135,7 @@ public class CmdPostServiceImpl implements CmdPostService {
         CmdFavorites favoritePost = new CmdFavorites(favorite.getEmployeeId(), favorite.getPostId());
         cmdFavoritesRepository.save(favoritePost);
 
-        CmdFavoritesDTO favoritesDTO = new CmdFavoritesDTO(favorite.getId(), favoritePost.getEmployeeId(), favoritePost.getPostId());
+        CmdFavoritesDTO favoritesDTO = new CmdFavoritesDTO(favoritePost.getId(), favoritePost.getEmployeeId(), favoritePost.getPostId());
         return favoritesDTO;
     }
 

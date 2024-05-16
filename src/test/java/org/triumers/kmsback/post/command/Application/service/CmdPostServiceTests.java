@@ -59,7 +59,7 @@ public class CmdPostServiceTests {
 
         CmdPostAndTagsDTO modifyPost = cmdPostService.modifyPost(post);
 
-        assertThat(modifyPost.getRecentId()).isNotNull();
+        assertThat(modifyPost.getId()).isNotNull();
     }
 
     @Test
