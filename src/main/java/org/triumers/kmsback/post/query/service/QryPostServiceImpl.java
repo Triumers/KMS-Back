@@ -40,8 +40,10 @@ public class QryPostServiceImpl implements QryPostService {
     public QryPostAndTagsDTO findPostById(int postId) {
         QryPostAndTag post = qryPostMapper.selectPostById(postId);
 
+        CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(post.getAuthorId());
+
         QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
-                post.getCreatedAt(), post.getAuthorId(), post.getOriginId(),
+                post.getCreatedAt(), employeeDTO, post.getOriginId(),
                 post.getRecentId(), post.getTabRelationId());
 
         postDTO.setTags(convertTagToTagDTO(post.getTags()));
@@ -76,8 +78,9 @@ public class QryPostServiceImpl implements QryPostService {
         List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
         for (int i = 0; i < postList.size(); i++) {
             QryPostAndTag post = postList.get(i);
+            CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(post.getAuthorId());
             QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
-                    post.getCreatedAt(), post.getAuthorId(), post.getOriginId(),
+                    post.getCreatedAt(), employeeDTO, post.getOriginId(),
                     post.getRecentId(), post.getTabRelationId());
             postDTO.setTags(convertTagToTagDTO(post.getTags()));
             postDTOList.add(postDTO);

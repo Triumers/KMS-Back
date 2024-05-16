@@ -1,6 +1,7 @@
 package org.triumers.kmsback.post.query.dto;
 
 import lombok.Data;
+import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,14 +12,14 @@ public class QryPostAndTagsDTO {
     private String title;
     private String content;
     private LocalDate createdAt;
-    private Integer authorId;
+    private CmdEmployeeDTO authorId;
     private Integer originId;
     private Integer recentId;
     private Integer tabRelationId;
     private List<QryTagDTO> tags;
     private List<QryPostAndTagsDTO> history;
 
-    public QryPostAndTagsDTO(Integer id, String title, String content, LocalDate createdAt, Integer authorId,
+    public QryPostAndTagsDTO(Integer id, String title, String content, LocalDate createdAt, CmdEmployeeDTO authorId,
                              Integer originId, Integer recentId, Integer tabRelationId) {
         this.id = id;
         this.title = title;
