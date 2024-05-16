@@ -72,10 +72,12 @@ public class CmdPostServiceImpl implements CmdPostService {
     public CmdPostAndTagsDTO modifyPost(CmdPostAndTagsDTO post) {
 
         CmdPostAndTagsDTO modifypost = registPost(post);
+        System.out.println("modifypost = " + modifypost);
 
-        CmdPost originPost = cmdPostRepository.findById(post.getOriginId()).orElseThrow(IllegalArgumentException::new);
+        CmdPost originPost = cmdPostRepository.findById(modifypost.getOriginId()).orElseThrow(IllegalArgumentException::new);
         originPost.setRecentId(modifypost.getId());
         cmdPostRepository.save(originPost);
+        System.out.println("originPost = " + originPost);
 
         return modifypost;
 

@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdTagDTO;
+import org.triumers.kmsback.post.command.Application.dto.*;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdFavorites;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdLike;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
@@ -40,7 +37,7 @@ public class CmdPostServiceTests {
 
         CmdPostAndTagsDTO post = createTestPost();
 
-        CmdPost savedPost = cmdPostService.registPost(post);
+        CmdPostAndTagsDTO savedPost = cmdPostService.registPost(post);
 
         assertThat(savedPost.getId()).isNotNull();
     }
@@ -60,7 +57,7 @@ public class CmdPostServiceTests {
         CmdPostAndTagsDTO post = new CmdPostAndTagsDTO("modifyTitle", "modifyContent", LocalDateTime.now(),
                 1, RIGHT_POST_ID, 1, tags);
 
-        CmdPost modifyPost = cmdPostService.modifyPost(post);
+        CmdPostAndTagsDTO modifyPost = cmdPostService.modifyPost(post);
 
         assertThat(modifyPost.getRecentId()).isNotNull();
     }
@@ -70,7 +67,7 @@ public class CmdPostServiceTests {
     @DisplayName("게시글 삭제")
     void deletePost(){
 
-        CmdPost deletedPost = cmdPostService.deletePost(RIGHT_POST_ID);
+        CmdPostAndTagsDTO deletedPost = cmdPostService.deletePost(RIGHT_POST_ID);
 
         assertThat(deletedPost.getDeletedAt()).isNotNull();
     }
@@ -81,7 +78,7 @@ public class CmdPostServiceTests {
     void likePost() {
 
         CmdLikeDTO like = new CmdLikeDTO(1, RIGHT_POST_ID);
-        CmdLike likePost = cmdPostService.likePost(like);
+        CmdLikeDTO likePost = cmdPostService.likePost(like);
 
         assertThat(likePost.getId()).isNotNull();
     }
@@ -92,7 +89,7 @@ public class CmdPostServiceTests {
     void favoritePost(){
 
         CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, RIGHT_POST_ID);
-        CmdFavorites likePost = cmdPostService.favoritePost(favorite);
+        CmdFavoritesDTO likePost = cmdPostService.favoritePost(favorite);
 
         assertThat(likePost.getId()).isNotNull();
     }
