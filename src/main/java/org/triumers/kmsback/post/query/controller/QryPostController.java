@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.triumers.kmsback.employee.query.dto.QryEmployeeDTO;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
 import org.triumers.kmsback.post.query.service.QryPostService;
 
@@ -29,4 +30,27 @@ public class QryPostController {
 
         return ResponseEntity.status(HttpStatus.OK).body(postList);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<QryPostAndTagsDTO> findPostById(@PathVariable int id){
+        QryPostAndTagsDTO post = qryPostService.findPostById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(post);
+    }
+
+    @GetMapping("/{id}/history")
+    public ResponseEntity<List<QryPostAndTagsDTO>> findHistoryListByOriginId(@PathVariable int id){
+        List<QryPostAndTagsDTO> history = qryPostService.findHistoryListByOriginId(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(history);
+    }
+
+    @GetMapping("/{id}/like")
+    public ResponseEntity<List<QryEmployeeDTO>> findLikeListByPostId(@PathVariable int id){
+        List<QryEmployeeDTO> likeList = qryPostService.findLikeListByPostId(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(likeList);
+    }
+
+
 }
