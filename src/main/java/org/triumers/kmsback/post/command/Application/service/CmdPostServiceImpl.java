@@ -1,9 +1,7 @@
 package org.triumers.kmsback.post.command.Application.service;
 
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.employee.command.Application.service.CmdEmployeeService;
 import org.triumers.kmsback.post.command.Application.dto.*;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.*;
@@ -22,18 +20,18 @@ public class CmdPostServiceImpl implements CmdPostService {
     private final CmdLikeRepository cmdLikeRepository;
     private final CmdFavoritesRepository cmdFavoritesRepository;
     private final CmdEmployeeService cmdEmployeeService;
-    private final NotificationService notificationService;
+
+//    private final NotificationService notificationService;
 
     @Autowired
     public CmdPostServiceImpl(CmdPostRepository cmdPostRepository,
-                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository, CmdEmployeeService cmdEmployeeService, NotificationService notificationService) {
+                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository, CmdEmployeeService cmdEmployeeService) {
         this.cmdPostRepository = cmdPostRepository;
         this.cmdTagRepository = cmdTagRepository;
         this.cmdPostTagRepository = cmdPostTagRepository;
         this.cmdLikeRepository = cmdLikeRepository;
         this.cmdFavoritesRepository = cmdFavoritesRepository;
         this.cmdEmployeeService = cmdEmployeeService;
-        this.notificationService = notificationService;
     }
 
     @Override
@@ -44,6 +42,7 @@ public class CmdPostServiceImpl implements CmdPostService {
         cmdPostRepository.save(registPost);
 
         List<CmdTag> tags = registTag(post.getTags(), registPost.getId());
+
 
         CmdPostAndTagsDTO savedPost = new CmdPostAndTagsDTO(registPost.getId(), registPost.getTitle(), registPost.getContent(),
                 registPost.getCreatedAt(), registPost.getAuthorId(), registPost.getOriginId(),
@@ -77,7 +76,6 @@ public class CmdPostServiceImpl implements CmdPostService {
         CmdPost originPost = cmdPostRepository.findById(modifypost.getOriginId()).orElseThrow(IllegalArgumentException::new);
         originPost.setRecentId(modifypost.getId());
         cmdPostRepository.save(originPost);
-
 
         // 추후 yml 수정 후 주석 제거
 //        try {

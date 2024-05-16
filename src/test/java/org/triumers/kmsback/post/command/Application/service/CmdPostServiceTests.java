@@ -7,10 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.triumers.kmsback.post.command.Application.dto.*;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdFavorites;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdLike;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
