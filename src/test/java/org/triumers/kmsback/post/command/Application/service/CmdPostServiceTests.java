@@ -19,8 +19,6 @@ public class CmdPostServiceTests {
 
     private final CmdPostService cmdPostService;
 
-    private final int RIGHT_POST_ID = 16;
-
     @Autowired
     public CmdPostServiceTests(CmdPostService cmdPostService) {
         this.cmdPostService = cmdPostService;
@@ -43,6 +41,8 @@ public class CmdPostServiceTests {
     @DisplayName("게시글 수정")
     void modifyPost() {
 
+        CmdPostAndTagsDTO savedPost = cmdPostService.registPost(createTestPost());
+
         List<CmdTagDTO> tags = new ArrayList<>();
         tags.add(new CmdTagDTO("tag1"));
         tags.add(new CmdTagDTO("tag2"));
@@ -51,7 +51,7 @@ public class CmdPostServiceTests {
         tags.add(new CmdTagDTO("tag5"));
 
         CmdPostAndTagsDTO post = new CmdPostAndTagsDTO("modifyTitle", "modifyContent", LocalDateTime.now(),
-                1, RIGHT_POST_ID, 1, tags);
+                1, savedPost.getId(), 1, tags);
 
         CmdPostAndTagsDTO modifyPost = cmdPostService.modifyPost(post);
 
@@ -63,7 +63,8 @@ public class CmdPostServiceTests {
     @DisplayName("게시글 삭제")
     void deletePost(){
 
-        CmdPostAndTagsDTO deletedPost = cmdPostService.deletePost(RIGHT_POST_ID);
+        CmdPostAndTagsDTO savedPost = cmdPostService.registPost(createTestPost());
+        CmdPostAndTagsDTO deletedPost = cmdPostService.deletePost(savedPost.getId());
 
         assertThat(deletedPost.getDeletedAt()).isNotNull();
     }
@@ -73,7 +74,9 @@ public class CmdPostServiceTests {
     @DisplayName("게시글 좋아요/삭제")
     void likePost() {
 
-        CmdLikeDTO like = new CmdLikeDTO(1, RIGHT_POST_ID);
+        CmdPostAndTagsDTO savedPost = cmdPostService.registPost(createTestPost());
+
+        CmdLikeDTO like = new CmdLikeDTO(1, savedPost.getId());
         CmdLikeDTO likePost = cmdPostService.likePost(like);
 
         assertThat(likePost.getId()).isNotNull();
@@ -84,7 +87,9 @@ public class CmdPostServiceTests {
     @DisplayName("게시글 즐겨찾기/삭제")
     void favoritePost(){
 
-        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, RIGHT_POST_ID);
+        CmdPostAndTagsDTO savedPost = cmdPostService.registPost(createTestPost());
+
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, savedPost.getId());
         CmdFavoritesDTO likePost = cmdPostService.favoritePost(favorite);
 
         assertThat(likePost.getId()).isNotNull();

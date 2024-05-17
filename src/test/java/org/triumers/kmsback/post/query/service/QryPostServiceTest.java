@@ -45,7 +45,7 @@ class QryPostServiceTest {
     @DisplayName("단일 게시글 조회")
     void findPostById() {
 
-        int postId = 16;
+        int postId = 1;
         QryPostAndTagsDTO post = qryPostService.findPostById(postId);
 
         assertThat(post.getId()).isNotNull();
@@ -55,7 +55,7 @@ class QryPostServiceTest {
     @DisplayName("게시글 히스토리 조회")
     void findHistoryListByOriginId() {
 
-        int originId = 16;
+        int originId = 1;
         List<QryPostAndTagsDTO> history = qryPostService.findHistoryListByOriginId(originId);
         
         assertFalse(history.isEmpty());
@@ -65,7 +65,7 @@ class QryPostServiceTest {
     @DisplayName("게시글 좋아요 리스트 조회")
     void findLikeListByPostId() {
 
-        int postId = 16;
+        int postId = 1;
         List<CmdEmployeeDTO> likeList = qryPostService.findLikeListByPostId(postId);
 
         // EMPLOYEE SERVICE 구현 완료되면 수정

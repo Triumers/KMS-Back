@@ -16,4 +16,5 @@ public class QryPost {
     private Integer originId;
     private Integer recentId;
     private Integer tabRelationId;
+    private Integer categoryId;
 }

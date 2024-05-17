@@ -55,7 +55,7 @@ public class QryPostServiceImpl implements QryPostService {
 
         QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
                 post.getCreatedAt(), employeeDTO, post.getOriginId(),
-                post.getRecentId(), post.getTabRelationId());
+                post.getRecentId(), post.getTabRelationId(), post.getCategoryId());
 
         postDTO.setTags(convertTagToTagDTO(post.getTags()));
         postDTO.setHistory(findHistoryListByOriginId(postId));
@@ -92,7 +92,7 @@ public class QryPostServiceImpl implements QryPostService {
             CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(post.getAuthorId());
             QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
                     post.getCreatedAt(), employeeDTO, post.getOriginId(),
-                    post.getRecentId(), post.getTabRelationId());
+                    post.getRecentId(), post.getTabRelationId(), post.getCategoryId());
             postDTO.setTags(convertTagToTagDTO(post.getTags()));
             postDTOList.add(postDTO);
         }

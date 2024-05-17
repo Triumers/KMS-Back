@@ -48,22 +48,6 @@ public class CmdPost {
     public CmdPost() {
 
     }
-    public CmdPost(String title, String content, LocalDateTime createdAt, Integer authorId, Integer tabRelationId) {
-        this.title = title;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.authorId = authorId;
-        this.tabRelationId = tabRelationId;
-    }
-
-    public CmdPost(String title, String content, LocalDateTime createdAt, Integer authorId, Integer originId, Integer tabRelationId) {
-        this.title = title;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.authorId = authorId;
-        this.originId = originId;
-        this.tabRelationId = tabRelationId;
-    }
 
     public CmdPost(Integer id, Boolean isEditing, String title, String content, LocalDateTime createdAt,
                    LocalDateTime deletedAt, Integer authorId, Integer originId, Integer recentId,

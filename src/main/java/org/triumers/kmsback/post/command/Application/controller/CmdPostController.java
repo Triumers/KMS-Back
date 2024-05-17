@@ -4,14 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardDTO;
-import org.triumers.kmsback.anonymousboard.command.Application.service.CmdAnonymousBoardService;
 import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdPostDTO;
 import org.triumers.kmsback.post.command.Application.service.CmdPostService;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
 
 @RestController
 @RequestMapping("/post")
