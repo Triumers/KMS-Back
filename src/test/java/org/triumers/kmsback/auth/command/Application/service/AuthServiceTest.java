@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.auth.command.Application.dto.AuthDTO;
 import org.triumers.kmsback.auth.command.Application.dto.PasswordDTO;
+import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
 import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.auth.command.domain.repository.AuthRepository;
 import org.triumers.kmsback.auth.command.domain.service.CustomUserDetailsService;
@@ -179,6 +180,28 @@ class AuthServiceTest {
 
         // then
         assertFalse(bCryptPasswordEncoder.matches(wrongPassword, authRepository.findByEmail(RIGHT_FORMAT_EMAIL).getPassword()));
+    }
+
+    @DisplayName("사용자 정보 변경 테스트")
+    @Test
+    void editMyInfo() throws WrongInputTypeException, WrongInputValueException {
+
+        // given
+        setSecurityContextHolderByUserName();
+
+        AuthDTO authDTO = new AuthDTO();
+        authDTO.setName("NewName");
+        authDTO.setPhoneNumber("010-7777-7777");
+        authDTO.setProfileImg("testImg.jpg");
+
+        // when
+        authService.editMyInfo(authDTO);
+
+        // then
+        Auth auth = authRepository.findByEmail(RIGHT_FORMAT_EMAIL);
+        assertEquals("NewName", auth.getName());
+        assertEquals("010-7777-7777", auth.getPhoneNumber());
+        assertEquals("testImg.jpg", auth.getProfileImg());
     }
 
 

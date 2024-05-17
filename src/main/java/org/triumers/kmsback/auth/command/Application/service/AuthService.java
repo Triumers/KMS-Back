@@ -9,4 +9,6 @@ public interface AuthService {
     void signup(AuthDTO authDTO) throws WrongInputTypeException;
 
     void editPassword(PasswordDTO passwordDTO) throws WrongInputTypeException, WrongInputValueException;
+
+    void editMyInfo(AuthDTO authDTO) throws WrongInputTypeException;
 }
