@@ -48,7 +48,10 @@
                          FROM tbl_post
                          WHERE (ORIGIN_ID IS NULL AND RECENT_ID IS NOT NULL AND DELETED_AT IS NULL)
                          ))
-           AND TAB_RELATION_ID = #{tabId}
+           AND A.TAB_RELATION_ID = #{request.tabRelationId}
+        <if test="request.categoryId != null">
+           AND A.CATEGORY_ID = #{request.categoryId}
+        </if>
          ORDER BY COALESCE(A.ORIGIN_ID, A.ID) ASC
          LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
     </select>

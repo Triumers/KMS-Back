@@ -11,6 +11,7 @@ import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.employee.query.dto.QryEmployeeDTO;
 import org.triumers.kmsback.post.query.aggregate.entity.QryLike;
 import org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag;
+import org.triumers.kmsback.post.query.aggregate.vo.QryRequestPost;
 import org.triumers.kmsback.post.query.dto.QryLikeDTO;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
 
@@ -33,11 +34,12 @@ class QryPostServiceTest {
     @DisplayName("tab 게시글 리스트 조회")
     void findPostListByTab() {
 
-        int tabId = 1;
         PageRequest pageRequest = PageRequest.of(0, 10);
 
-        Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(tabId, pageRequest);
+        QryRequestPost request = new QryRequestPost(1, null);
 
+        Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(request, pageRequest);
+        
         assertFalse(postList.isEmpty());
     }
 
