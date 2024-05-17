@@ -40,11 +40,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
-
     // SpringSecurity 라이브러리
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'
-    
 
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
@@ -53,6 +51,10 @@ dependencies {
 
     // ModelMapper
     implementation 'org.modelmapper:modelmapper:3.2.0'
+
+    // Email Notification
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
 tasks.named('test') {
