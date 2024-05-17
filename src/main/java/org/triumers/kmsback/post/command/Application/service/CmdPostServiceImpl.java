@@ -42,6 +42,7 @@ public class CmdPostServiceImpl implements CmdPostService {
         cmdPostRepository.save(registPost);
 
         List<CmdTag> tags = registTag(post.getTags(), registPost.getId());
+        System.out.println("tags = " + tags);
 
         post.setId(registPost.getId());
         post.setTags(convertTagToTagDTO(tags));
@@ -55,8 +56,11 @@ public class CmdPostServiceImpl implements CmdPostService {
         for (int i = 0; i < tags.size(); i++) {
             CmdTagDTO tagDTO = tags.get(i);
 
-            CmdTag tag = new CmdTag(tagDTO.getId(), tagDTO.getName());
-            cmdTagRepository.save(tag);
+            CmdTag tag = cmdTagRepository.getByName(tagDTO.getName());
+            if(tag == null){
+                tag = new CmdTag(tagDTO.getName());
+                cmdTagRepository.save(tag);
+            }
             tagList.add(tag);
 
             CmdPostTag postTag = new CmdPostTag(tag.getId(), postId);

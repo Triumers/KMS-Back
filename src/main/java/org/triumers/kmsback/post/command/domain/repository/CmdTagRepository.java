@@ -8,4 +8,5 @@ import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTag;
 public interface CmdTagRepository extends JpaRepository<CmdTag, Integer> {
 
 
+    CmdTag getByName(String name);
 }

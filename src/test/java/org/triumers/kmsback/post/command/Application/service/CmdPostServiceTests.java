@@ -46,9 +46,9 @@ public class CmdPostServiceTests {
         CmdPostAndTagsDTO savedPost = cmdPostService.registPost(createTestPost());
 
         List<CmdTagDTO> tags = new ArrayList<>();
-        tags.add(new CmdTagDTO("tag1"));
-        tags.add(new CmdTagDTO("tag2"));
-        tags.add(new CmdTagDTO("tag3"));
+        tags.add(new CmdTagDTO("개발"));
+        tags.add(new CmdTagDTO("tag6"));
+        tags.add(new CmdTagDTO("tag7"));
         tags.add(new CmdTagDTO("tag4"));
         tags.add(new CmdTagDTO("tag5"));
 
@@ -120,7 +120,7 @@ public class CmdPostServiceTests {
 
     private CmdPostAndTagsDTO createTestPost(){
         List<CmdTagDTO> tags = new ArrayList<>();
-        tags.add(new CmdTagDTO("tag1"));
+        tags.add(new CmdTagDTO("개발"));
         tags.add(new CmdTagDTO("tag2"));
         tags.add(new CmdTagDTO("tag3"));
         tags.add(new CmdTagDTO("tag4"));

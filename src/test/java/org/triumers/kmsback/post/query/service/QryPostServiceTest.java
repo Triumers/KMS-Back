@@ -70,7 +70,6 @@ class QryPostServiceTest {
         int postId = 1;
         List<CmdEmployeeDTO> likeList = qryPostService.findLikeListByPostId(postId);
 
-        // EMPLOYEE SERVICE 구현 완료되면 수정
         assertThat(likeList).isNotNull();
     }
 
