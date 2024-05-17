@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.post.command.Application.dto.CmdJoinEmployeeDTO;
+import org.triumers.kmsback.post.command.Application.dto.CmdTabDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdTabRelationDTO;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdJoinEmployee;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTabRelation;
+import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTabTop;
 import org.triumers.kmsback.post.command.domain.repository.CmdJoinEmployeeRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,7 +64,10 @@ class CmdTabServiceTests {
     void registTab(){
 
         boolean isPublic = false;
-        CmdTabRelationDTO tabRelation = new CmdTabRelationDTO(isPublic, BOTTOM_ID, TOP_ID);
+        CmdTabDTO top = new CmdTabDTO("top");
+        CmdTabDTO bottom = new CmdTabDTO("bottom");
+
+        CmdTabRelationDTO tabRelation = new CmdTabRelationDTO(isPublic, bottom, top);
 
         CmdTabRelationDTO registTab = cmdTabService.registTab(tabRelation, EMPLOYEE_ID);
 
