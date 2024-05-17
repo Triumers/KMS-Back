@@ -90,6 +90,10 @@ public class CmdTabServiceImpl implements CmdTabService{
     }
 
     public CmdTabDTO registBottomTab(CmdTabDTO bottom) {
+
+        if(bottom.getName() == null)
+            return bottom;
+
         CmdTabBottom tabBottom = cmdTabBottomRepository.getByName(bottom.getName());
 
         if(tabBottom == null){
