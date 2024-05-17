@@ -38,17 +38,15 @@ public class CmdPostServiceImpl implements CmdPostService {
     public CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post) {
 
         CmdPost registPost = new CmdPost(post.getTitle(), post.getContent(), post.getCreatedAt(),
-                post.getAuthorId(), post.getOriginId(), post.getTabRelationId());
+                post.getAuthorId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
         cmdPostRepository.save(registPost);
 
         List<CmdTag> tags = registTag(post.getTags(), registPost.getId());
 
+        post.setId(registPost.getId());
+        post.setTags(convertTagToTagDTO(tags));
 
-        CmdPostAndTagsDTO savedPost = new CmdPostAndTagsDTO(registPost.getId(), registPost.getTitle(), registPost.getContent(),
-                registPost.getCreatedAt(), registPost.getAuthorId(), registPost.getOriginId(),
-                registPost.getTabRelationId(), convertTagToTagDTO(tags));
-
-        return savedPost;
+        return post;
     }
 
     public List<CmdTag> registTag(List<CmdTagDTO> tags, int postId) {
@@ -98,7 +96,7 @@ public class CmdPostServiceImpl implements CmdPostService {
 
         CmdPostAndTagsDTO deletedPost = new CmdPostAndTagsDTO(deletePost.getId(), deletePost.getTitle(), deletePost.getContent(),
                 deletePost.getCreatedAt(), deletePost.getDeletedAt(), deletePost.getAuthorId(),
-                deletePost.getOriginId(), deletePost.getRecentId(), deletePost.getTabRelationId());
+                deletePost.getOriginId(), deletePost.getRecentId(), deletePost.getTabRelationId(), deletePost.getCategoryId());
 
         return deletedPost;
     }

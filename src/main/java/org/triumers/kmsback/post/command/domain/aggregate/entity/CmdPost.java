@@ -42,6 +42,9 @@ public class CmdPost {
     @Column(name = "TAB_RELATION_ID")
     private Integer tabRelationId;
 
+    @Column(name = "CATEGORY_ID")
+    private Integer categoryId;
+
     public CmdPost() {
 
     }
@@ -60,5 +63,32 @@ public class CmdPost {
         this.authorId = authorId;
         this.originId = originId;
         this.tabRelationId = tabRelationId;
+    }
+
+    public CmdPost(Integer id, Boolean isEditing, String title, String content, LocalDateTime createdAt,
+                   LocalDateTime deletedAt, Integer authorId, Integer originId, Integer recentId,
+                   Integer tabRelationId, Integer categoryId) {
+        this.id = id;
+        this.isEditing = isEditing;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.deletedAt = deletedAt;
+        this.authorId = authorId;
+        this.originId = originId;
+        this.recentId = recentId;
+        this.tabRelationId = tabRelationId;
+        this.categoryId = categoryId;
+    }
+
+    public CmdPost(String title, String content, LocalDateTime createdAt, Integer authorId,
+                   Integer originId, Integer tabRelationId, Integer categoryId) {
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.authorId = authorId;
+        this.originId = originId;
+        this.tabRelationId = tabRelationId;
+        this.categoryId = categoryId;
     }
 }
