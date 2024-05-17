@@ -20,4 +20,6 @@ public interface QryPostService {
     List<QryPostAndTagsDTO> findHistoryListByOriginId(int originId);
 
     List<CmdEmployeeDTO> findLikeListByPostId(int postId);
+
+    Boolean getIsEditingById(int postId);
 }

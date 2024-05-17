@@ -76,6 +76,7 @@ public class CmdPostServiceImpl implements CmdPostService {
 
         CmdPost originPost = cmdPostRepository.findById(modifypost.getOriginId()).orElseThrow(IllegalArgumentException::new);
         originPost.setRecentId(modifypost.getId());
+        originPost.setIsEditing(false);
         cmdPostRepository.save(originPost);
 
         // 추후 yml 수정 후 주석 제거
@@ -146,6 +147,13 @@ public class CmdPostServiceImpl implements CmdPostService {
 
         CmdFavoritesDTO favoritesDTO = new CmdFavoritesDTO(favoritePost.getId(), favoritePost.getEmployeeId(), favoritePost.getPostId());
         return favoritesDTO;
+    }
+
+    @Override
+    public void changeEditing(int id) {
+       CmdPost post = cmdPostRepository.findById(id).orElseThrow(IllegalAccessError::new);
+       post.setIsEditing(!post.getIsEditing());
+       cmdPostRepository.save(post);
     }
 
     private List<CmdTagDTO> convertTagToTagDTO(List<CmdTag> tagList){

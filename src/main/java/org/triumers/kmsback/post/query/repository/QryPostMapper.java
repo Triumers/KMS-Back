@@ -22,4 +22,6 @@ public interface QryPostMapper {
     List<QryTag> selectTagList(int postId);
 
     long countTabPostList(int tabId);
+
+    boolean selectIsEditingByPostId(int postId);
 }

@@ -85,6 +85,12 @@ public class QryPostServiceImpl implements QryPostService {
         return likeMemberList;
     }
 
+    @Override
+    public Boolean getIsEditingById(int postId) {
+
+        return qryPostMapper.selectIsEditingByPostId(postId);
+    }
+
     private List<QryPostAndTagsDTO> QryPostAndTagListToDTOList(List<QryPostAndTag> postList){
 
         List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();

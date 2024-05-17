@@ -62,7 +62,7 @@
                B.NAME
           FROM tbl_post_tag A
           JOIN tbl_tag B ON (A.TAG_ID = B.ID)
-         WHERE A.POST_ID = #{postId};
+         WHERE A.POST_ID = #{postId}
     </select>
 
 
@@ -113,7 +113,7 @@
         SELECT
                A.EMPLOYEE_ID
           FROM tbl_like A
-         WHERE A.POST_ID = #{postId};
+         WHERE A.POST_ID = #{postId}
     </select>
 
     <select id="countTabPostList" parameterType="_int" resultType="long">
@@ -127,6 +127,13 @@
                           WHERE (ORIGIN_ID IS NULL AND RECENT_ID IS NOT NULL AND DELETED_AT IS NULL)
                        ))
            AND TAB_RELATION_ID = #{tabId}
+    </select>
+
+    <select id="selectIsEditingByPostId" parameterType="_int" resultType="boolean">
+        SELECT
+               A.IS_EDITING
+          FROM tbl_post A
+         WHERE A.ID = #{postId}
     </select>
 
 </mapper>

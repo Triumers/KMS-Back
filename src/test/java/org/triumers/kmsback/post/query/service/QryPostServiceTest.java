@@ -72,5 +72,4 @@ class QryPostServiceTest {
 
         assertThat(likeList).isNotNull();
     }
-
 }

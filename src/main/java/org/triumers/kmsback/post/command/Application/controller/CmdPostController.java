@@ -50,7 +50,7 @@ public class CmdPostController {
         return ResponseEntity.status(HttpStatus.OK).body(deletedPost);
     }
 
-    @PostMapping("like")
+    @PostMapping("/like")
     public ResponseEntity<CmdLikeDTO> deletePost(@RequestBody CmdLikeDTO cmdLikeDTO){
 
         if(cmdLikeDTO.getPostId() == null || cmdLikeDTO.getEmployeeId() == null){
@@ -61,7 +61,7 @@ public class CmdPostController {
         return ResponseEntity.status(HttpStatus.OK).body(like);
     }
 
-    @PostMapping("favorite")
+    @PostMapping("/favorite")
     public ResponseEntity<CmdFavoritesDTO> deletePost(@RequestBody CmdFavoritesDTO cmdFavoritesDTO){
 
         if(cmdFavoritesDTO.getPostId() == null || cmdFavoritesDTO.getEmployeeId() == null){
@@ -72,5 +72,8 @@ public class CmdPostController {
         return ResponseEntity.status(HttpStatus.OK).body(favorite);
     }
 
-
+    @PostMapping("/isEditing/{id}")
+    public void editingPost(@PathVariable int id){
+        cmdPostService.changeEditing(id);
+    }
 }
