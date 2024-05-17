@@ -53,4 +53,11 @@ public class QryPostController {
         return ResponseEntity.status(HttpStatus.OK).body(likeList);
     }
 
+    @GetMapping("/{id}/isEditing")
+    public ResponseEntity<Boolean> getEditingState(@PathVariable int id){
+        Boolean isEditing = qryPostService.getIsEditingById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(isEditing);
+    }
+
 }
