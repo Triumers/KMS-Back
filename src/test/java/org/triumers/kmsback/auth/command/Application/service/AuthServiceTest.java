@@ -204,17 +204,19 @@ class AuthServiceTest {
         assertEquals("testImg.jpg", auth.getProfileImg());
     }
 
-
+    // 테스트용 계정 DTO 생성
     private AuthDTO createRightAuthDTO() {
         return new AuthDTO(RIGHT_FORMAT_EMAIL, RIGHT_FORMAT_PASSWORD, RIGHT_FORMAT_NAME, null,
                 RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
                 1);
     }
 
+    // 테스트용 계정 회원가입
     private void setUser() throws WrongInputTypeException {
         authService.signup(createRightAuthDTO());
     }
 
+    // 테스트용 계정으로 로그인
     private void setSecurityContextHolderByUserName() throws WrongInputTypeException {
         setUser();
         CustomUserDetailsService customUserDetailsService = new CustomUserDetailsService(authRepository);
