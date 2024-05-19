@@ -10,6 +10,7 @@ import org.triumers.kmsback.auth.command.Application.dto.PasswordDTO;
 import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
 import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.auth.command.domain.repository.AuthRepository;
+import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
 import org.triumers.kmsback.common.exception.WrongInputValueException;
 
@@ -38,11 +39,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void editPassword(PasswordDTO passwordDTO) throws WrongInputTypeException, WrongInputValueException {
+    public void editPassword(PasswordDTO passwordDTO) throws WrongInputTypeException, WrongInputValueException, NotLoginException {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Auth auth = authRepository.findByEmail(email);
+        Auth auth = whoAmI();
 
         if (bCryptPasswordEncoder.matches(passwordDTO.getOldPassword(), auth.getPassword())) {
             auth.validation(passwordDTO.getNewPassword());
@@ -55,6 +56,26 @@ public class AuthServiceImpl implements AuthService {
         throw new WrongInputValueException();
     }
 
+    @Override
+    public void editMyInfo(AuthDTO authDTO) throws WrongInputTypeException, NotLoginException {
+
+        Auth auth = whoAmI();
+    }
+
+    // 현재 로그인된 계정 정보 조회
+    private Auth whoAmI() throws NotLoginException {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Auth auth = authRepository.findByEmail(email);
+
+        if (auth == null) {
+            throw new NotLoginException();
+        }
+
+        return auth;
+    }
+
+    // AuthDTO to Auth changer
     private Auth authMapper(AuthDTO authDTO) {
         Auth auth = new Auth();
 

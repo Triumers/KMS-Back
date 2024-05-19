@@ -18,6 +18,7 @@ import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
 import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.auth.command.domain.repository.AuthRepository;
 import org.triumers.kmsback.auth.command.domain.service.CustomUserDetailsService;
+import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
 import org.triumers.kmsback.common.exception.WrongInputValueException;
 
@@ -184,7 +185,7 @@ class AuthServiceTest {
 
     @DisplayName("사용자 정보 변경 테스트")
     @Test
-    void editMyInfo() throws WrongInputTypeException, WrongInputValueException {
+    void editMyInfo() throws WrongInputTypeException, WrongInputValueException, NotLoginException {
 
         // given
         setSecurityContextHolderByUserName();
