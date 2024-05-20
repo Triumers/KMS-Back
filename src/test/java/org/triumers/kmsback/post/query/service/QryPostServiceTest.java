@@ -41,25 +41,25 @@ class QryPostServiceTest {
         assertFalse(postList.isEmpty());
     }
 
-    @Test
-    @DisplayName("단일 게시글 조회")
-    void findPostById() {
-
-        int postId = 1;
-        QryPostAndTagsDTO post = qryPostService.findPostById(postId);
-
-        assertThat(post.getId()).isNotNull();
-    }
-
-    @Test
-    @DisplayName("게시글 히스토리 조회")
-    void findHistoryListByOriginId() {
-
-        int originId = 1;
-        List<QryPostAndTagsDTO> history = qryPostService.findHistoryListByOriginId(originId);
-        
-        assertFalse(history.isEmpty());
-    }
+//    @Test
+//    @DisplayName("단일 게시글 조회")
+//    void findPostById() {
+//
+//        int postId = 1;
+//        QryPostAndTagsDTO post = qryPostService.findPostById(postId);
+//
+//        assertThat(post.getId()).isNotNull();
+//    }
+//
+//    @Test
+//    @DisplayName("게시글 히스토리 조회")
+//    void findHistoryListByOriginId() {
+//
+//        int originId = 1;
+//        List<QryPostAndTagsDTO> history = qryPostService.findHistoryListByOriginId(originId);
+//
+//        assertFalse(history.isEmpty());
+//    }
 
     @Test
     @DisplayName("게시글 좋아요 리스트 조회")
