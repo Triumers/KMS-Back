@@ -1,22 +1,22 @@
-package org.triumers.kmsback.post.command.Application.service;
+package org.triumers.kmsback.tab.command.Application.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.triumers.kmsback.post.command.Application.dto.CmdJoinEmployeeDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdTabDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdTabRelationDTO;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdJoinEmployee;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTabBottom;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTabRelation;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTabTop;
-import org.triumers.kmsback.post.command.domain.repository.CmdJoinEmployeeRepository;
-import org.triumers.kmsback.post.command.domain.repository.CmdTabBottomRepository;
-import org.triumers.kmsback.post.command.domain.repository.CmdTabRelationRepository;
-import org.triumers.kmsback.post.command.domain.repository.CmdTabTopRepository;
+import org.triumers.kmsback.tab.command.Application.dto.CmdJoinEmployeeDTO;
+import org.triumers.kmsback.tab.command.Application.dto.CmdTabDTO;
+import org.triumers.kmsback.tab.command.Application.dto.CmdTabRelationDTO;
+import org.triumers.kmsback.tab.command.domain.aggregate.entity.CmdJoinEmployee;
+import org.triumers.kmsback.tab.command.domain.aggregate.entity.CmdTabBottom;
+import org.triumers.kmsback.tab.command.domain.aggregate.entity.CmdTabRelation;
+import org.triumers.kmsback.tab.command.domain.aggregate.entity.CmdTabTop;
+import org.triumers.kmsback.tab.command.domain.repository.CmdJoinEmployeeRepository;
+import org.triumers.kmsback.tab.command.domain.repository.CmdTabBottomRepository;
+import org.triumers.kmsback.tab.command.domain.repository.CmdTabRelationRepository;
+import org.triumers.kmsback.tab.command.domain.repository.CmdTabTopRepository;
 
 @Service
-public class CmdTabServiceImpl implements CmdTabService{
+public class CmdTabServiceImpl implements CmdTabService {
 
     private final CmdJoinEmployeeRepository cmdJoinEmployeeRepository;
     private final CmdTabRelationRepository cmdTabRelationRepository;

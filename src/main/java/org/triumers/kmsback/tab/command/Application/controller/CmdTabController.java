@@ -1,12 +1,11 @@
-package org.triumers.kmsback.post.command.Application.controller;
+package org.triumers.kmsback.tab.command.Application.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.triumers.kmsback.post.command.Application.dto.*;
-import org.triumers.kmsback.post.command.Application.service.CmdPostService;
-import org.triumers.kmsback.post.command.Application.service.CmdTabService;
+import org.triumers.kmsback.tab.command.Application.dto.CmdJoinEmployeeDTO;
+import org.triumers.kmsback.tab.command.Application.dto.CmdTabRelationDTO;
+import org.triumers.kmsback.tab.command.Application.service.CmdTabService;
 
 @RestController
 @RequestMapping("/tab")
