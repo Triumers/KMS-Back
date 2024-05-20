@@ -6,4 +6,5 @@ import org.triumers.kmsback.quiz.command.domain.aggregate.entity.CmdQuiz;
 
 @Repository
 public interface CmdQuizRepository extends JpaRepository<CmdQuiz, Long> {
+    Object findById(int id);
 }

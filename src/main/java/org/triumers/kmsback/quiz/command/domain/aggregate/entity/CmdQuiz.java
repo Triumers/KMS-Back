@@ -2,6 +2,11 @@ package org.triumers.kmsback.quiz.command.domain.aggregate.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
+import java.time.LocalDateTime;
+
 
 @Entity
 @Getter
@@ -10,6 +15,8 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Table(name = "tbl_quiz")
+@SQLDelete(sql = "UPDATE tbl_quiz SET DELETED_AT = CURRENT_TIMESTAMP WHERE ID = ?")
+@Where(clause = "deleted_at IS NULL")
 public class CmdQuiz {
 
     @Id
@@ -37,4 +44,18 @@ public class CmdQuiz {
 
     @Column(name = "TAB_ID")
     private int topTapId;
+
+    @Column(name = "DELETED_AT")
+    private LocalDateTime deletedAt;
+
+    public CmdQuiz(int id, String content, String answer, String commentary, boolean status, int questionerId, int postId, int topTapId) {
+        this.id = id;
+        this.content = content;
+        this.answer = answer;
+        this.commentary = commentary;
+        this.status = status;
+        this.questionerId = questionerId;
+        this.postId = postId;
+        this.topTapId = topTapId;
+    }
 }

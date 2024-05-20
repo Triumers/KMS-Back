@@ -1,12 +1,15 @@
 package org.triumers.kmsback.quiz.command.Application.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.quiz.command.Application.dto.CmdQuizDTO;
 import org.triumers.kmsback.quiz.command.domain.aggregate.entity.CmdQuiz;
 import org.triumers.kmsback.quiz.command.domain.aggregate.vo.CmdRequestQuizVo;
+import org.triumers.kmsback.quiz.command.domain.aggregate.vo.CmdRequestRemoveQuizVo;
 import org.triumers.kmsback.quiz.command.domain.repository.CmdQuizRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -19,6 +22,11 @@ public class CmdQuizServiceImpl implements CmdQuizService {
         this.cmdQuizRepository = cmdQuizRepository;
     }
 
+    @Transactional
+    public void delete(CmdQuiz cmdQuiz){
+        cmdQuizRepository.delete(cmdQuiz);
+    };
+
     // Entity to DTO
     private CmdQuizDTO toDto(CmdQuiz cmdQuiz) {
         CmdQuizDTO dto = new CmdQuizDTO();
@@ -30,6 +38,7 @@ public class CmdQuizServiceImpl implements CmdQuizService {
         dto.setQuestionerId(cmdQuiz.getQuestionerId());
         dto.setPostId(cmdQuiz.getPostId());
         dto.setTapId(cmdQuiz.getTopTapId());
+        dto.setDeletedAt(cmdQuiz.getDeletedAt());
         return dto;
     }
 
@@ -92,6 +101,7 @@ public class CmdQuizServiceImpl implements CmdQuizService {
         // 존재하는 경우
         if (quizOptional.isPresent()) {
             CmdQuiz cmdQuiz = quizOptional.get();
+            cmdQuiz.setDeletedAt(LocalDateTime.now());
             try {
                 cmdQuizRepository.delete(cmdQuiz);
                 return toDto(cmdQuiz);
