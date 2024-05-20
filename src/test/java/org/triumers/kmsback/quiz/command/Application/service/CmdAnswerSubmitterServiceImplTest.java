@@ -29,4 +29,14 @@ class CmdAnswerSubmitterServiceImplTest {
         // when, then
         assertDoesNotThrow(() -> cmdAnswerSubmitterService.submitAnswer(answer));
     }
+
+    @DisplayName("정답 수정 테스트")
+    @Test
+    void editAnswer() {
+        // given
+        CmdRequestAnswerSubmitVo answer = new CmdRequestAnswerSubmitVo(1, "수정된 답변", "수정된 참조", false, 1, 1);
+
+        // when, then
+        assertDoesNotThrow(() -> cmdAnswerSubmitterService.submitAnswer(answer));
+    }
 }
