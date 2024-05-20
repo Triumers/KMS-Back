@@ -3,6 +3,7 @@ package org.triumers.kmsback.auth.command.Application.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -184,25 +185,41 @@ class AuthServiceTest {
     }
 
     @DisplayName("사용자 정보 변경 테스트")
-    @Test
-    void editMyInfo() throws WrongInputTypeException, WrongInputValueException, NotLoginException {
+    @ParameterizedTest
+    @CsvSource({
+            "NewName, 010-7777-7777, testImg.jpg",
+            ", 010-7777-7777, testImg.jpg",
+            "NewName, , testImg.jpg",
+            "NewName, 010-7777-7777, ",
+            ", , testImg.jpg",
+            "NewName, , ",
+            ", 010-7777-7777, "
+    })
+    void editMyInfo(String newName, String newPhoneNumber, String newProfileImg) throws WrongInputTypeException, NotLoginException {
 
         // given
         setSecurityContextHolderByUserName();
 
         AuthDTO authDTO = new AuthDTO();
-        authDTO.setName("NewName");
-        authDTO.setPhoneNumber("010-7777-7777");
-        authDTO.setProfileImg("testImg.jpg");
+        authDTO.setName(newName);
+        authDTO.setPhoneNumber(newPhoneNumber);
+        authDTO.setProfileImg(newProfileImg);
 
         // when
         authService.editMyInfo(authDTO);
 
         // then
         Auth auth = authRepository.findByEmail(RIGHT_FORMAT_EMAIL);
-        assertEquals("NewName", auth.getName());
-        assertEquals("010-7777-7777", auth.getPhoneNumber());
-        assertEquals("testImg.jpg", auth.getProfileImg());
+
+        if (newName != null && !newName.isEmpty()) {
+            assertEquals(newName, auth.getName());
+        }
+        if (newPhoneNumber != null && !newPhoneNumber.isEmpty()) {
+            assertEquals(newPhoneNumber, auth.getPhoneNumber());
+        }
+        if (newProfileImg != null && !newProfileImg.isEmpty()) {
+            assertEquals(newProfileImg, auth.getProfileImg());
+        }
     }
 
     // 테스트용 계정 DTO 생성
