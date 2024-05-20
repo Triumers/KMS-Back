@@ -15,5 +15,5 @@ public class CmdRequestQuizVo {
     private boolean status;
     private int questionerId;
     private int postId;
-    private int topTapId;
+    private int tapId;
 }
