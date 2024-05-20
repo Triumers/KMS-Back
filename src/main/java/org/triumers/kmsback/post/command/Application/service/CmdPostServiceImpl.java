@@ -38,17 +38,15 @@ public class CmdPostServiceImpl implements CmdPostService {
     public CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post) {
 
         CmdPost registPost = new CmdPost(post.getTitle(), post.getContent(), post.getCreatedAt(),
-                post.getAuthorId(), post.getOriginId(), post.getTabRelationId());
+                post.getAuthorId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
         cmdPostRepository.save(registPost);
 
         List<CmdTag> tags = registTag(post.getTags(), registPost.getId());
 
+        post.setId(registPost.getId());
+        post.setTags(convertTagToTagDTO(tags));
 
-        CmdPostAndTagsDTO savedPost = new CmdPostAndTagsDTO(registPost.getId(), registPost.getTitle(), registPost.getContent(),
-                registPost.getCreatedAt(), registPost.getAuthorId(), registPost.getOriginId(),
-                registPost.getTabRelationId(), convertTagToTagDTO(tags));
-
-        return savedPost;
+        return post;
     }
 
     public List<CmdTag> registTag(List<CmdTagDTO> tags, int postId) {
@@ -57,8 +55,11 @@ public class CmdPostServiceImpl implements CmdPostService {
         for (int i = 0; i < tags.size(); i++) {
             CmdTagDTO tagDTO = tags.get(i);
 
-            CmdTag tag = new CmdTag(tagDTO.getId(), tagDTO.getName());
-            cmdTagRepository.save(tag);
+            CmdTag tag = cmdTagRepository.getByName(tagDTO.getName());
+            if(tag == null){
+                tag = new CmdTag(tagDTO.getName());
+                cmdTagRepository.save(tag);
+            }
             tagList.add(tag);
 
             CmdPostTag postTag = new CmdPostTag(tag.getId(), postId);
@@ -75,6 +76,7 @@ public class CmdPostServiceImpl implements CmdPostService {
 
         CmdPost originPost = cmdPostRepository.findById(modifypost.getOriginId()).orElseThrow(IllegalArgumentException::new);
         originPost.setRecentId(modifypost.getId());
+        originPost.setIsEditing(false);
         cmdPostRepository.save(originPost);
 
         // 추후 yml 수정 후 주석 제거
@@ -98,7 +100,7 @@ public class CmdPostServiceImpl implements CmdPostService {
 
         CmdPostAndTagsDTO deletedPost = new CmdPostAndTagsDTO(deletePost.getId(), deletePost.getTitle(), deletePost.getContent(),
                 deletePost.getCreatedAt(), deletePost.getDeletedAt(), deletePost.getAuthorId(),
-                deletePost.getOriginId(), deletePost.getRecentId(), deletePost.getTabRelationId());
+                deletePost.getOriginId(), deletePost.getRecentId(), deletePost.getTabRelationId(), deletePost.getCategoryId());
 
         return deletedPost;
     }
@@ -145,6 +147,13 @@ public class CmdPostServiceImpl implements CmdPostService {
 
         CmdFavoritesDTO favoritesDTO = new CmdFavoritesDTO(favoritePost.getId(), favoritePost.getEmployeeId(), favoritePost.getPostId());
         return favoritesDTO;
+    }
+
+    @Override
+    public void changeEditing(int id) {
+       CmdPost post = cmdPostRepository.findById(id).orElseThrow(IllegalAccessError::new);
+       post.setIsEditing(!post.getIsEditing());
+       cmdPostRepository.save(post);
     }
 
     private List<CmdTagDTO> convertTagToTagDTO(List<CmdTag> tagList){

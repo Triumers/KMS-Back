@@ -4,22 +4,32 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.post.command.Application.dto.CmdJoinEmployeeDTO;
+import org.triumers.kmsback.post.command.Application.dto.CmdTabDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdTabRelationDTO;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdJoinEmployee;
+import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTabBottom;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTabRelation;
+import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTabTop;
 import org.triumers.kmsback.post.command.domain.repository.CmdJoinEmployeeRepository;
+import org.triumers.kmsback.post.command.domain.repository.CmdTabBottomRepository;
 import org.triumers.kmsback.post.command.domain.repository.CmdTabRelationRepository;
+import org.triumers.kmsback.post.command.domain.repository.CmdTabTopRepository;
 
 @Service
 public class CmdTabServiceImpl implements CmdTabService{
 
     private final CmdJoinEmployeeRepository cmdJoinEmployeeRepository;
     private final CmdTabRelationRepository cmdTabRelationRepository;
+    private final CmdTabTopRepository cmdTabTopRepository;
+    private final CmdTabBottomRepository cmdTabBottomRepository;
+
 
     @Autowired
-    public CmdTabServiceImpl(CmdJoinEmployeeRepository cmdJoinEmployeeRepository, CmdTabRelationRepository cmdTabRelationRepository) {
+    public CmdTabServiceImpl(CmdJoinEmployeeRepository cmdJoinEmployeeRepository, CmdTabRelationRepository cmdTabRelationRepository, CmdTabTopRepository cmdTabTopRepository, CmdTabBottomRepository cmdTabBottomRepository) {
         this.cmdJoinEmployeeRepository = cmdJoinEmployeeRepository;
         this.cmdTabRelationRepository = cmdTabRelationRepository;
+        this.cmdTabTopRepository = cmdTabTopRepository;
+        this.cmdTabBottomRepository = cmdTabBottomRepository;
     }
 
     @Override
@@ -50,16 +60,48 @@ public class CmdTabServiceImpl implements CmdTabService{
     @Transactional
     public CmdTabRelationDTO registTab(CmdTabRelationDTO tabRelation, int employeeId) {
 
-        CmdTabRelation newTab = new CmdTabRelation(tabRelation.getIsPublic(), tabRelation.getBottomTabId(),
-                                                   tabRelation.getTopTabId(), tabRelation.getTeamId());
+        CmdTabDTO topTab = registTopTab(tabRelation.getTopTab());
+        CmdTabDTO bottomTab = registBottomTab(tabRelation.getBottomTab());
+
+        CmdTabRelation newTab = new CmdTabRelation(tabRelation.getIsPublic(), bottomTab.getId(),
+                topTab.getId(), tabRelation.getTeamId());
         cmdTabRelationRepository.save(newTab);
 
         CmdJoinEmployeeDTO joinEmployee = new CmdJoinEmployeeDTO(true, employeeId, newTab.getId());
         addEmployeeTab(joinEmployee);
 
         CmdTabRelationDTO newTabRelation = new CmdTabRelationDTO(newTab.getId(), newTab.getIsPublic(),
-                newTab.getBottomTabId(), newTab.getTopTabId(), newTab.getTeamId());
+                bottomTab, topTab, newTab.getTeamId());
 
         return newTabRelation;
+    }
+
+    public CmdTabDTO registTopTab(CmdTabDTO top) {
+
+        CmdTabTop tabTop = cmdTabTopRepository.getByName(top.getName());
+
+        if(tabTop == null){
+            tabTop = new CmdTabTop(top.getName());
+            cmdTabTopRepository.save(tabTop);
+        }
+        top.setId(tabTop.getId());
+
+        return top;
+    }
+
+    public CmdTabDTO registBottomTab(CmdTabDTO bottom) {
+
+        if(bottom.getName() == null)
+            return bottom;
+
+        CmdTabBottom tabBottom = cmdTabBottomRepository.getByName(bottom.getName());
+
+        if(tabBottom == null){
+            tabBottom = new CmdTabBottom(bottom.getName());
+            cmdTabBottomRepository.save(tabBottom);
+        }
+        bottom.setId(tabBottom.getId());
+
+        return bottom;
     }
 }

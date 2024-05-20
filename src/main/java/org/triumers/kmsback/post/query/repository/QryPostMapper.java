@@ -5,12 +5,13 @@ import org.springframework.data.domain.Pageable;
 import org.triumers.kmsback.post.query.aggregate.entity.QryLike;
 import org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag;
 import org.triumers.kmsback.post.query.aggregate.entity.QryTag;
+import org.triumers.kmsback.post.query.aggregate.vo.QryRequestPost;
 
 import java.util.List;
 
 @Mapper
 public interface QryPostMapper {
-    List<QryPostAndTag> selectTabPostList(int tabId, Pageable pageable);
+    List<QryPostAndTag> selectTabPostList(QryRequestPost request, Pageable pageable);
 
     QryPostAndTag selectPostById(int postId);
 
@@ -21,4 +22,6 @@ public interface QryPostMapper {
     List<QryTag> selectTagList(int postId);
 
     long countTabPostList(int tabId);
+
+    boolean selectIsEditingByPostId(int postId);
 }
