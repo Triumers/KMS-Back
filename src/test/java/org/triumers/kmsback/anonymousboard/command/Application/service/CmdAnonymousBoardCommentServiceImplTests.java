@@ -6,16 +6,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardCommentDTO;
 import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAnonymousBoardComment;
 import org.triumers.kmsback.anonymousboard.command.domain.repository.CmdAnonymousBoardCommentRepository;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,22 +50,6 @@ public class CmdAnonymousBoardCommentServiceImplTests {
         cmdAnonymousBoardComment2.setAnonymousBoardId(1);
     }
 
-    // 댓글 조회(페이징 처리까지)
-    @Test
-    void findAllAnonymousBoardComment_shouldReturnPageOfCmdAnonymousBoardCommentDTO() {
-        int anonymousBoardId = 1;
-        List<CmdAnonymousBoardComment> cmdAnonymousBoardCommentList = Arrays.asList(cmdAnonymousBoardComment1, cmdAnonymousBoardComment2);
-        Page<CmdAnonymousBoardComment> cmdAnonymousBoardCommentPage = new PageImpl<>(cmdAnonymousBoardCommentList);
-
-        when(cmdAnonymousBoardCommentRepository.findByAnonymousBoardId(eq(anonymousBoardId), any(Pageable.class))).thenReturn(cmdAnonymousBoardCommentPage);
-
-        Page<CmdAnonymousBoardCommentDTO> result = cmdAnonymousBoardCommentService.findAllAnonymousBoardComment(anonymousBoardId, Pageable.unpaged());
-
-        assertNotNull(result);
-        assertEquals(2, result.getTotalElements());
-        verify(cmdAnonymousBoardCommentRepository, times(1)).findByAnonymousBoardId(eq(anonymousBoardId), any(Pageable.class));
-    }
-
     // 댓글 작성
     @Test
     void saveAnonymousBoardComment_shouldSaveCmdAnonymousBoardComment() throws Exception {
@@ -91,13 +72,41 @@ public class CmdAnonymousBoardCommentServiceImplTests {
         verify(cmdAnonymousBoardCommentRepository, times(1)).save(any(CmdAnonymousBoardComment.class));
     }
 
+    // 댓글 작성 실패 (내용 누락)
+    @Test
+    void saveAnonymousBoardComment_shouldThrowIllegalArgumentException_whenContentIsMissing() {
+        CmdAnonymousBoardCommentDTO cmdAnonymousBoardCommentDTO = new CmdAnonymousBoardCommentDTO();
+        cmdAnonymousBoardCommentDTO.setNickname("익명");
+        cmdAnonymousBoardCommentDTO.setAnonymousBoardId(1);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            cmdAnonymousBoardCommentService.saveAnonymousBoardComment(cmdAnonymousBoardCommentDTO);
+        });
+
+        verify(cmdAnonymousBoardCommentRepository, never()).save(any(CmdAnonymousBoardComment.class));
+    }
+
     // 댓글 삭제
     @Test
     void deleteAnonymousBoardComment_shouldDeleteCmdAnonymousBoardComment() {
         int id = 1;
+        when(cmdAnonymousBoardCommentRepository.findById(eq(id))).thenReturn(Optional.of(cmdAnonymousBoardComment1));
 
         cmdAnonymousBoardCommentService.deleteAnonymousBoardComment(id);
 
-        verify(cmdAnonymousBoardCommentRepository, times(1)).deleteById(eq(id));
+        verify(cmdAnonymousBoardCommentRepository, times(1)).delete(eq(cmdAnonymousBoardComment1));
+    }
+
+    // 댓글 삭제 실패 (댓글 없음)
+    @Test
+    void deleteAnonymousBoardComment_shouldThrowNoSuchElementException_whenAnonymousBoardCommentNotFound() {
+        int id = 1;
+        when(cmdAnonymousBoardCommentRepository.findById(eq(id))).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> {
+            cmdAnonymousBoardCommentService.deleteAnonymousBoardComment(id);
+        });
+
+        verify(cmdAnonymousBoardCommentRepository, never()).delete(any(CmdAnonymousBoardComment.class));
     }
 }

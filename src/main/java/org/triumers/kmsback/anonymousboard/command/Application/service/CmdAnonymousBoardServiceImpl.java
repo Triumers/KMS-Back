@@ -1,14 +1,16 @@
 package org.triumers.kmsback.anonymousboard.command.Application.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardDTO;
 import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAnonymousBoard;
 import org.triumers.kmsback.anonymousboard.command.domain.repository.CmdAnonymousBoardRepository;
 import org.triumers.kmsback.common.util.MacAddressUtil;
+
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class CmdAnonymousBoardServiceImpl implements CmdAnonymousBoardService {
@@ -32,37 +34,17 @@ public class CmdAnonymousBoardServiceImpl implements CmdAnonymousBoardService {
         return dto;
     }
 
-    // 1. 게시글 조회(페이징 처리까지)
-    @Transactional(readOnly = true)
-    public Page<CmdAnonymousBoardDTO> findAllAnonymousBoard(Pageable pageable) {
-        Page<CmdAnonymousBoard> cmdAnonymousBoardPage = cmdAnonymousBoardRepository.findAll(pageable);
-        return cmdAnonymousBoardPage.map(this::convertToDto);
-    }
-
-    // 2-1. 제목으로 게시글 검색
-    @Transactional(readOnly = true)
-    public Page<CmdAnonymousBoardDTO> searchAnonymousBoardByTitle(String title, Pageable pageable) {
-        Page<CmdAnonymousBoard> cmdAnonymousBoardPage = cmdAnonymousBoardRepository.findByTitleContaining(title, pageable);
-        return cmdAnonymousBoardPage.map(this::convertToDto);
-    }
-
-    // 2-2. 내용으로 게시글 검색
-    @Transactional(readOnly = true)
-    public Page<CmdAnonymousBoardDTO> searchAnonymousBoardByContent(String content, Pageable pageable) {
-        Page<CmdAnonymousBoard> cmdAnonymousBoardPage = cmdAnonymousBoardRepository.findByContentContaining(content, pageable);
-        return cmdAnonymousBoardPage.map(this::convertToDto);
-    }
-
-    // 2-3. 제목+내용으로 게시글 검색
-    @Transactional(readOnly = true)
-    public Page<CmdAnonymousBoardDTO> searchAnonymousBoardByTitleAndContent(String keyword, Pageable pageable) {
-        Page<CmdAnonymousBoard> cmdAnonymousBoardPage = cmdAnonymousBoardRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
-        return cmdAnonymousBoardPage.map(this::convertToDto);
-    }
-
-    // 3. 게시글 작성
+    // 게시글 작성
     @Transactional
     public CmdAnonymousBoardDTO saveAnonymousBoard(CmdAnonymousBoardDTO cmdAnonymousBoardDTO) {
+        // 입력 값 유효성 검사
+        if (cmdAnonymousBoardDTO.getTitle() == null || cmdAnonymousBoardDTO.getTitle().isEmpty()) {
+            throw new IllegalArgumentException("Title is required.");
+        }
+        if (cmdAnonymousBoardDTO.getContent() == null || cmdAnonymousBoardDTO.getContent().isEmpty()) {
+            throw new IllegalArgumentException("Content is required.");
+        }
+
         try {
             // MAC 주소 가져오기
             String macAddress = MacAddressUtil.getMacAddress();
@@ -75,18 +57,22 @@ public class CmdAnonymousBoardServiceImpl implements CmdAnonymousBoardService {
 
             CmdAnonymousBoard savedCmdAnonymousBoard = cmdAnonymousBoardRepository.save(cmdAnonymousBoard);
             return convertToDto(savedCmdAnonymousBoard);
+        } catch (DataAccessException e) {
+            // 데이터베이스 오류 처리
+            throw new RuntimeException("Failed to save anonymous board.", e);
         } catch (Exception e) {
             // MAC 주소를 가져오는 과정에서 예외 발생 시 처리
-            // 예외 처리 로직 추가
-            e.printStackTrace();
             throw new RuntimeException("Failed to get MAC address.", e);
         }
     }
 
-    // 4. 게시글 삭제
+    // 게시글 삭제
     @Transactional
     public void deleteAnonymousBoard(int id) {
-        cmdAnonymousBoardRepository.deleteById(id);
+        Optional<CmdAnonymousBoard> optionalCmdAnonymousBoard = cmdAnonymousBoardRepository.findById(id);
+        CmdAnonymousBoard cmdAnonymousBoard = optionalCmdAnonymousBoard.orElseThrow(
+                () -> new NoSuchElementException("Anonymous board not found with id: " + id)
+        );
+        cmdAnonymousBoardRepository.delete(cmdAnonymousBoard);
     }
-
 }

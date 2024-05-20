@@ -27,4 +27,12 @@ public class CmdTabRelationDTO {
         this.bottomTabId = bottomTabId;
         this.topTabId = topTabId;
     }
+
+    public CmdTabRelationDTO(Integer id, Boolean isPublic, Integer bottomTabId, Integer topTabId, Integer teamId) {
+        this.id = id;
+        this.isPublic = isPublic;
+        this.bottomTabId = bottomTabId;
+        this.topTabId = topTabId;
+        this.teamId = teamId;
+    }
 }

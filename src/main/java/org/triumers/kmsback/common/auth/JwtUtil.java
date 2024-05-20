@@ -1,4 +1,4 @@
-package org.triumers.kmsback.common.jwt;
+package org.triumers.kmsback.common.auth;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -46,11 +46,12 @@ public class JwtUtil {
         }
     }
 
-    public String createJwt(String email, UserRole role) {
+    public String createJwt(String email, UserRole role, String name) {
 
         return Jwts.builder()
                 .claim("email", email)
                 .claim("role", role)
+                .claim("name", name)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)

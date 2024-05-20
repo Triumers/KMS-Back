@@ -6,9 +6,9 @@ import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdJoinEmployee
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTabRelation;
 
 public interface CmdTabService {
-    CmdJoinEmployee addEmployeeTab(CmdJoinEmployeeDTO employee);
+    CmdJoinEmployeeDTO addEmployeeTab(CmdJoinEmployeeDTO employee);
 
-    CmdJoinEmployee deleteEmployeeTab(CmdJoinEmployeeDTO employee);
+    CmdJoinEmployeeDTO deleteEmployeeTab(CmdJoinEmployeeDTO employee);
 
-    CmdTabRelation registTab(CmdTabRelationDTO tabRelation, int employeeId);
+    CmdTabRelationDTO registTab(CmdTabRelationDTO tabRelation, int employeeId);
 }

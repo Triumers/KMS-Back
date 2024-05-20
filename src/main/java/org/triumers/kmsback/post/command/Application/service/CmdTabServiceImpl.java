@@ -24,35 +24,42 @@ public class CmdTabServiceImpl implements CmdTabService{
 
     @Override
     @Transactional
-    public CmdJoinEmployee addEmployeeTab(CmdJoinEmployeeDTO employee) {
+    public CmdJoinEmployeeDTO addEmployeeTab(CmdJoinEmployeeDTO employee) {
         CmdJoinEmployee newEmployee = new CmdJoinEmployee(employee.getIsLeader(),employee.getEmployeeId(),
                                                           employee.getTabId());
-        return cmdJoinEmployeeRepository.save(newEmployee);
+        cmdJoinEmployeeRepository.save(newEmployee);
+
+        CmdJoinEmployeeDTO joinEmployeeDTO = new CmdJoinEmployeeDTO(newEmployee.getId(), newEmployee.getIsLeader(), newEmployee.getEmployeeId(), newEmployee.getTabId());
+        return joinEmployeeDTO;
     }
 
     @Override
     @Transactional
-    public CmdJoinEmployee deleteEmployeeTab(CmdJoinEmployeeDTO employee) {
+    public CmdJoinEmployeeDTO deleteEmployeeTab(CmdJoinEmployeeDTO employee) {
 
         CmdJoinEmployee deleteEmployee = cmdJoinEmployeeRepository
                                          .findByEmployeeIdAndTabId(employee.getEmployeeId(), employee.getTabId());
 
         cmdJoinEmployeeRepository.deleteById(deleteEmployee.getId());
 
-        return deleteEmployee;
+        CmdJoinEmployeeDTO deleteEmployeeDTO = new CmdJoinEmployeeDTO(deleteEmployee.getId(), deleteEmployee.getIsLeader(), deleteEmployee.getEmployeeId(), deleteEmployee.getTabId());
+        return deleteEmployeeDTO;
     }
 
     @Override
     @Transactional
-    public CmdTabRelation registTab(CmdTabRelationDTO tabRelation, int employeeId) {
+    public CmdTabRelationDTO registTab(CmdTabRelationDTO tabRelation, int employeeId) {
 
         CmdTabRelation newTab = new CmdTabRelation(tabRelation.getIsPublic(), tabRelation.getBottomTabId(),
-                                                   tabRelation.getTopTabId());
+                                                   tabRelation.getTopTabId(), tabRelation.getTeamId());
         cmdTabRelationRepository.save(newTab);
 
         CmdJoinEmployeeDTO joinEmployee = new CmdJoinEmployeeDTO(true, employeeId, newTab.getId());
         addEmployeeTab(joinEmployee);
 
-        return newTab;
+        CmdTabRelationDTO newTabRelation = new CmdTabRelationDTO(newTab.getId(), newTab.getIsPublic(),
+                newTab.getBottomTabId(), newTab.getTopTabId(), newTab.getTeamId());
+
+        return newTabRelation;
     }
 }

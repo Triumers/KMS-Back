@@ -13,8 +13,13 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
+import org.triumers.kmsback.common.auth.JwtFilter;
+import org.triumers.kmsback.common.auth.JwtUtil;
+import org.triumers.kmsback.common.auth.LoginFilter;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,9 +29,11 @@ import java.util.List;
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtUtil jwtUtil;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtUtil jwtUtil) {
         this.authenticationConfiguration = authenticationConfiguration;
+        this.jwtUtil = jwtUtil;
     }
 
     @Bean
@@ -45,8 +52,9 @@ public class SecurityConfig {
 
         RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
 
-        hierarchy.setHierarchy("ROLE_ADMIN > ROLE_MANAGER\n" +
-                "ROLE_MANAGER > ROLE_USER");
+        hierarchy.setHierarchy("ROLE_ADMIN > ROLE_HR_MANAGER\n" +
+                               "ROLE_HR_MANAGER > ROLE_LEADER\n" +
+                               "ROLE_LEADER > ROLE_NORMAL");
 
         return hierarchy;
     }
@@ -86,8 +94,15 @@ public class SecurityConfig {
         //경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/**").permitAll()
-//                .requestMatchers("/auth/signup").permitAll()
+                .requestMatchers("/auth/signup").hasAnyRole("HR_MANAGER")
                 .anyRequest().authenticated());
+
+        // JWT 필터
+        http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
+
+        // 로그인 필터
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
+                UsernamePasswordAuthenticationFilter.class);
 
         //세션 설정
         http.sessionManagement((session) -> session
