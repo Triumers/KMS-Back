@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.triumers.kmsback.group.query.repository.GroupMapper">
+
+    <resultMap id="employeeGroupMap" type="org.triumers.kmsback.group.query.dto.QryGroupDTO">
+        <result property="employeeId" column="employeeId"/>
+        <result property="employeeName" column="employeeName"/>
+        <result property="teamId" column="teamId"/>
+        <result property="teamName" column="teamName"/>
+        <result property="departmentId" column="departmentId"/>
+        <result property="departmentName" column="departmentName"/>
+        <result property="centerId" column="centerId"/>
+        <result property="centerName" column="centerName"/>
+        <result property="tabId" column="tabRelationId"/>
+        <result property="topTabId" column="topTabId"/>
+        <result property="topTabName" column="topTabName"/>
+        <result property="bottomTabId" column="bottomTabId"/>
+        <result property="bottomTabName" column="bottomTabName"/>
+        <result property="isPublic" column="isPublic"/>
+        <result property="isLeader" column="isLeader"/>
+    </resultMap>
+
+    <!-- 직원 ID로 본인이 속한 팀과 그룹을 조회하는 쿼리 -->
+    <select id="findGroupByEmployeeId" parameterType="int" resultMap="employeeGroupMap">
+        SELECT
+        team.ID AS teamId,
+        team.NAME AS teamName,
+        dept.ID AS departmentId,
+        dept.NAME AS departmentName,
+        center.ID AS centerId,
+        center.NAME AS centerName,
+        tabRel.ID AS tabRelationId,
+        tabTop.ID AS topTabId,
+        tabTop.NAME AS topTabName,
+        tabBottom.ID AS bottomTabId,
+        tabBottom.NAME AS bottomTabName,
+        tabRel.IS_PUBLIC AS isPublic,
+        joinEmp.IS_LEADER AS isLeader
+        FROM
+        tbl_join_employee AS joinEmp
+        JOIN tbl_tab_relation AS tabRel ON joinEmp.TAB_ID = tabRel.ID
+        LEFT JOIN tbl_tab_top AS tabTop ON tabRel.TOP_TAB_ID = tabTop.ID
+        LEFT JOIN tbl_tab_bottom AS tabBottom ON tabRel.BOTTOM_TAB_ID = tabBottom.ID
+        JOIN tbl_employee AS emp ON joinEmp.EMPLOYEE_ID = emp.ID
+        JOIN tbl_team AS team ON emp.TEAM_ID = team.ID
+        JOIN tbl_department AS dept ON team.DEPARTMENT_ID = dept.ID
+        JOIN tbl_center AS center ON dept.CENTER_ID = center.ID
+        WHERE emp.ID = #{employeeId}
+    </select>
+
+</mapper>
