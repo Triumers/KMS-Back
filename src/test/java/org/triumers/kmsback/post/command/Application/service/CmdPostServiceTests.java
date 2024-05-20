@@ -27,7 +27,6 @@ public class CmdPostServiceTests {
     }
 
     @Test
-    @Order(1)
     @DisplayName("게시글 저장")
     void registPost() {
 
@@ -39,7 +38,6 @@ public class CmdPostServiceTests {
     }
 
     @Test
-    @Order(2)
     @DisplayName("게시글 수정")
     void modifyPost() {
 
@@ -62,7 +60,6 @@ public class CmdPostServiceTests {
     }
 
     @Test
-    @Order(5)
     @DisplayName("게시글 삭제")
     void deletePost(){
 
@@ -73,7 +70,6 @@ public class CmdPostServiceTests {
     }
 
     @Test
-    @Order(3)
     @DisplayName("게시글 좋아요/삭제")
     void likePost() {
 

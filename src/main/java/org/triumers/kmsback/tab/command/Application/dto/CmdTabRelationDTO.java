@@ -1,6 +1,5 @@
-package org.triumers.kmsback.post.command.Application.dto;
+package org.triumers.kmsback.tab.command.Application.dto;
 
-import jakarta.persistence.*;
 import lombok.Data;
 
 @Data

@@ -1,8 +1,8 @@
-package org.triumers.kmsback.post.command.domain.aggregate.entity;
+package org.triumers.kmsback.tab.command.domain.aggregate.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
 @Entity

@@ -1,4 +1,4 @@
-package org.triumers.kmsback.post.command.Application.service;
+package org.triumers.kmsback.tab.command.Application.service;
 
 import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.DisplayName;
@@ -6,16 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import org.triumers.kmsback.post.command.Application.dto.CmdJoinEmployeeDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdTabDTO;
-import org.triumers.kmsback.post.command.Application.dto.CmdTabRelationDTO;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdJoinEmployee;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTabRelation;
-import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTabTop;
-import org.triumers.kmsback.post.command.domain.repository.CmdJoinEmployeeRepository;
+import org.triumers.kmsback.tab.command.Application.dto.CmdJoinEmployeeDTO;
+import org.triumers.kmsback.tab.command.Application.dto.CmdTabDTO;
+import org.triumers.kmsback.tab.command.Application.dto.CmdTabRelationDTO;
+import org.triumers.kmsback.tab.command.domain.repository.CmdJoinEmployeeRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Transactional
 @SpringBootTest

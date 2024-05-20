@@ -1,4 +1,4 @@
-package org.triumers.kmsback.post.query.aggregate.entity;
+package org.triumers.kmsback.tab.query.aggregate.entity;
 
 import lombok.Data;
 
