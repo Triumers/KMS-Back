@@ -7,6 +7,7 @@ import org.triumers.kmsback.quiz.command.domain.aggregate.entity.CmdAnswerSubmit
 import org.triumers.kmsback.quiz.command.domain.aggregate.vo.CmdRequestAnswerSubmitVo;
 import org.triumers.kmsback.quiz.command.domain.repository.CmdAnswerSubmitterRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -28,6 +29,7 @@ public class CmdAnswerSubmitterServiceImpl implements CmdAnswerSubmitterService 
         dto.setStatus(cmdAnswerSubmitter.isStatus());
         dto.setQuizId(cmdAnswerSubmitter.getQuizId());
         dto.setEmployeeId(cmdAnswerSubmitter.getEmployeeId());
+        dto.setDeletedAt(cmdAnswerSubmitter.getDeletedAt());
         return dto;
     }
 
@@ -44,6 +46,7 @@ public class CmdAnswerSubmitterServiceImpl implements CmdAnswerSubmitterService 
                     request.getEmployeeId()
             );
             CmdAnswerSubmitter submitAnswer = cmdAnswerSubmitterRepository.saveAndFlush(cmdAnswerSubmitter);
+            System.out.println("Answer Submitted: " + submitAnswer.getAnswer());
             return toDto(submitAnswer);
         } catch (Exception e) {
             throw new RuntimeException("Error while saving answer", e);
@@ -65,6 +68,7 @@ public class CmdAnswerSubmitterServiceImpl implements CmdAnswerSubmitterService 
                         request.getEmployeeId()
                 );
                 CmdAnswerSubmitter editAnswer = cmdAnswerSubmitterRepository.saveAndFlush(cmdAnswerSubmitter);
+                System.out.println("Answer Edited: " + editAnswer.getAnswer());
                 return toDto(editAnswer);
             }  catch (Exception e) {
                 throw new RuntimeException("Error while updating answer", e);
@@ -80,8 +84,10 @@ public class CmdAnswerSubmitterServiceImpl implements CmdAnswerSubmitterService 
         Optional<CmdAnswerSubmitter> answerOptional = cmdAnswerSubmitterRepository.findById(Long.valueOf(id));
         if (answerOptional.isPresent()) {
             CmdAnswerSubmitter cmdAnswerSubmitter = answerOptional.get();
+            cmdAnswerSubmitter.setDeletedAt(LocalDateTime.now());
             try {
                 cmdAnswerSubmitterRepository.delete(cmdAnswerSubmitter);
+                System.out.println("Answer Removed: " + cmdAnswerSubmitter.getAnswer());
                 return toDto(cmdAnswerSubmitter);
             } catch (Exception e) {
                 throw new RuntimeException("Error while deleting answer", e);
