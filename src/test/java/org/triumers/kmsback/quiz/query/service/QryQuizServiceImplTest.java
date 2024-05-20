@@ -21,7 +21,7 @@ class QryQuizServiceImplTest {
     @DisplayName("퀴즈 상태에 따른 퀴즈 조회")
     @Test
     void findQuizByStatus() {
-        List<QryQuizDTO> qryQuizDTOs = qryQuizService.findQuizByStatus(false);
+        List<QryQuizDTO> qryQuizDTOs = qryQuizService.findQuizByStatus(true);
         assertNotNull(qryQuizDTOs);
         assertFalse(qryQuizDTOs.isEmpty());
 

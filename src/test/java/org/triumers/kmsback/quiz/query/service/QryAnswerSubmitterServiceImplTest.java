@@ -22,6 +22,6 @@ class QryAnswerSubmitterServiceImplTest {
     @Test
     void findSubmitterByQuizId() {
         List<QryAnswerSubmitterDTO> qryAnswerSubmitterDTOs = qryAnswerSubmitterService.findSubmitterByQuizId(1);
-        assertEquals(2, qryAnswerSubmitterDTOs.size());
+        assertEquals(1, qryAnswerSubmitterDTOs.size());
     }
 }

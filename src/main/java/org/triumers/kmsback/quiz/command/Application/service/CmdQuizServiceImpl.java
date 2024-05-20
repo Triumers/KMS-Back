@@ -31,7 +31,7 @@ public class CmdQuizServiceImpl implements CmdQuizService {
         dto.setStatus(cmdQuiz.isStatus());
         dto.setQuestionerId(cmdQuiz.getQuestionerId());
         dto.setPostId(cmdQuiz.getPostId());
-        dto.setTopTapId(cmdQuiz.getTopTapId());
+        dto.setTapId(cmdQuiz.getTopTapId());
         return dto;
     }
 
@@ -47,7 +47,7 @@ public class CmdQuizServiceImpl implements CmdQuizService {
                     request.isStatus(),
                     request.getQuestionerId(),
                     request.getPostId(),
-                    request.getTopTapId()
+                    request.getTapId()
             );
             CmdQuiz registQuiz = cmdQuizRepository.save(cmdQuiz);
             return toDto(registQuiz);
@@ -72,7 +72,7 @@ public class CmdQuizServiceImpl implements CmdQuizService {
                         request.isStatus(),
                         request.getQuestionerId(),
                         request.getPostId(),
-                        request.getTopTapId()
+                        request.getTapId()
                 );
                 CmdQuiz editedQuiz = cmdQuizRepository.save(cmdQuiz);
                 return toDto(editedQuiz);
