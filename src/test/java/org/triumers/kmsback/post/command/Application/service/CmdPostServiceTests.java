@@ -19,7 +19,7 @@ public class CmdPostServiceTests {
 
     private final CmdPostService cmdPostService;
 
-    private final int RIGHT_POST_ID = 16;
+    private final int RIGHT_POST_ID = 1;
 
     @Autowired
     public CmdPostServiceTests(CmdPostService cmdPostService) {
