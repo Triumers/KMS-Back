@@ -35,6 +35,6 @@ public class CmdQuiz {
     @Column(name = "POST_ID")
     private int postId;
 
-    @Column(name = "TOP_TAB_ID")
+    @Column(name = "TAB_ID")
     private int topTapId;
 }

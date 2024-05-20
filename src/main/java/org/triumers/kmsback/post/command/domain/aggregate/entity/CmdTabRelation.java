@@ -16,7 +16,7 @@ public class CmdTabRelation {
     @Column(name = "IS_PUBLIC", nullable = false)
     private Boolean isPublic;
 
-    @Column(name = "BOTTOM_TAB_ID", nullable = false)
+    @Column(name = "BOTTOM_TAB_ID")
     private Integer bottomTabId;
 
     @Column(name = "TOP_TAB_ID", nullable = false)

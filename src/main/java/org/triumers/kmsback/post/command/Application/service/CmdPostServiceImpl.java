@@ -1,13 +1,14 @@
 package org.triumers.kmsback.post.command.Application.service;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.triumers.kmsback.employee.command.Application.service.CmdEmployeeService;
 import org.triumers.kmsback.post.command.Application.dto.*;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.*;
 import org.triumers.kmsback.post.command.domain.repository.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,75 +19,103 @@ public class CmdPostServiceImpl implements CmdPostService {
     private final CmdPostTagRepository cmdPostTagRepository;
     private final CmdLikeRepository cmdLikeRepository;
     private final CmdFavoritesRepository cmdFavoritesRepository;
+    private final CmdEmployeeService cmdEmployeeService;
+
+//    private final NotificationService notificationService;
 
     @Autowired
     public CmdPostServiceImpl(CmdPostRepository cmdPostRepository,
-                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository) {
+                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository, CmdEmployeeService cmdEmployeeService) {
         this.cmdPostRepository = cmdPostRepository;
         this.cmdTagRepository = cmdTagRepository;
         this.cmdPostTagRepository = cmdPostTagRepository;
         this.cmdLikeRepository = cmdLikeRepository;
         this.cmdFavoritesRepository = cmdFavoritesRepository;
+        this.cmdEmployeeService = cmdEmployeeService;
     }
 
     @Override
-    @Transactional
-    public CmdPost registPost(CmdPostAndTagsDTO post) {
+    public CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post) {
 
         CmdPost registPost = new CmdPost(post.getTitle(), post.getContent(), post.getCreatedAt(),
-                post.getAuthorId(), post.getOriginId(), post.getTabRelationId());
+                post.getAuthorId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
         cmdPostRepository.save(registPost);
 
-        registTag(post.getTags(), registPost.getId());
+        List<CmdTag> tags = registTag(post.getTags(), registPost.getId());
 
-        return registPost;
+        post.setId(registPost.getId());
+        post.setTags(convertTagToTagDTO(tags));
+
+        return post;
     }
 
-    public void registTag(List<CmdTagDTO> tags, int postId) {
+    public List<CmdTag> registTag(List<CmdTagDTO> tags, int postId) {
 
+        List<CmdTag> tagList = new ArrayList<>();
         for (int i = 0; i < tags.size(); i++) {
             CmdTagDTO tagDTO = tags.get(i);
 
-            CmdTag tag = new CmdTag(tagDTO.getId(), tagDTO.getName());
-            cmdTagRepository.save(tag);
+            CmdTag tag = cmdTagRepository.getByName(tagDTO.getName());
+            if(tag == null){
+                tag = new CmdTag(tagDTO.getName());
+                cmdTagRepository.save(tag);
+            }
+            tagList.add(tag);
 
             CmdPostTag postTag = new CmdPostTag(tag.getId(), postId);
             cmdPostTagRepository.save(postTag);
         }
+
+        return tagList;
     }
 
     @Override
-    @Transactional
-    public CmdPost modifyPost(CmdPostAndTagsDTO post) {
+    public CmdPostAndTagsDTO modifyPost(CmdPostAndTagsDTO post) {
 
-        CmdPost modifypost = registPost(post);
-        CmdPost originPost = cmdPostRepository.findById(post.getOriginId()).orElseThrow(IllegalArgumentException::new);
+        CmdPostAndTagsDTO modifypost = registPost(post);
+
+        CmdPost originPost = cmdPostRepository.findById(modifypost.getOriginId()).orElseThrow(IllegalArgumentException::new);
         originPost.setRecentId(modifypost.getId());
+        originPost.setIsEditing(false);
+        cmdPostRepository.save(originPost);
 
-        return cmdPostRepository.save(originPost);
+        // 추후 yml 수정 후 주석 제거
+//        try {
+//            CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(originPost.getAuthorId());
+//            notificationService.sendMailMime(employeeDTO, originPost);
+//        } catch (MessagingException e) {
+//            throw new RuntimeException(e);
+//        }
+
+        return modifypost;
 
     }
 
     @Override
-    @Transactional
-    public CmdPost deletePost(int postId) {
+    public CmdPostAndTagsDTO deletePost(int postId) {
 
         CmdPost deletePost = cmdPostRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
-        deletePost.setDeletedAt(LocalDate.now());
+        deletePost.setDeletedAt(LocalDateTime.now());
+        cmdPostRepository.save(deletePost);
 
-        return cmdPostRepository.save(deletePost);
+        CmdPostAndTagsDTO deletedPost = new CmdPostAndTagsDTO(deletePost.getId(), deletePost.getTitle(), deletePost.getContent(),
+                deletePost.getCreatedAt(), deletePost.getDeletedAt(), deletePost.getAuthorId(),
+                deletePost.getOriginId(), deletePost.getRecentId(), deletePost.getTabRelationId(), deletePost.getCategoryId());
+
+        return deletedPost;
     }
 
     @Override
-    @Transactional
-    public CmdLike likePost(CmdLikeDTO like) {
+    public CmdLikeDTO likePost(CmdLikeDTO like) {
 
         try {
             CmdLike likePost = cmdLikeRepository.findByEmployeeIdAndPostId(like.getEmployeeId(), like.getPostId());
 
             if (likePost != null) { //unlike
                 cmdLikeRepository.deleteById(likePost.getId());
-                return likePost;
+
+                CmdLikeDTO likeDTO = new CmdLikeDTO(likePost.getId(), likePost.getEmployeeId(), likePost.getPostId());
+                return likeDTO;
             }
         } catch (Exception e) {
 
@@ -94,24 +123,48 @@ public class CmdPostServiceImpl implements CmdPostService {
 
         // like
         CmdLike likePost = new CmdLike(like.getEmployeeId(), like.getPostId());
-        return cmdLikeRepository.save(likePost);
+        cmdLikeRepository.save(likePost);
+
+        CmdLikeDTO likeDTO = new CmdLikeDTO(likePost.getId(), likePost.getEmployeeId(), likePost.getPostId());
+        return likeDTO;
     }
 
     @Override
-    @Transactional
-    public CmdFavorites favoritePost(CmdFavoritesDTO favorite) {
+    public CmdFavoritesDTO favoritePost(CmdFavoritesDTO favorite) {
         try {
             CmdFavorites favoritePost = cmdFavoritesRepository.findByEmployeeIdAndPostId(favorite.getEmployeeId(), favorite.getPostId());
             if (favoritePost != null) {  // unfavorite
                 cmdFavoritesRepository.deleteById(favoritePost.getId());
-                return favoritePost;
+                CmdFavoritesDTO favoritesDTO = new CmdFavoritesDTO(favoritePost.getId(), favoritePost.getEmployeeId(), favoritePost.getPostId());
+                return favoritesDTO;
             }
         } catch (Exception e) {
         }
 
         // favorite
         CmdFavorites favoritePost = new CmdFavorites(favorite.getEmployeeId(), favorite.getPostId());
-        return cmdFavoritesRepository.save(favoritePost);
+        cmdFavoritesRepository.save(favoritePost);
+
+        CmdFavoritesDTO favoritesDTO = new CmdFavoritesDTO(favoritePost.getId(), favoritePost.getEmployeeId(), favoritePost.getPostId());
+        return favoritesDTO;
+    }
+
+    @Override
+    public void changeEditing(int id) {
+       CmdPost post = cmdPostRepository.findById(id).orElseThrow(IllegalAccessError::new);
+       post.setIsEditing(!post.getIsEditing());
+       cmdPostRepository.save(post);
+    }
+
+    private List<CmdTagDTO> convertTagToTagDTO(List<CmdTag> tagList){
+
+        List<CmdTagDTO> tagDTOList = new ArrayList<>();
+        for (int i = 0; i < tagList.size(); i++) {
+            CmdTag tag = tagList.get(i);
+            CmdTagDTO tagDTO = new CmdTagDTO(tag.getId(), tag.getName());
+            tagDTOList.add(tagDTO);
+        }
+        return tagDTOList;
     }
 
 }

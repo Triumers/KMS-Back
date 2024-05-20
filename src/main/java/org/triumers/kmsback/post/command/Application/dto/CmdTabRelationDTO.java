@@ -8,23 +8,24 @@ public class CmdTabRelationDTO {
 
     private Integer id;
     private Boolean isPublic;
-    private Integer bottomTabId;
-    private Integer topTabId;
+    private CmdTabDTO bottomTab;
+    private CmdTabDTO topTab;
     private Integer teamId;
 
     public CmdTabRelationDTO() {
     }
 
-    public CmdTabRelationDTO(Boolean isPublic, Integer bottomTabId, Integer topTabId, Integer teamId) {
+    public CmdTabRelationDTO(Integer id, Boolean isPublic, CmdTabDTO bottomTab, CmdTabDTO topTab, Integer teamId) {
+        this.id = id;
         this.isPublic = isPublic;
-        this.bottomTabId = bottomTabId;
-        this.topTabId = topTabId;
+        this.bottomTab = bottomTab;
+        this.topTab = topTab;
         this.teamId = teamId;
     }
 
-    public CmdTabRelationDTO(Boolean isPublic, Integer bottomTabId, Integer topTabId) {
+    public CmdTabRelationDTO(Boolean isPublic, CmdTabDTO bottomTab, CmdTabDTO topTab) {
         this.isPublic = isPublic;
-        this.bottomTabId = bottomTabId;
-        this.topTabId = topTabId;
+        this.bottomTab = bottomTab;
+        this.topTab = topTab;
     }
 }

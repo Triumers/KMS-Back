@@ -8,13 +8,15 @@ import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdLike;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
 
 public interface CmdPostService {
-    CmdPost registPost(CmdPostAndTagsDTO post);
+    CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post);
 
-    CmdPost modifyPost(CmdPostAndTagsDTO post);
+    CmdPostAndTagsDTO modifyPost(CmdPostAndTagsDTO post);
 
-    CmdPost deletePost(int postId);
+    CmdPostAndTagsDTO deletePost(int postId);
 
-    CmdLike likePost(CmdLikeDTO like);
+    CmdLikeDTO likePost(CmdLikeDTO like);
 
-    CmdFavorites favoritePost(CmdFavoritesDTO favorite);
+    CmdFavoritesDTO favoritePost(CmdFavoritesDTO favorite);
+
+    void changeEditing(int id);
 }
