@@ -12,7 +12,7 @@
         <result property="status" column="STATUS"/>
         <result property="questionId" column="QUESTION_ID"/>
         <result property="postId" column="POST_ID"/>
-        <result property="topTapId" column="TOP_TAB_ID"/>
+        <result property="tapId" column="TAB_ID"/>
     </resultMap>
 
     <select id="findQuizByStatus" resultMap="quizResultMap" parameterType="org.triumers.kmsback.quiz.query.aggregate.entity.QryQuiz">
@@ -24,7 +24,7 @@
         , STATUS
         , QUESTIONER_ID
         , POST_ID
-        , TOP_TAB_ID
+        , TAB_ID
         FROM tbl_quiz
         WHERE STATUS = #{status}
     </select>
@@ -38,7 +38,7 @@
              , STATUS
              , QUESTIONER_ID
              , POST_ID
-             , TOP_TAB_ID
+             , TAB_ID
           FROM tbl_quiz
          WHERE ID = #{id}
     </select>

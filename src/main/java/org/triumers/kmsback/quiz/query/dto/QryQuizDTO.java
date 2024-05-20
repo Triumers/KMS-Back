@@ -8,7 +8,7 @@ public class QryQuizDTO {
     private boolean status;
     private int questionerId;
     private int postId;
-    private int topTapId;
+    private int tapId;
 
     public QryQuizDTO() {
     }
@@ -17,7 +17,7 @@ public class QryQuizDTO {
         this.status = status;
     }
 
-    public QryQuizDTO(int id, String content, String answer, String commentary, boolean status, int questionerId, int postId, int topTapId) {
+    public QryQuizDTO(int id, String content, String answer, String commentary, boolean status, int questionerId, int postId, int tapId) {
         this.id = id;
         this.content = content;
         this.answer = answer;
@@ -25,7 +25,7 @@ public class QryQuizDTO {
         this.status = status;
         this.questionerId = questionerId;
         this.postId = postId;
-        this.topTapId = topTapId;
+        this.tapId = tapId;
     }
 
     public int getId() {
@@ -84,12 +84,12 @@ public class QryQuizDTO {
         this.postId = postId;
     }
 
-    public int getTopTapId() {
-        return topTapId;
+    public int getTapId() {
+        return tapId;
     }
 
-    public void setTopTapId(int topTapId) {
-        this.topTapId = topTapId;
+    public void setTapId(int tapId) {
+        this.tapId = tapId;
     }
 
     @Override
@@ -102,7 +102,7 @@ public class QryQuizDTO {
                 ", status=" + status +
                 ", questionId=" + questionerId +
                 ", postId=" + postId +
-                ", topTapId=" + topTapId +
+                ", topTapId=" + tapId +
                 '}';
     }
 }
