@@ -16,11 +16,12 @@ public class QryPostAndTagsDTO {
     private Integer originId;
     private Integer recentId;
     private Integer tabRelationId;
+    private Integer categoryId;
     private List<QryTagDTO> tags;
     private List<QryPostAndTagsDTO> history;
 
     public QryPostAndTagsDTO(Integer id, String title, String content, LocalDate createdAt, CmdEmployeeDTO authorId,
-                             Integer originId, Integer recentId, Integer tabRelationId) {
+                             Integer originId, Integer recentId, Integer tabRelationId, Integer categoryId) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -29,7 +30,6 @@ public class QryPostAndTagsDTO {
         this.originId = originId;
         this.recentId = recentId;
         this.tabRelationId = tabRelationId;
+        this.categoryId = categoryId;
     }
-
-
 }

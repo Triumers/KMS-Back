@@ -60,7 +60,13 @@ public class Auth {
     @Column(name = "RANK_ID")
     private int rankId;
 
-    public void validation(String password) throws WrongInputTypeException {
+    public void validationWithoutPassword() throws WrongInputTypeException {
+        emailValidation();
+        nameValidation();
+        phoneNumberValidation();
+    }
+
+    public void validationAll(String password) throws WrongInputTypeException {
         emailValidation();
         passwordValidation(password);
         nameValidation();

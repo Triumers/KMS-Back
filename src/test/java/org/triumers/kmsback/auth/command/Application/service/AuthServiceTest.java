@@ -3,6 +3,7 @@ package org.triumers.kmsback.auth.command.Application.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,9 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.auth.command.Application.dto.AuthDTO;
 import org.triumers.kmsback.auth.command.Application.dto.PasswordDTO;
+import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
 import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.auth.command.domain.repository.AuthRepository;
 import org.triumers.kmsback.auth.command.domain.service.CustomUserDetailsService;
+import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
 import org.triumers.kmsback.common.exception.WrongInputValueException;
 
@@ -181,17 +184,57 @@ class AuthServiceTest {
         assertFalse(bCryptPasswordEncoder.matches(wrongPassword, authRepository.findByEmail(RIGHT_FORMAT_EMAIL).getPassword()));
     }
 
+    @DisplayName("사용자 정보 변경 테스트")
+    @ParameterizedTest
+    @CsvSource({
+            "NewName, 010-7777-7777, testImg.jpg",
+            ", 010-7777-7777, testImg.jpg",
+            "NewName, , testImg.jpg",
+            "NewName, 010-7777-7777, ",
+            ", , testImg.jpg",
+            "NewName, , ",
+            ", 010-7777-7777, "
+    })
+    void editMyInfo(String newName, String newPhoneNumber, String newProfileImg) throws WrongInputTypeException, NotLoginException {
 
+        // given
+        setSecurityContextHolderByUserName();
+
+        AuthDTO authDTO = new AuthDTO();
+        authDTO.setName(newName);
+        authDTO.setPhoneNumber(newPhoneNumber);
+        authDTO.setProfileImg(newProfileImg);
+
+        // when
+        authService.editMyInfo(authDTO);
+
+        // then
+        Auth auth = authRepository.findByEmail(RIGHT_FORMAT_EMAIL);
+
+        if (newName != null && !newName.isEmpty()) {
+            assertEquals(newName, auth.getName());
+        }
+        if (newPhoneNumber != null && !newPhoneNumber.isEmpty()) {
+            assertEquals(newPhoneNumber, auth.getPhoneNumber());
+        }
+        if (newProfileImg != null && !newProfileImg.isEmpty()) {
+            assertEquals(newProfileImg, auth.getProfileImg());
+        }
+    }
+
+    // 테스트용 계정 DTO 생성
     private AuthDTO createRightAuthDTO() {
         return new AuthDTO(RIGHT_FORMAT_EMAIL, RIGHT_FORMAT_PASSWORD, RIGHT_FORMAT_NAME, null,
                 RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
                 1);
     }
 
+    // 테스트용 계정 회원가입
     private void setUser() throws WrongInputTypeException {
         authService.signup(createRightAuthDTO());
     }
 
+    // 테스트용 계정으로 로그인
     private void setSecurityContextHolderByUserName() throws WrongInputTypeException {
         setUser();
         CustomUserDetailsService customUserDetailsService = new CustomUserDetailsService(authRepository);

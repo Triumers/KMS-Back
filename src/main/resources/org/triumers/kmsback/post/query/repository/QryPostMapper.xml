@@ -26,6 +26,7 @@
         <result property="originId" column="ORIGIN_ID"/>
         <result property="recentId" column="RECENT_ID"/>
         <result property="tabRelationId" column="TAB_RELATION_ID"/>
+        <result property="categoryId" column="CATEGORY_ID"/>
         <collection property="tags" resultMap="tagResultMap"/>
     </resultMap>
 
@@ -38,7 +39,8 @@
                A.AUTHOR_ID,
                A.ORIGIN_ID,
                A.RECENT_ID,
-               A.TAB_RELATION_ID
+               A.TAB_RELATION_ID,
+               A.CATEGORY_ID
           FROM tbl_post A
          WHERE ((A.ORIGIN_ID IS NULL AND A.RECENT_ID IS NULL AND A.DELETED_AT IS NULL)
             OR A.ID IN (
@@ -46,7 +48,10 @@
                          FROM tbl_post
                          WHERE (ORIGIN_ID IS NULL AND RECENT_ID IS NOT NULL AND DELETED_AT IS NULL)
                          ))
-           AND TAB_RELATION_ID = #{tabId}
+           AND A.TAB_RELATION_ID = #{request.tabRelationId}
+        <if test="request.categoryId != null">
+           AND A.CATEGORY_ID = #{request.categoryId}
+        </if>
          ORDER BY COALESCE(A.ORIGIN_ID, A.ID) ASC
          LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
     </select>
@@ -57,7 +62,7 @@
                B.NAME
           FROM tbl_post_tag A
           JOIN tbl_tag B ON (A.TAG_ID = B.ID)
-         WHERE A.POST_ID = #{postId};
+         WHERE A.POST_ID = #{postId}
     </select>
 
 
@@ -71,11 +76,12 @@
                A.ORIGIN_ID,
                A.RECENT_ID,
                A.TAB_RELATION_ID,
+               A.CATEGORY_ID,
                C.ID AS TAG_ID,
                C.NAME
           FROM tbl_post A
-          JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
-          JOIN tbl_tag C ON (B.TAG_ID = C.ID)
+          LEFT JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
+          LEFT JOIN tbl_tag C ON (B.TAG_ID = C.ID)
          WHERE CASE
           WHEN (SELECT D.RECENT_ID FROM tbl_post D WHERE D.ID = #{postId}) IS NULL
           THEN A.ID = #{postId}
@@ -93,11 +99,12 @@
                A.ORIGIN_ID,
                A.RECENT_ID,
                A.TAB_RELATION_ID,
+               A.CATEGORY_ID,
                C.ID AS TAG_ID,
                C.NAME
           FROM tbl_post A
-          JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
-          JOIN tbl_tag C ON (B.TAG_ID = C.ID)
+          LEFT JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
+          LEFT JOIN tbl_tag C ON (B.TAG_ID = C.ID)
          WHERE A.ID = #{originId}
             OR A.ORIGIN_ID = #{originId}
     </select>
@@ -106,9 +113,8 @@
         SELECT
                A.EMPLOYEE_ID
           FROM tbl_like A
-         WHERE A.POST_ID = #{postId};
+         WHERE A.POST_ID = #{postId}
     </select>
-
 
     <select id="countTabPostList" parameterType="_int" resultType="long">
         SELECT
@@ -121,6 +127,13 @@
                           WHERE (ORIGIN_ID IS NULL AND RECENT_ID IS NOT NULL AND DELETED_AT IS NULL)
                        ))
            AND TAB_RELATION_ID = #{tabId}
+    </select>
+
+    <select id="selectIsEditingByPostId" parameterType="_int" resultType="boolean">
+        SELECT
+               A.IS_EDITING
+          FROM tbl_post A
+         WHERE A.ID = #{postId}
     </select>
 
 </mapper>

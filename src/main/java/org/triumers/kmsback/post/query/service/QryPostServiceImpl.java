@@ -11,6 +11,7 @@ import org.triumers.kmsback.employee.query.service.QryEmployeeService;
 import org.triumers.kmsback.post.query.aggregate.entity.QryLike;
 import org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag;
 import org.triumers.kmsback.post.query.aggregate.entity.QryTag;
+import org.triumers.kmsback.post.query.aggregate.vo.QryRequestPost;
 import org.triumers.kmsback.post.query.dto.QryLikeDTO;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
 import org.triumers.kmsback.post.query.dto.QryPostDTO;
@@ -32,9 +33,9 @@ public class QryPostServiceImpl implements QryPostService {
     }
 
     @Override
-    public Page<QryPostAndTagsDTO> findPostListByTab(int tabId, Pageable pageable) {
+    public Page<QryPostAndTagsDTO> findPostListByTab(QryRequestPost request, Pageable pageable) {
 
-        List<QryPostAndTag> postList = qryPostMapper.selectTabPostList(tabId, pageable);
+        List<QryPostAndTag> postList = qryPostMapper.selectTabPostList(request, pageable);
         for (int i = 0; i < postList.size(); i++) {
             List<QryTag> tagList = qryPostMapper.selectTagList(postList.get(i).getId());
             postList.get(i).setTags(tagList);
@@ -42,7 +43,7 @@ public class QryPostServiceImpl implements QryPostService {
 
         List<QryPostAndTagsDTO> postDTOList = QryPostAndTagListToDTOList(postList);
 
-        long total = qryPostMapper.countTabPostList(tabId);
+        long total = qryPostMapper.countTabPostList(request.getTabRelationId());
 
         return new PageImpl<>(postDTOList, pageable, total);
     }
@@ -55,7 +56,7 @@ public class QryPostServiceImpl implements QryPostService {
 
         QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
                 post.getCreatedAt(), employeeDTO, post.getOriginId(),
-                post.getRecentId(), post.getTabRelationId());
+                post.getRecentId(), post.getTabRelationId(), post.getCategoryId());
 
         postDTO.setTags(convertTagToTagDTO(post.getTags()));
         postDTO.setHistory(findHistoryListByOriginId(postId));
@@ -84,6 +85,12 @@ public class QryPostServiceImpl implements QryPostService {
         return likeMemberList;
     }
 
+    @Override
+    public Boolean getIsEditingById(int postId) {
+
+        return qryPostMapper.selectIsEditingByPostId(postId);
+    }
+
     private List<QryPostAndTagsDTO> QryPostAndTagListToDTOList(List<QryPostAndTag> postList){
 
         List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
@@ -92,7 +99,7 @@ public class QryPostServiceImpl implements QryPostService {
             CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(post.getAuthorId());
             QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
                     post.getCreatedAt(), employeeDTO, post.getOriginId(),
-                    post.getRecentId(), post.getTabRelationId());
+                    post.getRecentId(), post.getTabRelationId(), post.getCategoryId());
             postDTO.setTags(convertTagToTagDTO(post.getTags()));
             postDTOList.add(postDTO);
         }
