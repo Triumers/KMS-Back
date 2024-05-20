@@ -27,9 +27,6 @@ class CmdTabServiceTests {
     private final int EMPLOYEE_ID = 1;
     private final int TAB_RELATION_ID = 1;
 
-    private final int TOP_ID = 1;
-    private final int BOTTOM_ID = 1;
-
     @Autowired
     CmdTabServiceTests(CmdTabService cmdTabService, CmdJoinEmployeeRepository cmdJoinEmployeeRepository) {
         this.cmdTabService = cmdTabService;
