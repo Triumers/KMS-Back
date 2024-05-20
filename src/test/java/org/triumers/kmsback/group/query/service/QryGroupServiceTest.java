@@ -23,8 +23,6 @@ class QryGroupServiceTest {
     @BeforeEach
     public void setUp() {
         qryGroupDTO = new QryGroupDTO();
-        qryGroupDTO.setEmployeeId(1);
-        qryGroupDTO.setEmployeeName("관리자");
         qryGroupDTO.setTeamId(1);
         qryGroupDTO.setTeamName("ROOT");
         qryGroupDTO.setDepartmentId(1);
