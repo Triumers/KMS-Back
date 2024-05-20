@@ -5,14 +5,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.auth.command.Application.dto.AuthDTO;
 import org.triumers.kmsback.auth.command.Application.dto.PasswordDTO;
 import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
 import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.auth.command.domain.repository.AuthRepository;
+import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
 import org.triumers.kmsback.common.exception.WrongInputValueException;
 
+@Transactional
 @Service
 public class AuthServiceImpl implements AuthService {
     private final String DEFAULT_PASSWORD;
@@ -32,20 +35,18 @@ public class AuthServiceImpl implements AuthService {
 
         Auth auth = authMapper(authDTO);
 
-        auth.validation(authDTO.getPassword());
+        auth.validationAll(authDTO.getPassword());
 
         authRepository.save(auth);
     }
 
     @Override
-    public void editPassword(PasswordDTO passwordDTO) throws WrongInputTypeException, WrongInputValueException {
+    public void editPassword(PasswordDTO passwordDTO) throws WrongInputTypeException, WrongInputValueException, NotLoginException {
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        Auth auth = authRepository.findByEmail(email);
+        Auth auth = whoAmI();
 
         if (bCryptPasswordEncoder.matches(passwordDTO.getOldPassword(), auth.getPassword())) {
-            auth.validation(passwordDTO.getNewPassword());
+            auth.validationAll(passwordDTO.getNewPassword());
             auth.setPassword(bCryptPasswordEncoder.encode(passwordDTO.getNewPassword()));
 
             authRepository.save(auth);
@@ -55,6 +56,41 @@ public class AuthServiceImpl implements AuthService {
         throw new WrongInputValueException();
     }
 
+    @Transactional
+    @Override
+    public void editMyInfo(AuthDTO authDTO) throws WrongInputTypeException, NotLoginException {
+
+        Auth auth = whoAmI();
+
+        if (authDTO.getName() != null) {
+            auth.setName(authDTO.getName());
+        }
+        if (authDTO.getPhoneNumber() != null) {
+            auth.setPhoneNumber(authDTO.getPhoneNumber());
+        }
+        if (authDTO.getProfileImg() != null) {
+            auth.setProfileImg(authDTO.getProfileImg());
+        }
+
+        auth.validationWithoutPassword();
+
+        authRepository.save(auth);
+    }
+
+    // 현재 로그인된 계정 정보 조회
+    private Auth whoAmI() throws NotLoginException {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Auth auth = authRepository.findByEmail(email);
+
+        if (auth == null) {
+            throw new NotLoginException();
+        }
+
+        return auth;
+    }
+
+    // AuthDTO to Auth changer
     private Auth authMapper(AuthDTO authDTO) {
         Auth auth = new Auth();
 
