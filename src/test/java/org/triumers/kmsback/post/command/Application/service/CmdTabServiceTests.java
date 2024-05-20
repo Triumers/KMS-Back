@@ -25,7 +25,7 @@ class CmdTabServiceTests {
     private final CmdJoinEmployeeRepository cmdJoinEmployeeRepository;
 
     private final int EMPLOYEE_ID = 1;
-    private final int TAB_RELATION_ID = 1;
+    private final int TAB_RELATION_ID = 999;
 
     @Autowired
     CmdTabServiceTests(CmdTabService cmdTabService, CmdJoinEmployeeRepository cmdJoinEmployeeRepository) {
