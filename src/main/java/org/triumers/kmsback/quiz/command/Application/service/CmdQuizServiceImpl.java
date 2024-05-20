@@ -6,7 +6,6 @@ import org.triumers.kmsback.quiz.command.Application.dto.CmdQuizDTO;
 import org.triumers.kmsback.quiz.command.domain.aggregate.entity.CmdQuiz;
 import org.triumers.kmsback.quiz.command.domain.aggregate.vo.CmdRequestQuizVo;
 import org.triumers.kmsback.quiz.command.domain.repository.CmdQuizRepository;
-import org.triumers.kmsback.quiz.query.aggregate.entity.QryQuiz;
 
 import java.util.Optional;
 
@@ -14,7 +13,6 @@ import java.util.Optional;
 public class CmdQuizServiceImpl implements CmdQuizService {
 
     private final CmdQuizRepository cmdQuizRepository;
-
 
     @Autowired
     public CmdQuizServiceImpl(CmdQuizRepository cmdQuizRepository) {
@@ -57,6 +55,7 @@ public class CmdQuizServiceImpl implements CmdQuizService {
         }
     }
 
+    /* 설명. 퀴즈 수정 */
     @Override
     public CmdQuizDTO editQuiz(CmdRequestQuizVo request) {
         // 퀴즈 ID를 조회
@@ -85,6 +84,7 @@ public class CmdQuizServiceImpl implements CmdQuizService {
         }
     }
 
+    /* 설명. 퀴즈 삭제 */
     @Override
     public CmdQuizDTO removeQuiz(int id) {
         // 퀴즈 ID를 조회
