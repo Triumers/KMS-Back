@@ -39,4 +39,9 @@ class CmdAnswerSubmitterServiceImplTest {
         // when, then
         assertDoesNotThrow(() -> cmdAnswerSubmitterService.submitAnswer(answer));
     }
+
+    @Test
+    void removeAnswer() {
+        cmdAnswerSubmitterService.removeAnswer(1);
+    }
 }
