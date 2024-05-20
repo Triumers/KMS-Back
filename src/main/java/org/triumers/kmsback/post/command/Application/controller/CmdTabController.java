@@ -40,7 +40,7 @@ public class CmdTabController {
     @PostMapping("/regist")
     public ResponseEntity<CmdTabRelationDTO> registTab(@RequestBody CmdTabRelationDTO tabRelationDTO, Integer userId){
 
-        if(tabRelationDTO.getTopTabId() == null || userId == null){
+        if(tabRelationDTO.getTopTab() == null || userId == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 

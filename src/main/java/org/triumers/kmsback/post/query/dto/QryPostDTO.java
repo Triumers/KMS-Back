@@ -15,6 +15,7 @@ public class QryPostDTO {
     private Integer originId;
     private Integer recentId;
     private Integer tabRelationId;
+    private Integer categoryId;
 
     public QryPostDTO() {
     }

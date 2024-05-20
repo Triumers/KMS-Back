@@ -17,4 +17,6 @@ public interface CmdPostService {
     CmdLikeDTO likePost(CmdLikeDTO like);
 
     CmdFavoritesDTO favoritePost(CmdFavoritesDTO favorite);
+
+    void changeEditing(int id);
 }
