@@ -1,4 +1,4 @@
-package org.triumers.kmsback.post.query.dto;
+package org.triumers.kmsback.tab.query.dto;
 
 import lombok.Data;
 

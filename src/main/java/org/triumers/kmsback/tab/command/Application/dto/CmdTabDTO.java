@@ -1,4 +1,4 @@
-package org.triumers.kmsback.post.command.Application.dto;
+package org.triumers.kmsback.tab.command.Application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
