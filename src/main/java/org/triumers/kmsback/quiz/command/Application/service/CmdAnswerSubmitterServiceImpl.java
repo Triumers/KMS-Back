@@ -7,6 +7,8 @@ import org.triumers.kmsback.quiz.command.domain.aggregate.entity.CmdAnswerSubmit
 import org.triumers.kmsback.quiz.command.domain.aggregate.vo.CmdRequestAnswerSubmitVo;
 import org.triumers.kmsback.quiz.command.domain.repository.CmdAnswerSubmitterRepository;
 
+import java.util.Optional;
+
 @Service
 public class CmdAnswerSubmitterServiceImpl implements CmdAnswerSubmitterService {
 
@@ -47,4 +49,30 @@ public class CmdAnswerSubmitterServiceImpl implements CmdAnswerSubmitterService 
             throw new RuntimeException("Error while saving answer", e);
         }
     }
+
+    /* 설명. 정답 수정 */
+    @Override
+    public CmdAnswerSubmitterDTO editAnswer(CmdRequestAnswerSubmitVo request) {
+        Optional<CmdAnswerSubmitter> answerOptional = cmdAnswerSubmitterRepository.findById(Long.valueOf(request.getId()));
+        if (answerOptional.isPresent()) {
+            try {
+                CmdAnswerSubmitter cmdAnswerSubmitter = new CmdAnswerSubmitter(
+                        request.getId(),
+                        request.getAnswer(),
+                        request.getCommentary(),
+                        request.isStatus(),
+                        request.getQuizId(),
+                        request.getEmployeeId()
+                );
+                CmdAnswerSubmitter editAnswer = cmdAnswerSubmitterRepository.saveAndFlush(cmdAnswerSubmitter);
+                return toDto(editAnswer);
+            }  catch (Exception e) {
+                throw new RuntimeException("Error while updating answer", e);
+            }
+        } else {
+            throw new RuntimeException("Answer not found");
+        }
+    }
+
+
 }

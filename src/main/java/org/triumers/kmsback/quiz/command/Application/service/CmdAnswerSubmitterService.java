@@ -5,4 +5,6 @@ import org.triumers.kmsback.quiz.command.domain.aggregate.vo.CmdRequestAnswerSub
 
 public interface CmdAnswerSubmitterService {
     CmdAnswerSubmitterDTO submitAnswer(CmdRequestAnswerSubmitVo request);
+
+    CmdAnswerSubmitterDTO editAnswer(CmdRequestAnswerSubmitVo request);
 }
