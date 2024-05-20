@@ -78,7 +78,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     // 현재 로그인된 계정 정보 조회
-    private Auth whoAmI() throws NotLoginException {
+    @Override
+    public Auth whoAmI() throws NotLoginException {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Auth auth = authRepository.findByEmail(email);
