@@ -22,7 +22,7 @@ class CmdTabServiceTests {
     private final CmdTabService cmdTabService;
     private final CmdJoinEmployeeRepository cmdJoinEmployeeRepository;
 
-    private final int EMPLOYEE_ID = 5;
+    private final int EMPLOYEE_ID = 1;
     private final int TAB_RELATION_ID = 1;
 
     private final int TOP_ID = 1;
