@@ -33,5 +33,10 @@ public class CmdAnswerSubmitterController {
     }
 
     /* 설명. 정답 삭제 */
+    @DeleteMapping("/remove")
+    public ResponseEntity<CmdAnswerSubmitterDTO> removeAnswer(@RequestBody CmdRequestAnswerSubmitVo request) {
+        cmdAnswerSubmitterService.removeAnswer(request.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
 }

@@ -74,5 +74,22 @@ public class CmdAnswerSubmitterServiceImpl implements CmdAnswerSubmitterService 
         }
     }
 
+    /* 설명. 정답 삭제 */
+    @Override
+    public CmdAnswerSubmitterDTO removeAnswer(int id) {
+        Optional<CmdAnswerSubmitter> answerOptional = cmdAnswerSubmitterRepository.findById(Long.valueOf(id));
+        if (answerOptional.isPresent()) {
+            CmdAnswerSubmitter cmdAnswerSubmitter = answerOptional.get();
+            try {
+                cmdAnswerSubmitterRepository.delete(cmdAnswerSubmitter);
+                return toDto(cmdAnswerSubmitter);
+            } catch (Exception e) {
+                throw new RuntimeException("Error while deleting answer", e);
+            }
+        } else {
+            throw new RuntimeException("Answer not found");
+        }
+    }
+
 
 }

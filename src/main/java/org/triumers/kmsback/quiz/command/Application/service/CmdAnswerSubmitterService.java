@@ -7,4 +7,6 @@ public interface CmdAnswerSubmitterService {
     CmdAnswerSubmitterDTO submitAnswer(CmdRequestAnswerSubmitVo request);
 
     CmdAnswerSubmitterDTO editAnswer(CmdRequestAnswerSubmitVo request);
+
+    CmdAnswerSubmitterDTO removeAnswer(int id);
 }
