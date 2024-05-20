@@ -49,9 +49,6 @@ class QryGroupServiceTest {
         // When
         List<QryGroupDTO> actualList = qryGroupService.findGroupByEmployeeId(1);
 
-        System.out.println("actualList = " + actualList);
-        System.out.println("expectList = " + expectedList);
-
         // Then
         assertEquals(expectedList, actualList);
     }
