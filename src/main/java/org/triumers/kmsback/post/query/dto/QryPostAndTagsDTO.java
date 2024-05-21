@@ -18,7 +18,9 @@ public class QryPostAndTagsDTO {
     private Integer tabRelationId;
     private Integer categoryId;
     private List<String> tags;
+
     private List<QryPostAndTagsDTO> history;
+    private List<CmdEmployeeDTO> participants;
 
     public QryPostAndTagsDTO(Integer id, String title, String content, LocalDate createdAt, CmdEmployeeDTO author,
                              Integer originId, Integer recentId, Integer tabRelationId, Integer categoryId) {

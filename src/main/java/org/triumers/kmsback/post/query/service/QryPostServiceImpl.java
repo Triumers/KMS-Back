@@ -62,8 +62,20 @@ public class QryPostServiceImpl implements QryPostService {
 
         postDTO.setTags(convertTagToString(post.getTags()));
         postDTO.setHistory(findHistoryListByOriginId(postId));
+        postDTO.setParticipants(findParticipantsListByOriginId(postId));
 
         return postDTO;
+    }
+
+    private List<CmdEmployeeDTO> findParticipantsListByOriginId(int postId) {
+
+        List<CmdEmployeeDTO> participantList = new ArrayList<>();
+        List<Integer> employeeList = qryPostMapper.selectParticipantsListByOriginId(postId);
+        for (int i = 0; i < employeeList.size(); i++) {
+            CmdEmployeeDTO employee = cmdEmployeeService.findEmployeeById(employeeList.get(i));
+            participantList.add(employee);
+        }
+        return participantList;
     }
 
     @Override

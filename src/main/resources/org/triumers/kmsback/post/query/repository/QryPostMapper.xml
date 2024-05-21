@@ -109,6 +109,16 @@
             OR A.ORIGIN_ID = #{originId}
     </select>
 
+    <select id="selectParticipantsListByOriginId" parameterType="_int">
+        SELECT
+               DISTINCT(A.AUTHOR_ID)
+          FROM tbl_post A
+          LEFT JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
+          LEFT JOIN tbl_tag C ON (B.TAG_ID = C.ID)
+         WHERE A.ID = #{originId}
+            OR A.ORIGIN_ID = #{originId}
+    </select>
+
     <select id="selectLikeListByPostId" parameterType="_int" resultMap="likeResultMap">
         SELECT
                A.EMPLOYEE_ID

@@ -24,4 +24,6 @@ public interface QryPostMapper {
     long countTabPostList(int tabId);
 
     boolean selectIsEditingByPostId(int postId);
+
+    List<Integer> selectParticipantsListByOriginId(int postId);
 }
