@@ -62,7 +62,7 @@
                B.NAME
           FROM tbl_post_tag A
           JOIN tbl_tag B ON (A.TAG_ID = B.ID)
-         WHERE A.POST_ID = #{postId}
+         WHERE A.ID = #{postId}
     </select>
 
 
@@ -109,6 +109,16 @@
             OR A.ORIGIN_ID = #{originId}
     </select>
 
+    <select id="selectParticipantsListByOriginId" parameterType="_int">
+        SELECT
+               DISTINCT(A.AUTHOR_ID)
+          FROM tbl_post A
+          LEFT JOIN tbl_post_tag B ON (A.ID = B.POST_ID)
+          LEFT JOIN tbl_tag C ON (B.TAG_ID = C.ID)
+         WHERE A.ID = #{originId}
+            OR A.ORIGIN_ID = #{originId}
+    </select>
+
     <select id="selectLikeListByPostId" parameterType="_int" resultMap="likeResultMap">
         SELECT
                A.EMPLOYEE_ID
@@ -132,6 +142,13 @@
     <select id="selectIsEditingByPostId" parameterType="_int" resultType="boolean">
         SELECT
                A.IS_EDITING
+          FROM tbl_post A
+         WHERE A.ID = #{postId}
+    </select>
+
+    <select id="originAuthorId" parameterType="_int">
+        SELECT
+               A.AUTHOR_ID
           FROM tbl_post A
          WHERE A.ID = #{postId}
     </select>

@@ -1,4 +1,4 @@
-package org.triumers.kmsback.post.command.Application.dto;
+package org.triumers.kmsback.common.ai.dto;
 
 import lombok.*;
 

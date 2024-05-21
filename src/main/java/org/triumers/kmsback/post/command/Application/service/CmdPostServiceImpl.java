@@ -2,6 +2,9 @@ package org.triumers.kmsback.post.command.Application.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.triumers.kmsback.auth.command.Application.service.AuthService;
+import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
+import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.employee.command.Application.service.CmdEmployeeService;
 import org.triumers.kmsback.post.command.Application.dto.*;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.*;
@@ -11,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole.ROLE_ADMIN;
+
 @Service
 public class CmdPostServiceImpl implements CmdPostService {
 
@@ -19,32 +24,35 @@ public class CmdPostServiceImpl implements CmdPostService {
     private final CmdPostTagRepository cmdPostTagRepository;
     private final CmdLikeRepository cmdLikeRepository;
     private final CmdFavoritesRepository cmdFavoritesRepository;
+
     private final CmdEmployeeService cmdEmployeeService;
+    private final AuthService authService;
 
 //    private final NotificationService notificationService;
 
     @Autowired
     public CmdPostServiceImpl(CmdPostRepository cmdPostRepository,
-                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository, CmdEmployeeService cmdEmployeeService) {
+                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository, CmdEmployeeService cmdEmployeeService, AuthService authService) {
         this.cmdPostRepository = cmdPostRepository;
         this.cmdTagRepository = cmdTagRepository;
         this.cmdPostTagRepository = cmdPostTagRepository;
         this.cmdLikeRepository = cmdLikeRepository;
         this.cmdFavoritesRepository = cmdFavoritesRepository;
         this.cmdEmployeeService = cmdEmployeeService;
+        this.authService = authService;
     }
 
     @Override
-    public CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post) {
+    public CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post) throws NotLoginException {
 
+        Auth employee = authService.whoAmI();
         CmdPost registPost = new CmdPost(post.getTitle(), post.getContent(), post.getCreatedAt(),
-                post.getAuthorId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
+                employee.getId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
         cmdPostRepository.save(registPost);
 
-        List<CmdTag> tags = registTag(post.getTags(), registPost.getId());
+        List<CmdTag> tags = registTag(convertStringToTag(post.getTags()), registPost.getId());
 
         post.setId(registPost.getId());
-        post.setTags(convertTagToTagDTO(tags));
 
         return post;
     }
@@ -70,7 +78,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     }
 
     @Override
-    public CmdPostAndTagsDTO modifyPost(CmdPostAndTagsDTO post) {
+    public CmdPostAndTagsDTO modifyPost(CmdPostAndTagsDTO post) throws NotLoginException {
 
         CmdPostAndTagsDTO modifypost = registPost(post);
 
@@ -92,9 +100,13 @@ public class CmdPostServiceImpl implements CmdPostService {
     }
 
     @Override
-    public CmdPostAndTagsDTO deletePost(int postId) {
+    public CmdPostAndTagsDTO deletePost(int postId) throws NotLoginException {
+
+        if(!isAuthorizedToPost(postId))
+            throw new RuntimeException("삭제 권한이 없습니다.");
 
         CmdPost deletePost = cmdPostRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
+
         deletePost.setDeletedAt(LocalDateTime.now());
         cmdPostRepository.save(deletePost);
 
@@ -106,10 +118,23 @@ public class CmdPostServiceImpl implements CmdPostService {
     }
 
     @Override
-    public CmdLikeDTO likePost(CmdLikeDTO like) {
+    public Boolean isAuthorizedToPost(int originId) throws NotLoginException {
 
+        Auth employee = authService.whoAmI();
+        int author = cmdPostRepository.findAuthorIdById(originId);
+
+        if(employee.getId() == author || employee.getUserRole() == ROLE_ADMIN){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public CmdLikeDTO likePost(CmdLikeDTO like) throws NotLoginException {
+
+        Auth employee = authService.whoAmI();
         try {
-            CmdLike likePost = cmdLikeRepository.findByEmployeeIdAndPostId(like.getEmployeeId(), like.getPostId());
+            CmdLike likePost = cmdLikeRepository.findByEmployeeIdAndPostId(employee.getId(), like.getPostId());
 
             if (likePost != null) { //unlike
                 cmdLikeRepository.deleteById(likePost.getId());
@@ -122,7 +147,7 @@ public class CmdPostServiceImpl implements CmdPostService {
         }
 
         // like
-        CmdLike likePost = new CmdLike(like.getEmployeeId(), like.getPostId());
+        CmdLike likePost = new CmdLike(employee.getId(), like.getPostId());
         cmdLikeRepository.save(likePost);
 
         CmdLikeDTO likeDTO = new CmdLikeDTO(likePost.getId(), likePost.getEmployeeId(), likePost.getPostId());
@@ -130,9 +155,11 @@ public class CmdPostServiceImpl implements CmdPostService {
     }
 
     @Override
-    public CmdFavoritesDTO favoritePost(CmdFavoritesDTO favorite) {
+    public CmdFavoritesDTO favoritePost(CmdFavoritesDTO favorite) throws NotLoginException {
+
+        Auth employee = authService.whoAmI();
         try {
-            CmdFavorites favoritePost = cmdFavoritesRepository.findByEmployeeIdAndPostId(favorite.getEmployeeId(), favorite.getPostId());
+            CmdFavorites favoritePost = cmdFavoritesRepository.findByEmployeeIdAndPostId(employee.getId(), favorite.getPostId());
             if (favoritePost != null) {  // unfavorite
                 cmdFavoritesRepository.deleteById(favoritePost.getId());
                 CmdFavoritesDTO favoritesDTO = new CmdFavoritesDTO(favoritePost.getId(), favoritePost.getEmployeeId(), favoritePost.getPostId());
@@ -142,7 +169,7 @@ public class CmdPostServiceImpl implements CmdPostService {
         }
 
         // favorite
-        CmdFavorites favoritePost = new CmdFavorites(favorite.getEmployeeId(), favorite.getPostId());
+        CmdFavorites favoritePost = new CmdFavorites(employee.getId(), favorite.getPostId());
         cmdFavoritesRepository.save(favoritePost);
 
         CmdFavoritesDTO favoritesDTO = new CmdFavoritesDTO(favoritePost.getId(), favoritePost.getEmployeeId(), favoritePost.getPostId());
@@ -156,15 +183,11 @@ public class CmdPostServiceImpl implements CmdPostService {
        cmdPostRepository.save(post);
     }
 
-    private List<CmdTagDTO> convertTagToTagDTO(List<CmdTag> tagList){
-
-        List<CmdTagDTO> tagDTOList = new ArrayList<>();
-        for (int i = 0; i < tagList.size(); i++) {
-            CmdTag tag = tagList.get(i);
-            CmdTagDTO tagDTO = new CmdTagDTO(tag.getId(), tag.getName());
-            tagDTOList.add(tagDTO);
+    private List<CmdTagDTO> convertStringToTag(List<String> tags) {
+        List<CmdTagDTO> tagList = new ArrayList<>();
+        for (int i = 0; i < tags.size(); i++) {
+            tagList.add(new CmdTagDTO(tags.get(i)));
         }
-        return tagDTOList;
+        return tagList;
     }
-
 }

@@ -1,10 +1,10 @@
-package org.triumers.kmsback.post.command.Application.service;
+package org.triumers.kmsback.common.ai.service;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.triumers.kmsback.post.command.Application.dto.ChatGPTRequestDTO;
-import org.triumers.kmsback.post.command.Application.dto.ChatGPTResponseDTO;
+import org.triumers.kmsback.common.ai.dto.ChatGPTRequestDTO;
+import org.triumers.kmsback.common.ai.dto.ChatGPTResponseDTO;
 
 import java.util.HashMap;
 import java.util.Map;
