@@ -1,4 +1,4 @@
-package org.triumers.kmsback.post.command.Application.service;
+package org.triumers.kmsback.common.ai;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
