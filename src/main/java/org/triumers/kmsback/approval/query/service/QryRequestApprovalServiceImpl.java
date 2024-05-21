@@ -76,6 +76,57 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService{
         return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
     }
 
+    // 본인이 요청받은 결재 단일 조회
+    public QryRequestApprovalWithEmployeeDTO findReceivedById(int approverId, int requestApprovalId) {
+
+        QryRequestApprovalInfoDTO approvalInfo = qryRequestApprovalMapper.findReceivedById(approverId, requestApprovalId);
+
+        // 결재 요청자(requester)의 모든 정보 조회
+        CmdEmployeeDTO requester = cmdEmployeeService.findEmployeeById(approvalInfo.getRequesterId());
+
+        // 결재자(approver)의 모든 정보 조회
+        CmdEmployeeDTO approver = cmdEmployeeService.findEmployeeById(approvalInfo.getApproverId());
+
+        QryRequestApprovalWithEmployeeDTO result = new QryRequestApprovalWithEmployeeDTO();
+        result.setApprovalInfo(approvalInfo);
+        result.setRequester(requester);
+        result.setApprover(approver);
+
+        return result;
+    }
+
+    // 본인이 요청받은 결재 전체 조회(페이징 처리)
+    public List<QryRequestApprovalInfoDTO> findAllReceived(int approverId, int page, int size) {
+
+        int offset = (page - 1) * size;
+        int limit = size;
+
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findAllReceived(approverId, offset, limit);
+
+        return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
+    }
+
+
+    // 본인이 요청받은 결재 유형별 조회(페이징 처리)
+    public List<QryRequestApprovalInfoDTO> findReceivedByType(int approverId, int typeId, int page, int size) {
+        int offset = (page - 1) * size;
+        int limit = size;
+
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findReceivedByType(approverId, typeId, offset, limit);
+
+        return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
+    }
+
+    // 본인이 요청받은 결재 기간별 조회(페이징 처리)
+    public List<QryRequestApprovalInfoDTO> findReceivedByDateRange(int approverId, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
+
+        int offset = (page - 1) * size;
+        int limit = size;
+
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findReceivedByDateRange(approverId, startDate, endDate, offset, limit);
+
+        return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
+    }
 
     private List<QryRequestApprovalInfoDTO> getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(List<QryRequestApprovalInfoDTO> approvalInfoDTOS) {
         for (QryRequestApprovalInfoDTO approvalInfoDTO : approvalInfoDTOS) {
