@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.triumers.kmsback.common.ai.OpenAIService;
+import org.triumers.kmsback.common.ai.service.OpenAIService;
 import org.triumers.kmsback.post.command.Application.dto.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

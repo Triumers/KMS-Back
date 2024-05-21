@@ -1,4 +1,4 @@
-package org.triumers.kmsback.common.ai;
+package org.triumers.kmsback.common.ai.service;
 
 public interface OpenAIService {
 
