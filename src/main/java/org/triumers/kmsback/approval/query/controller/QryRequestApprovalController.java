@@ -2,7 +2,10 @@ package org.triumers.kmsback.approval.query.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.triumers.kmsback.approval.query.dto.QryRequestApprovalWithEmployeeDTO;
 import org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO;
 import org.triumers.kmsback.approval.query.service.QryRequestApprovalService;
@@ -96,5 +99,21 @@ public class QryRequestApprovalController {
                                                                    @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException {
         int approverId = getCurrentUserId();
         return qryRequestApprovalService.findReceivedByDateRange(approverId, startDate, endDate, page, size);
+    }
+}
+
+@RestControllerAdvice
+class GlobalExceptionHandler {
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ex.getMessage();
+    }
+
+    @ExceptionHandler(NotLoginException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleNotLoginException(NotLoginException ex) {
+        return "User is not logged in.";
     }
 }

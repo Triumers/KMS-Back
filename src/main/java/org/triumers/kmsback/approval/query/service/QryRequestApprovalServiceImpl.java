@@ -12,11 +12,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class QryRequestApprovalServiceImpl implements QryRequestApprovalService{
+public class QryRequestApprovalServiceImpl implements QryRequestApprovalService {
 
     private final QryRequestApprovalMapper qryRequestApprovalMapper;
-
-    // 직원 조회 따로
     private final CmdEmployeeService cmdEmployeeService;
 
     @Autowired
@@ -27,14 +25,20 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService{
 
     // 본인이 요청한 결재 단일 조회
     public QryRequestApprovalWithEmployeeDTO findById(int requesterId, int approvalId) {
-
         QryRequestApprovalInfoDTO approvalInfo = qryRequestApprovalMapper.findById(requesterId, approvalId);
+        if (approvalInfo == null) {
+            throw new IllegalArgumentException("Approval not found for requesterId: " + requesterId + ", approvalId: " + approvalId);
+        }
 
-        // 결재 요청자(requester)의 모든 정보 조회
         CmdEmployeeDTO requester = cmdEmployeeService.findEmployeeById(approvalInfo.getRequesterId());
+        if (requester == null) {
+            throw new IllegalArgumentException("Requester not found with id: " + approvalInfo.getRequesterId());
+        }
 
-        // 결재자(approver)의 모든 정보 조회
         CmdEmployeeDTO approver = cmdEmployeeService.findEmployeeById(approvalInfo.getApproverId());
+        if (approver == null) {
+            throw new IllegalArgumentException("Approver not found with id: " + approvalInfo.getApproverId());
+        }
 
         QryRequestApprovalWithEmployeeDTO result = new QryRequestApprovalWithEmployeeDTO();
         result.setApprovalInfo(approvalInfo);
@@ -46,11 +50,13 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService{
 
     // 본인이 요청한 결재 전체 조회(페이징 처리)
     public List<QryRequestApprovalInfoDTO> findAll(int requesterId, int page, int size) {
-
         int offset = (page - 1) * size;
         int limit = size;
 
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findAll(requesterId, offset, limit);
+        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
+            throw new IllegalArgumentException("No approvals found for requesterId: " + requesterId);
+        }
 
         return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
     }
@@ -61,31 +67,42 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService{
         int limit = size;
 
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findByType(requesterId, typeId, offset, limit);
+        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
+            throw new IllegalArgumentException("No approvals found for requesterId: " + requesterId + ", typeId: " + typeId);
+        }
 
         return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
     }
 
     // 본인이 요청한 결재 기간별 조회(페이징 처리)
     public List<QryRequestApprovalInfoDTO> findByDateRange(int requesterId, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
-
         int offset = (page - 1) * size;
         int limit = size;
 
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findByDateRange(requesterId, startDate, endDate, offset, limit);
+        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
+            throw new IllegalArgumentException("No approvals found for requesterId: " + requesterId + " between " + startDate + " and " + endDate);
+        }
 
         return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
     }
 
     // 본인이 요청받은 결재 단일 조회
     public QryRequestApprovalWithEmployeeDTO findReceivedById(int approverId, int requestApprovalId) {
-
         QryRequestApprovalInfoDTO approvalInfo = qryRequestApprovalMapper.findReceivedById(approverId, requestApprovalId);
+        if (approvalInfo == null) {
+            throw new IllegalArgumentException("Approval not found for approverId: " + approverId + ", requestApprovalId: " + requestApprovalId);
+        }
 
-        // 결재 요청자(requester)의 모든 정보 조회
         CmdEmployeeDTO requester = cmdEmployeeService.findEmployeeById(approvalInfo.getRequesterId());
+        if (requester == null) {
+            throw new IllegalArgumentException("Requester not found with id: " + approvalInfo.getRequesterId());
+        }
 
-        // 결재자(approver)의 모든 정보 조회
         CmdEmployeeDTO approver = cmdEmployeeService.findEmployeeById(approvalInfo.getApproverId());
+        if (approver == null) {
+            throw new IllegalArgumentException("Approver not found with id: " + approvalInfo.getApproverId());
+        }
 
         QryRequestApprovalWithEmployeeDTO result = new QryRequestApprovalWithEmployeeDTO();
         result.setApprovalInfo(approvalInfo);
@@ -97,15 +114,16 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService{
 
     // 본인이 요청받은 결재 전체 조회(페이징 처리)
     public List<QryRequestApprovalInfoDTO> findAllReceived(int approverId, int page, int size) {
-
         int offset = (page - 1) * size;
         int limit = size;
 
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findAllReceived(approverId, offset, limit);
+        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
+            throw new IllegalArgumentException("No approvals found for approverId: " + approverId);
+        }
 
         return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
     }
-
 
     // 본인이 요청받은 결재 유형별 조회(페이징 처리)
     public List<QryRequestApprovalInfoDTO> findReceivedByType(int approverId, int typeId, int page, int size) {
@@ -113,31 +131,39 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService{
         int limit = size;
 
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findReceivedByType(approverId, typeId, offset, limit);
+        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
+            throw new IllegalArgumentException("No approvals found for approverId: " + approverId + ", typeId: " + typeId);
+        }
 
         return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
     }
 
     // 본인이 요청받은 결재 기간별 조회(페이징 처리)
     public List<QryRequestApprovalInfoDTO> findReceivedByDateRange(int approverId, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
-
         int offset = (page - 1) * size;
         int limit = size;
 
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findReceivedByDateRange(approverId, startDate, endDate, offset, limit);
+        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
+            throw new IllegalArgumentException("No approvals found for approverId: " + approverId + " between " + startDate + " and " + endDate);
+        }
 
         return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
     }
 
     private List<QryRequestApprovalInfoDTO> getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(List<QryRequestApprovalInfoDTO> approvalInfoDTOS) {
         for (QryRequestApprovalInfoDTO approvalInfoDTO : approvalInfoDTOS) {
-
-            // 결재 요청자(requester)의 이름과 아이디 조회
             CmdEmployeeDTO requester = cmdEmployeeService.findEmployeeById(approvalInfoDTO.getRequesterId());
+            if (requester == null) {
+                throw new IllegalArgumentException("Requester not found with id: " + approvalInfoDTO.getRequesterId());
+            }
             approvalInfoDTO.setRequesterId(requester.getId());
             approvalInfoDTO.setRequesterName(requester.getName());
 
-            // 결재자(approver)의 이름과 아이디 조회
             CmdEmployeeDTO approver = cmdEmployeeService.findEmployeeById(approvalInfoDTO.getApproverId());
+            if (approver == null) {
+                throw new IllegalArgumentException("Approver not found with id: " + approvalInfoDTO.getApproverId());
+            }
             approvalInfoDTO.setApproverId(approver.getId());
             approvalInfoDTO.setApproverName(approver.getName());
         }
