@@ -21,24 +21,24 @@ public class CmdPostController {
     }
 
     @PostMapping("/regist")
-    public ResponseEntity<CmdPostAndTagsDTO> registPost(@RequestBody CmdPostAndTagsDTO cmdPostAndTagsDTO){
+    public ResponseEntity<CmdPostAndTagsDTO> registPost(@RequestBody CmdPostAndTagsDTO newPost){
 
-        if(cmdPostAndTagsDTO.getTitle() == null || cmdPostAndTagsDTO.getContent() == null){
+        if(newPost.getTitle() == null || newPost.getContent() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
-        CmdPostAndTagsDTO savedPost = cmdPostService.registPost(cmdPostAndTagsDTO);
+        CmdPostAndTagsDTO savedPost = cmdPostService.registPost(newPost);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
 
     @PostMapping("/modify")
-    public ResponseEntity<CmdPostAndTagsDTO> modifyPost(@RequestBody CmdPostAndTagsDTO cmdPostAndTagsDTO){
+    public ResponseEntity<CmdPostAndTagsDTO> modifyPost(@RequestBody CmdPostAndTagsDTO modifyPost){
 
-        if(cmdPostAndTagsDTO.getTitle() == null || cmdPostAndTagsDTO.getContent() == null){
+        if(modifyPost.getTitle() == null || modifyPost.getContent() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
-        CmdPostAndTagsDTO modifiedPost = cmdPostService.modifyPost(cmdPostAndTagsDTO);
+        CmdPostAndTagsDTO modifiedPost = cmdPostService.modifyPost(modifyPost);
         return ResponseEntity.status(HttpStatus.OK).body(modifiedPost);
     }
 

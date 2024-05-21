@@ -41,10 +41,9 @@ public class CmdPostServiceImpl implements CmdPostService {
                 post.getAuthorId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
         cmdPostRepository.save(registPost);
 
-        List<CmdTag> tags = registTag(post.getTags(), registPost.getId());
+        List<CmdTag> tags = registTag(convertStringToTag(post.getTags()), registPost.getId());
 
         post.setId(registPost.getId());
-        post.setTags(convertTagToTagDTO(tags));
 
         return post;
     }
@@ -165,6 +164,14 @@ public class CmdPostServiceImpl implements CmdPostService {
             tagDTOList.add(tagDTO);
         }
         return tagDTOList;
+    }
+
+    private List<CmdTagDTO> convertStringToTag(List<String> tags) {
+        List<CmdTagDTO> tagList = new ArrayList<>();
+        for (int i = 0; i < tags.size(); i++) {
+            tagList.add(new CmdTagDTO(tags.get(i)));
+        }
+        return tagList;
     }
 
 }

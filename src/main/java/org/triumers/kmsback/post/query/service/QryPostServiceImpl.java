@@ -8,6 +8,8 @@ import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.employee.command.Application.service.CmdEmployeeService;
 import org.triumers.kmsback.employee.query.dto.QryEmployeeDTO;
 import org.triumers.kmsback.employee.query.service.QryEmployeeService;
+import org.triumers.kmsback.post.command.Application.dto.CmdTagDTO;
+import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdTag;
 import org.triumers.kmsback.post.query.aggregate.entity.QryLike;
 import org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag;
 import org.triumers.kmsback.post.query.aggregate.entity.QryTag;
@@ -58,7 +60,7 @@ public class QryPostServiceImpl implements QryPostService {
                 post.getCreatedAt(), employeeDTO, post.getOriginId(),
                 post.getRecentId(), post.getTabRelationId(), post.getCategoryId());
 
-        postDTO.setTags(convertTagToTagDTO(post.getTags()));
+        postDTO.setTags(convertTagToString(post.getTags()));
         postDTO.setHistory(findHistoryListByOriginId(postId));
 
         return postDTO;
@@ -100,20 +102,17 @@ public class QryPostServiceImpl implements QryPostService {
             QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
                     post.getCreatedAt(), employeeDTO, post.getOriginId(),
                     post.getRecentId(), post.getTabRelationId(), post.getCategoryId());
-            postDTO.setTags(convertTagToTagDTO(post.getTags()));
+            postDTO.setTags(convertTagToString(post.getTags()));
             postDTOList.add(postDTO);
         }
         return postDTOList;
     }
 
-    private List<QryTagDTO> convertTagToTagDTO(List<QryTag> tagList){
-
-        List<QryTagDTO> tagDTOList = new ArrayList<>();
-        for (int i = 0; i < tagList.size(); i++) {
-            QryTag tag = tagList.get(i);
-            QryTagDTO tagDTO = new QryTagDTO(tag.getId(), tag.getName());
-            tagDTOList.add(tagDTO);
+    private List<String> convertTagToString(List<QryTag> tags) {
+        List<String> tagList = new ArrayList<>();
+        for (int i = 0; i < tags.size(); i++) {
+            tagList.add(tags.get(i).getName());
         }
-        return tagDTOList;
+        return tagList;
     }
 }

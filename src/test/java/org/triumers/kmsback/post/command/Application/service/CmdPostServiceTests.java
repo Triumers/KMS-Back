@@ -43,12 +43,12 @@ public class CmdPostServiceTests {
 
         CmdPostAndTagsDTO savedPost = cmdPostService.registPost(createTestPost("new"));
 
-        List<CmdTagDTO> modifyTags = new ArrayList<>();
-        modifyTags.add(new CmdTagDTO("개발"));
-        modifyTags.add(new CmdTagDTO("tag6"));
-        modifyTags.add(new CmdTagDTO("tag7"));
-        modifyTags.add(new CmdTagDTO("tag4"));
-        modifyTags.add(new CmdTagDTO("tag5"));
+        List<String> modifyTags = new ArrayList<>();
+        modifyTags.add("개발");
+        modifyTags.add("tag1");
+        modifyTags.add("tag2");
+        modifyTags.add("tag3");
+        modifyTags.add("tag4");
 
         CmdPostAndTagsDTO modifyPost = createTestPost("modify");
         modifyPost.setTags(modifyTags);
@@ -120,12 +120,12 @@ public class CmdPostServiceTests {
     }
 
     private CmdPostAndTagsDTO createTestPost(String type){
-        List<CmdTagDTO> tags = new ArrayList<>();
-        tags.add(new CmdTagDTO("개발"));
-        tags.add(new CmdTagDTO("tag2"));
-        tags.add(new CmdTagDTO("tag3"));
-        tags.add(new CmdTagDTO("tag4"));
-        tags.add(new CmdTagDTO("tag5"));
+        List<String> tags = new ArrayList<>();
+        tags.add("개발");
+        tags.add("tag1");
+        tags.add("tag2");
+        tags.add("tag3");
+        tags.add("tag4");
 
         return new CmdPostAndTagsDTO(type + "Title",  type + "Content", LocalDateTime.now(), 1, 1, tags);
     }

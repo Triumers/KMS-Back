@@ -62,7 +62,7 @@
                B.NAME
           FROM tbl_post_tag A
           JOIN tbl_tag B ON (A.TAG_ID = B.ID)
-         WHERE A.POST_ID = #{postId}
+         WHERE A.ID = #{postId}
     </select>
 
 

@@ -104,12 +104,12 @@ class QryPostServiceTest {
     }
 
     private CmdPostAndTagsDTO createTestPost(){
-        List<CmdTagDTO> tags = new ArrayList<>();
-        tags.add(new CmdTagDTO("개발"));
-        tags.add(new CmdTagDTO("tag2"));
-        tags.add(new CmdTagDTO("tag3"));
-        tags.add(new CmdTagDTO("tag4"));
-        tags.add(new CmdTagDTO("tag5"));
+        List<String> tags = new ArrayList<>();
+        tags.add("개발");
+        tags.add("tag1");
+        tags.add("tag2");
+        tags.add("tag3");
+        tags.add("tag4");
 
         return new CmdPostAndTagsDTO("newTitle", "newContent", LocalDateTime.now(), 1, 1, tags);
     }
