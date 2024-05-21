@@ -22,8 +22,13 @@ repositories {
 }
 
 dependencies {
+
+    // SpringBoot
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // Mybatis 라이브러리
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
