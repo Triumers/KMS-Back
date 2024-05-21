@@ -9,10 +9,6 @@ import org.triumers.kmsback.common.util.RegularExpression;
 import java.time.LocalDate;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class CmdRequestAuthVO {
 
     @Email(message = "유효하지 않은 이메일 형식입니다.")

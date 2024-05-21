@@ -10,9 +10,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.triumers.kmsback.auth.command.Application.dto.AuthDTO;
+import org.triumers.kmsback.auth.command.Application.dto.PasswordDTO;
 import org.triumers.kmsback.auth.command.Application.service.AuthService;
 import org.triumers.kmsback.auth.command.domain.aggregate.vo.CmdRequestAuthVO;
+import org.triumers.kmsback.auth.command.domain.aggregate.vo.CmdRequestEditPasswordVO;
 import org.triumers.kmsback.auth.command.domain.aggregate.vo.CmdResponseMessageVO;
+import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.common.exception.WrongInputTypeException;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 
 @RestController
 @Validated
@@ -34,6 +39,24 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new CmdResponseMessageVO(authDTO.getName() + " 회원가입 성공"));
+    }
+
+    @PostMapping("/edit/password")
+    public ResponseEntity<CmdResponseMessageVO> editPassword(@Valid @RequestBody CmdRequestEditPasswordVO request) {
+        PasswordDTO passwordDTO = new PasswordDTO(request.getOldPassword(), request.getNewPassword());
+
+        try {
+            authService.editPassword(passwordDTO);
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CmdResponseMessageVO("비밀번호 변경 성공"));
+        } catch (NotLoginException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new CmdResponseMessageVO("로그인 이후 이용해주세요."));
+        } catch (WrongInputTypeException | WrongInputValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new CmdResponseMessageVO("잘못된 입력입니다."));
+        }
     }
 
     private AuthDTO authDtoMapper(CmdRequestAuthVO request) {
