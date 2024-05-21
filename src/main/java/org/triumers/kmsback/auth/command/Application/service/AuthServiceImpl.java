@@ -31,22 +31,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void signup(AuthDTO authDTO) throws WrongInputTypeException {
-
-        Auth auth = authMapper(authDTO);
-
-        auth.validationAll(authDTO.getPassword());
-
-        authRepository.save(auth);
+    public void signup(AuthDTO authDTO) {
+        authRepository.save(authMapper(authDTO));
     }
 
     @Override
-    public void editPassword(PasswordDTO passwordDTO) throws WrongInputTypeException, WrongInputValueException, NotLoginException {
+    public void editPassword(PasswordDTO passwordDTO) throws WrongInputValueException, NotLoginException {
 
         Auth auth = whoAmI();
 
         if (bCryptPasswordEncoder.matches(passwordDTO.getOldPassword(), auth.getPassword())) {
-            auth.validationAll(passwordDTO.getNewPassword());
+
             auth.setPassword(bCryptPasswordEncoder.encode(passwordDTO.getNewPassword()));
 
             authRepository.save(auth);
@@ -56,9 +51,8 @@ public class AuthServiceImpl implements AuthService {
         throw new WrongInputValueException();
     }
 
-    @Transactional
     @Override
-    public void editMyInfo(AuthDTO authDTO) throws WrongInputTypeException, NotLoginException {
+    public void editMyInfo(AuthDTO authDTO) throws NotLoginException {
 
         Auth auth = whoAmI();
 
@@ -71,8 +65,6 @@ public class AuthServiceImpl implements AuthService {
         if (authDTO.getProfileImg() != null) {
             auth.setProfileImg(authDTO.getProfileImg());
         }
-
-        auth.validationWithoutPassword();
 
         authRepository.save(auth);
     }
