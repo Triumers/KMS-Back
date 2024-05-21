@@ -13,48 +13,40 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name = "tbl_quiz")
-@SQLDelete(sql = "UPDATE tbl_quiz SET DELETED_AT = CURRENT_TIMESTAMP WHERE ID = ?")
+@Table(name = "tbl_quiz_answer_submitter")
+@SQLDelete(sql = "UPDATE tbl_quiz_answer_submitter SET DELETED_AT = CURRENT_TIMESTAMP WHERE ID = ?")
 @Where(clause = "deleted_at IS NULL")
-public class CmdQuiz {
-
+public class CmdAnswerSubmitter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
 
-    @Column(name = "CONTENT")
-    private String content;
-
     @Column(name = "ANSWER")
     private String answer;
 
     @Column(name = "COMMENTARY")
-    private String commentary;
+    private String Commentary;
 
     @Column(name = "STATUS")
     private boolean status;
 
-    @Column(name = "QUESTIONER_ID")
-    private int questionerId;
+    @Column(name = "QUIZ_ID")
+    private int quizId;
 
-    @Column(name = "POST_ID")
-    private int postId;
-
-    @Column(name = "TAB_ID")
-    private int topTapId;
+    @Column(name = "EMPLOYEE_ID")
+    private int employeeId;
 
     @Column(name = "DELETED_AT")
     private LocalDateTime deletedAt;
 
-    public CmdQuiz(int id, String content, String answer, String commentary, boolean status, int questionerId, int postId, int topTapId) {
+    public CmdAnswerSubmitter(int id, String answer, String commentary, boolean status, int quizId, int employeeId) {
         this.id = id;
-        this.content = content;
         this.answer = answer;
-        this.commentary = commentary;
+        Commentary = commentary;
         this.status = status;
-        this.questionerId = questionerId;
-        this.postId = postId;
-        this.topTapId = topTapId;
+        this.quizId = quizId;
+        this.employeeId = employeeId;
     }
 }
+
