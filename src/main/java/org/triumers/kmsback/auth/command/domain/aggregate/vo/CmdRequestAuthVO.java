@@ -15,7 +15,6 @@ public class CmdRequestAuthVO {
     @NotBlank(message = "이메일은 필수 기입 정보입니다.")
     private String email;
 
-    @NotBlank(message = "비밀번호는 필수 기입 정보입니다.")
     @Pattern(regexp = RegularExpression.PASSWORD,
              message = "비밀번호는 8~12자리의 숫자, 소문자, 대문자를 각각 한 개 이상 가져야 합니다.")
     private String password;
