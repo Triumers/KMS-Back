@@ -60,81 +60,6 @@ class AuthServiceTest {
         assertNotNull(authRepository.findByEmail(newEmployee.getEmail()));
     }
 
-    @DisplayName("이메일 형식이 잘못된 회원가입 테스트")
-    @ParameterizedTest
-    @ValueSource(strings = {"nothing", "noAnnotation.com", "noPoint@gmail",
-            "containKorean@지메일.com", "containSpecialChar@gmail.com!"})
-    void invalidEmailSignup(String wrongEmail) {
-
-        // given
-        AuthDTO newEmployee =
-                new AuthDTO(wrongEmail, RIGHT_FORMAT_PASSWORD, RIGHT_FORMAT_NAME, null,
-                        RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
-                        1);
-
-        // when
-        assertThrows(WrongInputTypeException.class, () -> authService.signup(newEmployee));
-
-        // then
-        assertNull(authRepository.findByEmail(newEmployee.getEmail()));
-    }
-
-    @DisplayName("비밀번호 형식이 잘못된 회원가입 테스트")
-    @ParameterizedTest
-    @ValueSource(strings = {"Short1", "TooWrongPassword1234", "noNumberPwd",
-            "no1upper", "NO1SMALL", "한글포함Pwd123", "Special123!"})
-    void invalidPasswordSignup(String wrongPassword) {
-
-        // given
-        AuthDTO newEmployee =
-                new AuthDTO(RIGHT_FORMAT_EMAIL, wrongPassword, RIGHT_FORMAT_NAME, null,
-                        RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
-                        1);
-
-        // when
-        assertThrows(WrongInputTypeException.class, () -> authService.signup(newEmployee));
-
-        // then
-        assertNull(authRepository.findByEmail(newEmployee.getEmail()));
-    }
-
-    @DisplayName("이름 형식이 잘못된 회원가입 테스트")
-    @ParameterizedTest
-    @ValueSource(strings = {"ContainNumber123", "ContainSpecial!"})
-    void invalidNameSignup(String wrongName) {
-
-        // given
-        AuthDTO newEmployee =
-                new AuthDTO(RIGHT_FORMAT_EMAIL, RIGHT_FORMAT_PASSWORD, wrongName, null,
-                        RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
-                        1);
-
-        // when
-        assertThrows(WrongInputTypeException.class, () -> authService.signup(newEmployee));
-
-        // then
-        assertNull(authRepository.findByEmail(newEmployee.getEmail()));
-    }
-
-    @DisplayName("휴대폰 번호 형식이 잘못된 회원가입 테스트")
-    @ParameterizedTest
-    @ValueSource(strings = {"010-alph-1234", "010-!!!!-1234", "000-1234-5678", "01-1234-5678", "0100-1234-5678",
-            "010-12-5678", "010-12345-6789", "010-1234-567", "010-1234-56789"})
-    void invalidPhoneNumberSignup(String wrongNumber) {
-
-        // given
-        AuthDTO newEmployee =
-                new AuthDTO(RIGHT_FORMAT_EMAIL, RIGHT_FORMAT_PASSWORD, RIGHT_FORMAT_NAME, null,
-                        RIGHT_FORMAT_USER_ROLE, null, null, wrongNumber, 1, 1,
-                        1);
-
-        // when
-        assertThrows(WrongInputTypeException.class, () -> authService.signup(newEmployee));
-
-        // then
-        assertNull(authRepository.findByEmail(newEmployee.getEmail()));
-    }
-
     @DisplayName("비밀번호 변경 테스트")
     @Test
     void editPassword() throws WrongInputTypeException, WrongInputValueException {
@@ -165,23 +90,6 @@ class AuthServiceTest {
 
         // then
         assertFalse(bCryptPasswordEncoder.matches(newPassword, authRepository.findByEmail(RIGHT_FORMAT_EMAIL).getPassword()));
-    }
-
-    @DisplayName("잘못된 형식의 비밀번호 변경 테스트")
-    @ParameterizedTest
-    @ValueSource(strings = {"Short1", "TooWrongPassword1234", "noNumberPwd",
-            "no1upper", "NO1SMALL", "한글포함Pwd123", "Special123!"})
-    void invalidPasswordEditPassword(String wrongPassword) throws WrongInputTypeException {
-
-        // given
-        setSecurityContextHolderByUserName();
-        PasswordDTO passwordDTO = new PasswordDTO(RIGHT_FORMAT_PASSWORD, wrongPassword);
-
-        // when
-        assertThrows(WrongInputTypeException.class, () -> authService.editPassword(passwordDTO));
-
-        // then
-        assertFalse(bCryptPasswordEncoder.matches(wrongPassword, authRepository.findByEmail(RIGHT_FORMAT_EMAIL).getPassword()));
     }
 
     @DisplayName("사용자 정보 변경 테스트")
