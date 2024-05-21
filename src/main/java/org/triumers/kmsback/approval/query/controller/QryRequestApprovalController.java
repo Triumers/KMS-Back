@@ -60,4 +60,41 @@ public class QryRequestApprovalController {
     }
 
 
+    // 본인이 요청받은 결재 단일 조회
+    // approverId = 추후에 받아오는 아이디로 수정, 우선 테스트용이니 2로 통일
+    @GetMapping("/received/{requestApprovalId}")
+    public QryRequestApprovalWithEmployeeDTO findReceivedById(@RequestParam(value = "approverId", defaultValue = "2") int approverId,
+                                                      @PathVariable("requestApprovalId") int requestApprovalId) {
+        return qryRequestApprovalService.findReceivedById(approverId, requestApprovalId);
+    }
+
+    // 본인이 요청받은 결재 전체 조회(페이징 처리)
+    // approverId = 추후에 받아오는 아이디로 수정, 우선 테스트용이니 2로 통일
+    @GetMapping("/received")
+    public List<QryRequestApprovalInfoDTO> findAllReceived(@RequestParam(value = "approverId", defaultValue = "2") int approverId,
+                                                   @RequestParam(value = "page", defaultValue = "1") int page,
+                                                   @RequestParam(value = "size", defaultValue = "10") int size) {
+        return qryRequestApprovalService.findAllReceived(approverId, page, size);
+    }
+
+    // 본인이 요청받은 결재 유형별 조회(페이징 처리)
+    // approverId = 추후에 받아오는 아이디로 수정, 우선 테스트용이니 2로 통일
+    @GetMapping("/received/type/{typeId}")
+    public List<QryRequestApprovalInfoDTO> findReceivedByType(@RequestParam(value = "approverId", defaultValue = "2") int approverId,
+                                                      @PathVariable("typeId") int typeId,
+                                                      @RequestParam(value = "page", defaultValue = "1") int page,
+                                                      @RequestParam(value = "size", defaultValue = "10") int size) {
+        return qryRequestApprovalService.findReceivedByType(approverId, typeId, page, size);
+    }
+
+    // 본인이 요청받은 결재 기간별 조회(페이징 처리)
+    // approverId = 추후에 받아오는 아이디로 수정, 우선 테스트용이니 2로 통일
+    @GetMapping("/received/date-range")
+    public List<QryRequestApprovalInfoDTO> findReceivedByDateRange(@RequestParam(value = "approverId", defaultValue = "2") int approverId,
+                                                           @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                                           @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                                                           @RequestParam(value = "page", defaultValue = "1") int page,
+                                                           @RequestParam(value = "size", defaultValue = "10") int size) {
+        return qryRequestApprovalService.findReceivedByDateRange(approverId, startDate, endDate, page, size);
+    }
 }
