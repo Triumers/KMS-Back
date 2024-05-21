@@ -18,13 +18,13 @@ public class CmdPostAndTagsDTO {
     private Integer recentId;
     private Integer tabRelationId;
     private Integer categoryId;
-    private List<CmdTagDTO> tags;
+    private List<String> tags;
 
     public CmdPostAndTagsDTO() {
     }
 
 
-    public CmdPostAndTagsDTO(String title, String content, LocalDateTime createdAt, Integer authorId, Integer tabRelationId, List<CmdTagDTO> tags) {
+    public CmdPostAndTagsDTO(String title, String content, LocalDateTime createdAt, Integer authorId, Integer tabRelationId, List<String> tags) {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
@@ -34,7 +34,7 @@ public class CmdPostAndTagsDTO {
     }
 
     public CmdPostAndTagsDTO(String title, String content, LocalDateTime createdAt, Integer authorId,
-                             Integer originId, Integer tabRelationId, List<CmdTagDTO> tags) {
+                             Integer originId, Integer tabRelationId, List<String> tags) {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;

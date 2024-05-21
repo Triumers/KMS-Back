@@ -12,21 +12,23 @@ public class QryPostAndTagsDTO {
     private String title;
     private String content;
     private LocalDate createdAt;
-    private CmdEmployeeDTO authorId;
+    private CmdEmployeeDTO author;
     private Integer originId;
     private Integer recentId;
     private Integer tabRelationId;
     private Integer categoryId;
-    private List<QryTagDTO> tags;
-    private List<QryPostAndTagsDTO> history;
+    private List<String> tags;
 
-    public QryPostAndTagsDTO(Integer id, String title, String content, LocalDate createdAt, CmdEmployeeDTO authorId,
+    private List<QryPostAndTagsDTO> history;
+    private List<CmdEmployeeDTO> participants;
+
+    public QryPostAndTagsDTO(Integer id, String title, String content, LocalDate createdAt, CmdEmployeeDTO author,
                              Integer originId, Integer recentId, Integer tabRelationId, Integer categoryId) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
-        this.authorId = authorId;
+        this.author = author;
         this.originId = originId;
         this.recentId = recentId;
         this.tabRelationId = tabRelationId;
