@@ -13,4 +13,9 @@ public interface QryRequestApprovalService {
     List<QryRequestApprovalInfoDTO> findByType(int requesterId, int typeId, int page, int size);
     List<QryRequestApprovalInfoDTO> findByDateRange(int requesterId, LocalDateTime startDate, LocalDateTime endDate, int page, int size);
 
+    QryRequestApprovalWithEmployeeDTO findReceivedById(int approverId, int requestApprovalId);
+    List<QryRequestApprovalInfoDTO> findAllReceived(int approverId, int page, int size);
+    List<QryRequestApprovalInfoDTO> findReceivedByType(int approverId, int typeId, int page, int size);
+    List<QryRequestApprovalInfoDTO> findReceivedByDateRange(int approverId, LocalDateTime startDate, LocalDateTime endDate, int page, int size);
+
 }
