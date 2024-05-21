@@ -146,4 +146,11 @@
          WHERE A.ID = #{postId}
     </select>
 
+    <select id="originAuthorId" parameterType="_int">
+        SELECT
+               A.AUTHOR_ID
+          FROM tbl_post A
+         WHERE A.ID = #{postId}
+    </select>
+
 </mapper>

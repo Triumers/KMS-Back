@@ -26,4 +26,6 @@ public interface QryPostMapper {
     boolean selectIsEditingByPostId(int postId);
 
     List<Integer> selectParticipantsListByOriginId(int postId);
+
+    Integer originAuthorId(Integer postId);
 }
