@@ -7,5 +7,5 @@ import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPostTag;
 @Repository
 public interface CmdPostTagRepository extends JpaRepository<CmdPostTag, Integer> {
 
-
+    void deleteByPostId(Integer id);
 }
