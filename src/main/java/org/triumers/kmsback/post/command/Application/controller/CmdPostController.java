@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.triumers.kmsback.common.exception.AwsS3Exception;
 import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
@@ -78,6 +80,12 @@ public class CmdPostController {
     public void editingPost(@PathVariable int id){
         cmdPostService.changeEditing(id);
     }
+
+    @PostMapping("/upload")
+    public String uploadFile(@RequestBody MultipartFile file) throws AwsS3Exception {
+        return cmdPostService.uploadFile(file);
+    }
+
 
     @GetMapping("/isAuthor/{originId}")
     public Boolean isAuthorizedToPost(@PathVariable int originId) throws NotLoginException {
