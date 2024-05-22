@@ -46,11 +46,15 @@ public class CmdPostServiceImpl implements CmdPostService {
     public CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post) throws NotLoginException {
 
         Auth employee = authService.whoAmI();
-        CmdPost registPost = new CmdPost(post.getTitle(), post.getContent(), post.getCreatedAt(),
+        CmdPost registPost = new CmdPost(post.getId(), post.getTitle(), post.getContent(), post.getCreatedAt(),
                 employee.getId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
+
+        if (post.getId() != null) {
+            cmdPostTagRepository.deleteByPostId(post.getId());
+        }
         cmdPostRepository.save(registPost);
 
-        List<CmdTag> tags = registTag(convertStringToTag(post.getTags()), registPost.getId());
+        registTag(convertStringToTag(post.getTags()), registPost.getId());
 
         post.setId(registPost.getId());
 
