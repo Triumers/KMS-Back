@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
@@ -44,7 +45,7 @@ public class CmdPostController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<CmdPostAndTagsDTO> deletePost(@PathVariable int id) throws NotLoginException {
+    public ResponseEntity<CmdPostAndTagsDTO> deletePost(@PathVariable int id) throws NotLoginException, NotAuthorizedException {
 
         CmdPostAndTagsDTO deletedPost = cmdPostService.deletePost(id);
 
