@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.auth.command.Application.service.AuthService;
 import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
+import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.employee.command.Application.service.CmdEmployeeService;
 import org.triumers.kmsback.post.command.Application.dto.*;
@@ -46,11 +47,15 @@ public class CmdPostServiceImpl implements CmdPostService {
     public CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post) throws NotLoginException {
 
         Auth employee = authService.whoAmI();
-        CmdPost registPost = new CmdPost(post.getTitle(), post.getContent(), post.getCreatedAt(),
+        CmdPost registPost = new CmdPost(post.getId(), post.getTitle(), post.getContent(), post.getCreatedAt(),
                 employee.getId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
+
+        if (post.getId() != null) {
+            cmdPostTagRepository.deleteByPostId(post.getId());
+        }
         cmdPostRepository.save(registPost);
 
-        List<CmdTag> tags = registTag(convertStringToTag(post.getTags()), registPost.getId());
+        registTag(convertStringToTag(post.getTags()), registPost.getId());
 
         post.setId(registPost.getId());
 
@@ -64,7 +69,7 @@ public class CmdPostServiceImpl implements CmdPostService {
             CmdTagDTO tagDTO = tags.get(i);
 
             CmdTag tag = cmdTagRepository.getByName(tagDTO.getName());
-            if(tag == null){
+            if (tag == null) {
                 tag = new CmdTag(tagDTO.getName());
                 cmdTagRepository.save(tag);
             }
@@ -100,10 +105,10 @@ public class CmdPostServiceImpl implements CmdPostService {
     }
 
     @Override
-    public CmdPostAndTagsDTO deletePost(int postId) throws NotLoginException {
+    public CmdPostAndTagsDTO deletePost(int postId) throws NotLoginException, NotAuthorizedException {
 
         if(!isAuthorizedToPost(postId))
-            throw new RuntimeException("삭제 권한이 없습니다.");
+            throw new NotAuthorizedException();
 
         CmdPost deletePost = cmdPostRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
 
@@ -121,9 +126,9 @@ public class CmdPostServiceImpl implements CmdPostService {
     public Boolean isAuthorizedToPost(int originId) throws NotLoginException {
 
         Auth employee = authService.whoAmI();
-        int author = cmdPostRepository.findAuthorIdById(originId);
+        int authorId = cmdPostRepository.findAuthorIdById(originId);
 
-        if(employee.getId() == author || employee.getUserRole() == ROLE_ADMIN){
+        if (employee.getId() == authorId || employee.getUserRole() == ROLE_ADMIN) {
             return true;
         }
         return false;
@@ -178,9 +183,9 @@ public class CmdPostServiceImpl implements CmdPostService {
 
     @Override
     public void changeEditing(int id) {
-       CmdPost post = cmdPostRepository.findById(id).orElseThrow(IllegalAccessError::new);
-       post.setIsEditing(!post.getIsEditing());
-       cmdPostRepository.save(post);
+        CmdPost post = cmdPostRepository.findById(id).orElseThrow(IllegalAccessError::new);
+        post.setIsEditing(!post.getIsEditing());
+        cmdPostRepository.save(post);
     }
 
     private List<CmdTagDTO> convertStringToTag(List<String> tags) {

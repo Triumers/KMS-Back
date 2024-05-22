@@ -65,6 +65,18 @@ public class CmdPost {
         this.categoryId = categoryId;
     }
 
+    public CmdPost(Integer id, String title, String content, LocalDateTime createdAt,
+                   Integer authorId, Integer originId, Integer tabRelationId, Integer categoryId) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.authorId = authorId;
+        this.originId = originId;
+        this.tabRelationId = tabRelationId;
+        this.categoryId = categoryId;
+    }
+
     public CmdPost(String title, String content, LocalDateTime createdAt, Integer authorId,
                    Integer originId, Integer tabRelationId, Integer categoryId) {
         this.title = title;

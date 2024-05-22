@@ -1,5 +1,6 @@
 package org.triumers.kmsback.post.command.Application.service;
 
+import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
@@ -13,7 +14,7 @@ public interface CmdPostService {
 
     CmdPostAndTagsDTO modifyPost(CmdPostAndTagsDTO post) throws NotLoginException;
 
-    CmdPostAndTagsDTO deletePost(int postId) throws NotLoginException;
+    CmdPostAndTagsDTO deletePost(int postId) throws NotLoginException, NotAuthorizedException;
 
     CmdLikeDTO likePost(CmdLikeDTO like) throws NotLoginException;
 
