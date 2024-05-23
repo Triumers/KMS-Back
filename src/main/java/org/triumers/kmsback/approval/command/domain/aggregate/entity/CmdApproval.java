@@ -1,12 +1,17 @@
 package org.triumers.kmsback.approval.command.domain.aggregate.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.triumers.kmsback.employee.command.domain.aggregate.entity.CmdEmployee;
+import org.triumers.kmsback.tab.command.domain.aggregate.entity.CmdTabRelation;
 
 import java.time.LocalDateTime;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "tbl_approval")
 public class CmdApproval {
@@ -23,12 +28,15 @@ public class CmdApproval {
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "TYPE_ID", nullable = false)
-    private int typeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TYPE_ID", nullable = false)
+    private CmdApprovalType type;
 
-    @Column(name = "EMPLOYEE_ID", nullable = false)
-    private int employeeId;
+    @ManyToOne
+    @JoinColumn(name = "EMPLOYEE_ID", nullable = false)
+    private CmdEmployee requester;
 
-    @Column(name = "TAB_ID", nullable = false)
-    private int tabId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TAB_ID")
+    private CmdTabRelation tab = null;
 }

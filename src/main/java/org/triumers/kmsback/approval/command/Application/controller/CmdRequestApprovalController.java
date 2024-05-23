@@ -1,0 +1,41 @@
+package org.triumers.kmsback.approval.command.Application.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.triumers.kmsback.approval.command.Application.dto.CmdApprovalRequestDTO;
+import org.triumers.kmsback.approval.command.Application.service.CmdRequestApprovalService;
+import org.triumers.kmsback.auth.command.Application.service.AuthService;
+import org.triumers.kmsback.common.exception.NotLoginException;
+
+@RestController
+@RequestMapping("/approval")
+public class CmdRequestApprovalController {
+
+    private final CmdRequestApprovalService cmdRequestApprovalService;
+    private final AuthService authService; // AuthService 주입
+
+    public CmdRequestApprovalController(CmdRequestApprovalService cmdRequestApprovalService, AuthService authService) {
+        this.cmdRequestApprovalService = cmdRequestApprovalService;
+        this.authService = authService;
+    }
+
+    // 현재 사용자의 ID를 얻는 헬퍼 메서드
+    private int getCurrentUserId() throws NotLoginException {
+        return authService.whoAmI().getId();
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> createApproval(@RequestBody CmdApprovalRequestDTO requestDto) {
+        try {
+            int requesterId = getCurrentUserId(); // 헬퍼 메서드 사용
+            cmdRequestApprovalService.createApproval(requestDto, requesterId);
+            return ResponseEntity.ok().build();
+        } catch (NotLoginException e) {
+            return ResponseEntity.status(401).build(); // Unauthorized 응답
+        }
+    }
+
+}
