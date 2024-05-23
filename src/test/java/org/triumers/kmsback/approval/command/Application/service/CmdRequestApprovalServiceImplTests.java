@@ -13,6 +13,7 @@ import org.triumers.kmsback.approval.command.domain.repository.CmdRequestApprova
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -60,4 +61,29 @@ class CmdRequestApprovalServiceImplTests {
         assertThat(createdRequestApproval.getApprover().getId()).isEqualTo(approverId);
         assertThat(createdRequestApproval.getApproval().getId()).isEqualTo(createdApproval.getId());
     }
+
+
+    @Test
+    void testCancelApproval() {
+        // given
+        int requesterId = 3;
+        CmdApprovalRequestDTO requestDto = new CmdApprovalRequestDTO();
+        requestDto.setContent("Test Approval");
+        requestDto.setTypeId(1);
+        requestDto.setApproverId(4);
+
+        cmdRequestApprovalService.createApproval(requestDto, requesterId);
+
+        CmdApproval approval = approvalRepository.findByRequesterIdAndIdIsNotNull(requesterId)
+                .orElseThrow(() -> new IllegalArgumentException("Approval not found for requester id: " + requesterId));
+
+        // when
+        cmdRequestApprovalService.cancelApproval(requesterId, approval.getId());
+
+        // then
+        List<CmdRequestApproval> requestApprovals = requestApprovalRepository.findByApprovalIdOrderByApprovalOrderAsc(approval.getId());
+        assertTrue(requestApprovals.stream().allMatch(ra -> ra.isCanceled()));
+    }
+
+
 }
