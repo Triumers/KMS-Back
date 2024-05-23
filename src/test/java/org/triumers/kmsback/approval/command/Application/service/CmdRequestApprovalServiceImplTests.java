@@ -6,14 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.triumers.kmsback.approval.command.Application.dto.CmdApprovalRequestDTO;
 import org.triumers.kmsback.approval.command.domain.aggregate.entity.CmdApproval;
+import org.triumers.kmsback.approval.command.domain.aggregate.entity.CmdApprovalType;
 import org.triumers.kmsback.approval.command.domain.aggregate.entity.CmdRequestApproval;
 import org.triumers.kmsback.approval.command.domain.repository.CmdApprovalRepository;
 import org.triumers.kmsback.approval.command.domain.repository.CmdRequestApprovalRepository;
+import org.triumers.kmsback.employee.command.domain.aggregate.entity.CmdEmployee;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -64,7 +66,7 @@ class CmdRequestApprovalServiceImplTests {
 
 
     @Test
-    void testCancelApproval() {
+    void cancelApproval() {
         // given
         int requesterId = 3;
         CmdApprovalRequestDTO requestDto = new CmdApprovalRequestDTO();
@@ -85,5 +87,150 @@ class CmdRequestApprovalServiceImplTests {
         assertTrue(requestApprovals.stream().allMatch(ra -> ra.isCanceled()));
     }
 
+    @Test
+    void approveRequestApproval() {
+        // Given
+        CmdEmployee approver = new CmdEmployee();
+        approver.setId(1);
 
+        CmdEmployee requester = new CmdEmployee();
+        requester.setId(2);
+
+        CmdApprovalType approvalType = new CmdApprovalType();
+        approvalType.setId(2); // 결재 유형 ID 2로 설정
+
+        CmdApproval approval = new CmdApproval();
+        approval.setRequester(requester);
+        approval.setType(approvalType);
+        approval = approvalRepository.save(approval);
+
+        CmdRequestApproval requestApproval = new CmdRequestApproval();
+        requestApproval.setApproval(approval);
+        requestApproval.setApprover(approver);
+        requestApproval.setIsApproved("WAITING");
+        requestApprovalRepository.save(requestApproval);
+
+        // When
+        cmdRequestApprovalService.approveRequestApproval(approver.getId(), requestApproval.getId());
+
+        // Then
+        CmdRequestApproval updatedRequestApproval = requestApprovalRepository.findById(requestApproval.getId()).orElseThrow();
+        assertEquals("APPROVED", updatedRequestApproval.getIsApproved());
+    }
+
+    @Test
+    void approveRequestApprovalAlreadyProcessed() {
+        // Given
+        CmdEmployee approver = new CmdEmployee();
+        approver.setId(1);
+
+        CmdEmployee requester = new CmdEmployee();
+        requester.setId(2);
+
+        CmdApprovalType approvalType = new CmdApprovalType();
+        approvalType.setId(2);
+
+        CmdApproval approval = new CmdApproval();
+        approval.setRequester(requester);
+        approval.setType(approvalType);
+        approval = approvalRepository.save(approval);
+
+        CmdRequestApproval requestApproval = new CmdRequestApproval();
+        requestApproval.setApproval(approval);
+        requestApproval.setApprover(approver);
+        requestApproval.setIsApproved("APPROVED"); // 이미 처리된 상태
+        requestApprovalRepository.save(requestApproval);
+
+        // When, Then
+        assertThrows(IllegalStateException.class, () -> cmdRequestApprovalService.approveRequestApproval(approver.getId(), requestApproval.getId()));
+    }
+
+    @Test
+    void rejectRequestApproval() {
+        // Given
+        CmdEmployee approver = new CmdEmployee();
+        approver.setId(1);
+
+        CmdEmployee requester = new CmdEmployee();
+        requester.setId(2);
+
+        CmdApprovalType approvalType = new CmdApprovalType();
+        approvalType.setId(2);
+
+        CmdApproval approval = new CmdApproval();
+        approval.setRequester(requester);
+        approval.setType(approvalType);
+        approval = approvalRepository.save(approval);
+
+        CmdRequestApproval requestApproval = new CmdRequestApproval();
+        requestApproval.setApproval(approval);
+        requestApproval.setApprover(approver);
+        requestApproval.setIsApproved("WAITING");
+        requestApprovalRepository.save(requestApproval);
+
+        // When
+        cmdRequestApprovalService.rejectRequestApproval(approver.getId(), requestApproval.getId());
+
+        // Then
+        CmdRequestApproval updatedRequestApproval = requestApprovalRepository.findById(requestApproval.getId()).orElseThrow();
+        assertEquals("REJECTED", updatedRequestApproval.getIsApproved());
+    }
+
+    @Test
+    void rejectRequestApprovalAlreadyProcessed() {
+        // Given
+        CmdEmployee approver = new CmdEmployee();
+        approver.setId(1);
+
+        CmdEmployee requester = new CmdEmployee();
+        requester.setId(2);
+
+        CmdApprovalType approvalType = new CmdApprovalType();
+        approvalType.setId(2);
+
+        CmdApproval approval = new CmdApproval();
+        approval.setRequester(requester);
+        approval.setType(approvalType);
+        approval = approvalRepository.save(approval);
+
+        CmdRequestApproval requestApproval = new CmdRequestApproval();
+        requestApproval.setApproval(approval);
+        requestApproval.setApprover(approver);
+        requestApproval.setIsApproved("APPROVED");
+        requestApprovalRepository.save(requestApproval);
+
+        // When, Then
+        assertThrows(IllegalStateException.class, () -> cmdRequestApprovalService.rejectRequestApproval(approver.getId(), requestApproval.getId()));
+    }
+
+    @Test
+    void requestApprovalUnauthorized() {
+        // Given
+        CmdEmployee approver = new CmdEmployee();
+        approver.setId(1);
+
+        CmdEmployee otherEmployee = new CmdEmployee();
+        otherEmployee.setId(5);
+
+        CmdEmployee requester = new CmdEmployee();
+        requester.setId(3);
+
+        CmdApprovalType approvalType = new CmdApprovalType();
+        approvalType.setId(2);
+
+        CmdApproval approval = new CmdApproval();
+        approval.setRequester(requester);
+        approval.setType(approvalType);
+        approval = approvalRepository.save(approval);
+
+        CmdRequestApproval requestApproval = new CmdRequestApproval();
+        requestApproval.setApproval(approval);
+        requestApproval.setApprover(approver);
+        requestApproval.setIsApproved("WAITING");
+        requestApprovalRepository.save(requestApproval);
+
+        // When, Then
+        assertThrows(IllegalArgumentException.class, () -> cmdRequestApprovalService.approveRequestApproval(otherEmployee.getId(), requestApproval.getId()));
+        assertThrows(IllegalArgumentException.class, () -> cmdRequestApprovalService.rejectRequestApproval(otherEmployee.getId(), requestApproval.getId()));
+    }
 }
