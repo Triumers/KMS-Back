@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.triumers.kmsback.auth.command.Application.dto.CustomUserDetails;
-import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
+import org.triumers.kmsback.auth.command.domain.aggregate.entity.Employee;
 import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class JwtFilter extends OncePerRequestFilter {
         UserRole role = UserRole.valueOf(jwtUtil.getRole(token));
 
         //userEntity를 생성하여 값 set
-        Auth userEntity = new Auth();
+        Employee userEntity = new Employee();
         userEntity.setEmail(email);
         userEntity.setPassword("temppassword");
         userEntity.setUserRole(role);

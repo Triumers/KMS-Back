@@ -5,11 +5,8 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRoleConverter;
-import org.triumers.kmsback.common.exception.WrongInputTypeException;
 
 import java.time.LocalDate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Entity
 @Getter
@@ -18,7 +15,7 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 @ToString
 @Table(name = "tbl_employee")
-public class Auth {
+public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

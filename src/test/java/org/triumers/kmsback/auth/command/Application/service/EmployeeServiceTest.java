@@ -10,8 +10,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.auth.command.Application.dto.AuthDTO;
 import org.triumers.kmsback.auth.command.Application.dto.PasswordDTO;
-import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
-import org.triumers.kmsback.auth.command.domain.repository.AuthRepository;
+import org.triumers.kmsback.auth.command.domain.aggregate.entity.Employee;
+import org.triumers.kmsback.auth.command.domain.repository.EmployeeRepository;
 import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.TestUserInfo;
 import org.triumers.kmsback.common.exception.NotLoginException;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class AuthServiceTest {
+class EmployeeServiceTest {
     private final String RIGHT_FORMAT_EMAIL = TestUserInfo.EMAIL;
     private final String RIGHT_FORMAT_PASSWORD = TestUserInfo.PASSWORD;
     private final String RIGHT_FORMAT_NAME = TestUserInfo.NAME;
@@ -33,7 +33,7 @@ class AuthServiceTest {
     private AuthService authService;
 
     @Autowired
-    private AuthRepository authRepository;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -52,7 +52,7 @@ class AuthServiceTest {
         assertDoesNotThrow(() -> authService.signup(newEmployee));
 
         // then
-        assertNotNull(authRepository.findByEmail(newEmployee.getEmail()));
+        assertNotNull(employeeRepository.findByEmail(newEmployee.getEmail()));
     }
 
     @DisplayName("비밀번호 변경 테스트")
@@ -68,7 +68,7 @@ class AuthServiceTest {
         assertDoesNotThrow(() -> authService.editPassword(passwordDTO));
 
         // then
-        assertTrue(bCryptPasswordEncoder.matches(newPassword, authRepository.findByEmail(RIGHT_FORMAT_EMAIL).getPassword()));
+        assertTrue(bCryptPasswordEncoder.matches(newPassword, employeeRepository.findByEmail(RIGHT_FORMAT_EMAIL).getPassword()));
     }
 
     @DisplayName("잘못된 기존 비밀번호 변경 테스트")
@@ -84,7 +84,7 @@ class AuthServiceTest {
         assertThrows(WrongInputValueException.class, () -> authService.editPassword(passwordDTO));
 
         // then
-        assertFalse(bCryptPasswordEncoder.matches(newPassword, authRepository.findByEmail(RIGHT_FORMAT_EMAIL).getPassword()));
+        assertFalse(bCryptPasswordEncoder.matches(newPassword, employeeRepository.findByEmail(RIGHT_FORMAT_EMAIL).getPassword()));
     }
 
     @DisplayName("사용자 정보 변경 테스트")
@@ -112,16 +112,16 @@ class AuthServiceTest {
         authService.editMyInfo(authDTO);
 
         // then
-        Auth auth = authRepository.findByEmail(RIGHT_FORMAT_EMAIL);
+        Employee employee = employeeRepository.findByEmail(RIGHT_FORMAT_EMAIL);
 
         if (newName != null && !newName.isEmpty()) {
-            assertEquals(newName, auth.getName());
+            assertEquals(newName, employee.getName());
         }
         if (newPhoneNumber != null && !newPhoneNumber.isEmpty()) {
-            assertEquals(newPhoneNumber, auth.getPhoneNumber());
+            assertEquals(newPhoneNumber, employee.getPhoneNumber());
         }
         if (newProfileImg != null && !newProfileImg.isEmpty()) {
-            assertEquals(newProfileImg, auth.getProfileImg());
+            assertEquals(newProfileImg, employee.getProfileImg());
         }
     }
 

@@ -2,17 +2,17 @@ package org.triumers.kmsback.auth.command.Application.dto;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
+import org.triumers.kmsback.auth.command.domain.aggregate.entity.Employee;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final Auth user;
+    private final Employee user;
 
-    public CustomUserDetails(Auth auth) {
-        this.user = auth;
+    public CustomUserDetails(Employee employee) {
+        this.user = employee;
     }
 
     @Override

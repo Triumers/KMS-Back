@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.triumers.kmsback.auth.command.Application.dto.AuthDTO;
 import org.triumers.kmsback.auth.command.Application.service.AuthService;
-import org.triumers.kmsback.auth.command.domain.repository.AuthRepository;
+import org.triumers.kmsback.auth.command.domain.repository.EmployeeRepository;
 import org.triumers.kmsback.auth.command.domain.service.CustomUserDetailsService;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
 
@@ -24,7 +24,7 @@ public class LoggedInUser {
     private AuthService authService;
 
     @Autowired
-    private AuthRepository authRepository;
+    private EmployeeRepository employeeRepository;
 
     // 테스트용 계정 DTO 생성
     private AuthDTO createRightAuthDTO() {
@@ -41,7 +41,7 @@ public class LoggedInUser {
     // 테스트용 계정으로 로그인
     public void setting() throws WrongInputTypeException {
         setUser();
-        CustomUserDetailsService customUserDetailsService = new CustomUserDetailsService(authRepository);
+        CustomUserDetailsService customUserDetailsService = new CustomUserDetailsService(employeeRepository);
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(RIGHT_FORMAT_EMAIL);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities()));

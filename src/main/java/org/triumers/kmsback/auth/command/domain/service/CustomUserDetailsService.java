@@ -6,23 +6,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.auth.command.Application.dto.CustomUserDetails;
-import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
-import org.triumers.kmsback.auth.command.domain.repository.AuthRepository;
+import org.triumers.kmsback.auth.command.domain.aggregate.entity.Employee;
+import org.triumers.kmsback.auth.command.domain.repository.EmployeeRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final AuthRepository userRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public CustomUserDetailsService(AuthRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        Auth userData = userRepository.findByEmail(email);
+        Employee userData = employeeRepository.findByEmail(email);
 
         if (userData != null) {
 
