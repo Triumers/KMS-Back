@@ -1,9 +1,12 @@
 package org.triumers.kmsback.approval.command.domain.aggregate.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "tbl_approval_type")
 public class CmdApprovalType {

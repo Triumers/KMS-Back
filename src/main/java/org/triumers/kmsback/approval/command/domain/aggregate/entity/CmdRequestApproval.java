@@ -1,9 +1,13 @@
 package org.triumers.kmsback.approval.command.domain.aggregate.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.triumers.kmsback.employee.command.domain.aggregate.entity.CmdEmployee;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "tbl_request_approval")
 public class CmdRequestApproval {
@@ -22,9 +26,12 @@ public class CmdRequestApproval {
     @Column(name = "IS_CANCELED", nullable = false)
     private boolean isCanceled = false;
 
-    @Column(name = "EMPLOYEE_ID", nullable = false)
-    private int employeeId;
 
-    @Column(name = "APPROVAL_ID", nullable = false)
-    private int approvalId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "EMPLOYEE_ID", nullable = false)
+    private CmdEmployee approver;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "APPROVAL_ID", nullable = false)
+    private CmdApproval approval;
 }
