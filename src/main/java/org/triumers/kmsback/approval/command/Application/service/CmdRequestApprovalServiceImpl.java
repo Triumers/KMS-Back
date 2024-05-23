@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService{
+public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService {
 
     // insert문
     // 1. 결재 대상자를 택해 권한 신청(결재)
@@ -48,7 +48,7 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService{
     }
 
     @Transactional
-    public void createApproval(CmdApprovalRequestDTO requestDto, int requesterId){
+    public void createApproval(CmdApprovalRequestDTO requestDto, int requesterId) {
 
         // 결재 요청자 조회
         CmdEmployeeDTO requesterDTO = cmdEmployeeService.findEmployeeById(requesterId);
@@ -159,7 +159,7 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService{
         requestApprovalRepository.save(requestApproval);
     }
 
-    // 5. 요청받은 결재 승인 거부
+    // 요청받은 결재 승인 거부
     // request approval id 받아서
     // is_approved WAITING인 거 REJECTED로 바꾸기
     @Transactional
@@ -179,7 +179,42 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService{
         requestApprovalRepository.save(requestApproval);
     }
 
-    // 6. 요청받은 결재 승인 후 결재 대상자 추가
+    // 요청받은 결재 승인 후 결재 대상자 추가
     // requestapproval 생성하기 -> approval_order랑 결재자만 다르게 해서 넣기
+    @Transactional
+    public void addApproverToRequestApproval(int approverId, int requestApprovalId, int newApproverId) {
+        CmdRequestApproval requestApproval = requestApprovalRepository.findById(requestApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Request approval not found with id: " + requestApprovalId));
+
+        if (requestApproval.getApprover().getId() != approverId) {
+            throw new IllegalArgumentException("You are not the approver for this request");
+        }
+
+        if (!requestApproval.getIsApproved().equals("WAITING")) {
+            throw new IllegalStateException("Request approval has already been processed");
+        }
+
+        CmdEmployeeDTO newApproverDTO = cmdEmployeeService.findEmployeeById(newApproverId);
+        if (newApproverDTO == null) {
+            throw new IllegalArgumentException("Employee not found with id: " + newApproverId);
+        }
+
+        CmdEmployee newApprover = convertToEntity(newApproverDTO);
+
+        int nextApprovalOrder = requestApproval.getApproval().getRequestApprovals().stream()
+                .mapToInt(CmdRequestApproval::getApprovalOrder)
+                .max()
+                .orElse(0) + 1;
+
+        CmdRequestApproval newRequestApproval = new CmdRequestApproval();
+        newRequestApproval.setApprovalOrder(nextApprovalOrder);
+        newRequestApproval.setApprover(newApprover);
+        newRequestApproval.setApproval(requestApproval.getApproval());
+        newRequestApproval.setIsApproved("WAITING");
+        requestApprovalRepository.save(newRequestApproval);
+
+        requestApproval.setIsApproved("APPROVED");
+        requestApprovalRepository.save(requestApproval);
+    }
 
 }
