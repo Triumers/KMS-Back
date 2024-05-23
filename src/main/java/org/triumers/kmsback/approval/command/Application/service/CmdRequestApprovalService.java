@@ -6,4 +6,6 @@ public interface CmdRequestApprovalService {
 
     void createApproval(CmdApprovalRequestDTO requestDto, int requesterId);
     void cancelApproval(int requesterId, int approvalId);
+    void approveRequestApproval(int approverId, int requestApprovalId);
+    void rejectRequestApproval(int approverId, int requestApprovalId);
 }

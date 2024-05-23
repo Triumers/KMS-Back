@@ -58,4 +58,30 @@ public class CmdRequestApprovalController {
         }
     }
 
+    @PostMapping("/received/{requestApprovalId}/approve")
+    public ResponseEntity<String> approveRequestApproval(@PathVariable int requestApprovalId) {
+        try {
+            int approverId = authService.whoAmI().getId();
+            cmdRequestApprovalService.approveRequestApproval(approverId, requestApprovalId);
+            return ResponseEntity.ok("Request approval approved successfully");
+        } catch (NotLoginException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not logged in");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/received/{requestApprovalId}/reject")
+    public ResponseEntity<String> rejectRequestApproval(@PathVariable int requestApprovalId) {
+        try {
+            int approverId = authService.whoAmI().getId();
+            cmdRequestApprovalService.rejectRequestApproval(approverId, requestApprovalId);
+            return ResponseEntity.ok("Request approval rejected successfully");
+        } catch (NotLoginException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not logged in");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 }

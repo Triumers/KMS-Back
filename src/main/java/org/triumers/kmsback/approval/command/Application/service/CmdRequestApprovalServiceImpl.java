@@ -97,7 +97,7 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService{
 
 
     // update
-    // 3. 본인이 요청한 결재 취소
+    // 본인이 요청한 결재 취소
 //    메서드는 requesterId와 approvalId를 파라미터로 받습니다.
 //    approvalRepository에서 approvalId에 해당하는 CmdApproval 객체를 찾습니다. 객체가 없으면 예외를 던집니다.
 //    CmdApproval 객체의 getRequester().getId()와 requesterId가 일치하는지 확인합니다. 일치하지 않으면 예외를 던집니다. 이를 통해 본인이 요청한 결재만 취소할 수 있도록 제한합니다.
@@ -109,10 +109,9 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService{
 //    리스트에서 approvalOrder가 현재 approvalOrder 이하인 모든 객체를 찾습니다.
 //    해당 객체들의 isCanceled를 true로 설정하고, 데이터베이스에 저장합니다.
 //
-//
 //    해당 객체가 없다면, 모든 요청 승인이 이미 처리되었기 때문에 예외를 던집니다.
 
-
+    @Transactional
     public void cancelApproval(int requesterId, int approvalId) {
         CmdApproval approval = approvalRepository.findById(approvalId)
                 .orElseThrow(() -> new IllegalArgumentException("Approval not found for approvalId: " + approvalId));
@@ -140,19 +139,47 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService{
         }
     }
 
+    // 요청받은 결재 승인
+    // request approval id 받아서
+    // is_approved WAITING인 거 APPROVED로 바꾸기
+    @Transactional
+    public void approveRequestApproval(int approverId, int requestApprovalId) {
+        CmdRequestApproval requestApproval = requestApprovalRepository.findById(requestApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Request approval not found with id: " + requestApprovalId));
 
+        if (requestApproval.getApprover().getId() != approverId) {
+            throw new IllegalArgumentException("You are not the approver for this request");
+        }
 
+        if (!requestApproval.getIsApproved().equals("WAITING")) {
+            throw new IllegalStateException("Request approval has already been processed");
+        }
 
-    // 4. 요청받은 결재 승인
+        requestApproval.setIsApproved("APPROVED");
+        requestApprovalRepository.save(requestApproval);
+    }
 
-    // 5. 요청받은 결재 승인 후 결재 대상자 추가
+    // 5. 요청받은 결재 승인 거부
+    // request approval id 받아서
+    // is_approved WAITING인 거 REJECTED로 바꾸기
+    @Transactional
+    public void rejectRequestApproval(int approverId, int requestApprovalId) {
+        CmdRequestApproval requestApproval = requestApprovalRepository.findById(requestApprovalId)
+                .orElseThrow(() -> new IllegalArgumentException("Request approval not found with id: " + requestApprovalId));
+
+        if (requestApproval.getApprover().getId() != approverId) {
+            throw new IllegalArgumentException("You are not the approver for this request");
+        }
+
+        if (!requestApproval.getIsApproved().equals("WAITING")) {
+            throw new IllegalStateException("Request approval has already been processed");
+        }
+
+        requestApproval.setIsApproved("REJECTED");
+        requestApprovalRepository.save(requestApproval);
+    }
+
+    // 6. 요청받은 결재 승인 후 결재 대상자 추가
     // requestapproval 생성하기 -> approval_order랑 결재자만 다르게 해서 넣기
-
-    // 6. 요청받은 결재 승인 거부
-    // -> default가 false기 때문에 우선 그냥 두면 됨
-    // 승인 대기 중 이런 거 안 만들어도 되나...?
-    //-> String으로 바뀌었기 때문에 가능....
-    // WAITING/FALSE/TRUE
-
 
 }
