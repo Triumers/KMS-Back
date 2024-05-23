@@ -15,7 +15,7 @@ public class QryRequestApprovalInfoDTO {
 
     private int requestApprovalId;
     private int approvalOrder;
-    private boolean isCanceled;
+    private String isCanceled;
     private boolean isApproved;
     private int approverId;
     private int approvalId;
