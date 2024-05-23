@@ -233,4 +233,46 @@ class CmdRequestApprovalServiceImplTests {
         assertThrows(IllegalArgumentException.class, () -> cmdRequestApprovalService.approveRequestApproval(otherEmployee.getId(), requestApproval.getId()));
         assertThrows(IllegalArgumentException.class, () -> cmdRequestApprovalService.rejectRequestApproval(otherEmployee.getId(), requestApproval.getId()));
     }
+
+    @Test
+    void addApproverToRequestApproval() {
+        // Given
+        int requesterId = 5;
+        int approverId = 2;
+        int newApproverId = 3;
+
+        CmdEmployee requester = new CmdEmployee();
+        requester.setId(requesterId);
+
+        CmdEmployee approver = new CmdEmployee();
+        approver.setId(approverId);
+
+        CmdEmployee newApprover = new CmdEmployee();
+        newApprover.setId(newApproverId);
+
+        CmdApprovalType approvalType = new CmdApprovalType();
+        approvalType.setId(1);
+
+        CmdApproval approval = new CmdApproval();
+        approval.setRequester(requester);
+        approval.setType(approvalType);
+        approval = approvalRepository.save(approval);
+
+        CmdRequestApproval requestApproval = new CmdRequestApproval();
+        requestApproval.setApproval(approval);
+        requestApproval.setApprover(approver);
+        requestApproval.setIsApproved("WAITING");
+        requestApprovalRepository.save(requestApproval);
+
+        // When
+        cmdRequestApprovalService.addApproverToRequestApproval(approverId, requestApproval.getId(), newApproverId);
+
+        // Then
+        List<CmdRequestApproval> requestApprovals = requestApprovalRepository.findByApprovalIdOrderByApprovalOrderAsc(approval.getId());
+        assertEquals(2, requestApprovals.size());
+        assertEquals("APPROVED", requestApprovals.get(0).getIsApproved());
+        assertEquals(newApproverId, requestApprovals.get(1).getApprover().getId());
+        assertEquals("WAITING", requestApprovals.get(1).getIsApproved());
+    }
+
 }
