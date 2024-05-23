@@ -84,4 +84,18 @@ public class CmdRequestApprovalController {
         }
     }
 
+    @PostMapping("/received/{requestApprovalId}/addApprover")
+    public ResponseEntity<String> addApproverToRequestApproval(@PathVariable int requestApprovalId, @RequestParam int newApproverId) {
+        try {
+            int approverId = authService.whoAmI().getId();
+            cmdRequestApprovalService.addApproverToRequestApproval(approverId, requestApprovalId, newApproverId);
+            return ResponseEntity.ok("Approver added successfully");
+        } catch (NotLoginException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not logged in");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+
 }

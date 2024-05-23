@@ -7,6 +7,8 @@ import org.triumers.kmsback.employee.command.domain.aggregate.entity.CmdEmployee
 import org.triumers.kmsback.tab.command.domain.aggregate.entity.CmdTabRelation;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,4 +41,9 @@ public class CmdApproval {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TAB_ID")
     private CmdTabRelation tab = null;
+
+    @OneToMany(mappedBy = "approval", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CmdRequestApproval> requestApprovals = new ArrayList<>();
+
+
 }
