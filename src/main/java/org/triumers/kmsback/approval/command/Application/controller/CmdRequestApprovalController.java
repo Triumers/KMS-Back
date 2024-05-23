@@ -2,10 +2,7 @@ package org.triumers.kmsback.approval.command.Application.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.triumers.kmsback.approval.command.Application.dto.CmdApprovalRequestDTO;
 import org.triumers.kmsback.approval.command.Application.service.CmdApprovalTypeService;
 import org.triumers.kmsback.approval.command.Application.service.CmdRequestApprovalService;
@@ -46,6 +43,19 @@ public class CmdRequestApprovalController {
     public ResponseEntity<String> addNewApprovalType(@RequestBody String type) {
         cmdApprovalTypeService.addNewApprovalType(type);
         return new ResponseEntity<>("New approval type added successfully", HttpStatus.OK);
+    }
+
+    @PostMapping("/{approvalId}/cancel")
+    public ResponseEntity<String> cancelApproval(@PathVariable int approvalId) {
+        try {
+            int requesterId = getCurrentUserId();
+            cmdRequestApprovalService.cancelApproval(requesterId, approvalId);
+            return ResponseEntity.ok("Approval canceled successfully");
+        } catch (NotLoginException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not logged in");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
 }

@@ -21,7 +21,7 @@ public class CmdRequestApproval {
     private int approvalOrder;
 
     @Column(name = "IS_APPROVED", nullable = false)
-    private String isApproved = "FALSE";
+    private String isApproved = "WAITING";
 
     @Column(name = "IS_CANCELED", nullable = false)
     private boolean isCanceled = false;

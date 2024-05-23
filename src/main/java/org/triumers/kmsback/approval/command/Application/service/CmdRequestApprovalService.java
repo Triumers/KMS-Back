@@ -5,4 +5,5 @@ import org.triumers.kmsback.approval.command.Application.dto.CmdApprovalRequestD
 public interface CmdRequestApprovalService {
 
     void createApproval(CmdApprovalRequestDTO requestDto, int requesterId);
+    void cancelApproval(int requesterId, int approvalId);
 }
