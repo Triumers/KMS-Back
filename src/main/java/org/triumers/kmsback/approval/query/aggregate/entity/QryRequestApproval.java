@@ -10,7 +10,7 @@ import lombok.*;
 public class QryRequestApproval {
     private int id;
     private int approvalOrder;
-    private boolean isApproved;
+    private String isApproved;
     private boolean isCanceled;
     private int employeeId;
     private int approvalId;
