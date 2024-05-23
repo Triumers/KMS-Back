@@ -15,6 +15,8 @@ import org.triumers.kmsback.employee.command.Application.service.CmdEmployeeServ
 import org.triumers.kmsback.employee.command.domain.aggregate.entity.CmdEmployee;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService{
@@ -25,29 +27,12 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService{
     // ㄴ 워크스페이스 생성 요청
     // ㄴ 스터디 생성 요청
     // ㄴ 속하지 않은 워크스페이스 열람(읽기) 요청
-
     // approval에 우선 하나 추가하고 request_approval에 approval_order 1인 거 하나 추가하기
 
-    // 워크스페이스 생성 요청, 스터디 생성 요청 -> 탭간 관계에서
-    // 속하지 않은 워크스페이스 열람 요청 -> 탭간 관계에서
-    // -> 이거 프론트에서 해버릴까... 우선 백에서 할 거면 메소드 두 개 만들어야 됨
-    // 상위 탭 - 스터디, 워크스페이스 등 큰 분류
-    // 하위 탭 - 어떤 스터디인지 어떤 워크스페이스인지
-
-    // 일단 먼저 신청할 거 4개 중 하나 고르면
-//    // 탭간 관계 ID를 통해 가져와야 되는 것 - 상위 탭 ID(not null), 하위 탭 ID(nullable), team id(null)
-//    // 워크스페이스/스터디 생성 요청 - 상위 탭만 고를 수 있어야 함 하위 탭 id는 그냥 null로 두고 상위 탭 테이블에서 이름 선택 -> 워크스페이스, 스터디만?
-//    // 속하지 않은 워크스페이스 열람(읽기) 요청 - 상위 탭, 하위 탭 둘 다 고를 수 있어야 함 둘 다 이름 불러와야 됨... 상위 탭 선택 후 하위 탭에서 해당되는 거 선택해야 됨
-    // 속하지 않는 워크스페이스 열람 요청은 그냥 링크로 받기... 이럴 거면 그냥 음 유형 고를 수 있으니 탭을 굳이 할 필요 없을 듯?
-
     // 그리고 그 요청하는 사람 레벨도 설정해야 됨... 냅다 신입사원이 신청할 수 없게
-
     // 날짜 시간은 선택할 수 없고 입력한 시간으로 바로 되는 걸로 -> now로 만들기
-
     // approver 선택하는 거는 employeeservice 쪽 메소드 끌어와서 만들기
-
-    // 탭 그냥 null로 함
-
+    // 탭간 관계 id 그냥 null로 함
 
     private final CmdApprovalRepository approvalRepository;
     private final CmdRequestApprovalRepository requestApprovalRepository;
@@ -111,41 +96,63 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService{
     }
 
 
-
-
-    // 2. 결재 유형 추가
-    // tbl_approval_type에 값 하나 추가하기
-
-
-
     // update
-    // 본인이 요청한 결재 취소
-    // 취소 여부 수정 -> 결재 아이디 같은 컬럼들 -> request approval 테이블에 있는 is_canceled true로 바꾸기
-//    // 최종 마지막이 is_approved=false 인 거 다 is_canceled = true로 바꾸면 됨...
+    // 3. 본인이 요청한 결재 취소
+//    메서드는 requesterId와 approvalId를 파라미터로 받습니다.
+//    approvalRepository에서 approvalId에 해당하는 CmdApproval 객체를 찾습니다. 객체가 없으면 예외를 던집니다.
+//    CmdApproval 객체의 getRequester().getId()와 requesterId가 일치하는지 확인합니다. 일치하지 않으면 예외를 던집니다. 이를 통해 본인이 요청한 결재만 취소할 수 있도록 제한합니다.
+//    requestApprovalRepository에서 approvalId에 해당하는 모든 CmdRequestApproval 객체 리스트를 가져옵니다. 이때 approvalOrder로 오름차순 정렬합니다.
+//    리스트에서 isApproved가 WAITING 상태인 객체를 찾습니다. 이는 아직 승인되지 않은 요청 승인 객체입니다.
+//    해당 객체가 있다면:
 //
-//    // approvalId가 주어지면, 해당 approvalId를 가진 결재 요청 중에서 approvalOrder가 가장 큰 값을 찾습니다.
-//    // -> approvalId가 주어져야 되는 게 아님!
-//    // 그 중에서 isApproved가 false인 레코드가 있다면, 그 레코드와 approvalOrder가 그 이하인 모든 레코드의 isCanceled 필드를 true로 업데이트합니다.
-//    // isApproved가 false인 레코드가 없다면, 예외를 던집니다.
+//    현재 approvalOrder를 가져옵니다.
+//    리스트에서 approvalOrder가 현재 approvalOrder 이하인 모든 객체를 찾습니다.
+//    해당 객체들의 isCanceled를 true로 설정하고, 데이터베이스에 저장합니다.
 //
-////    컨트롤러에서 PUT /request-approval/{id}/cancel 요청을 받으면 CmdRequestApprovalService의 cancelApprovalRequest 메서드를 호출합니다. 여기서 {id}는 결재 요청의 ID입니다.
-////    cancelApprovalRequest 메서드에서는 다음의 작업을 수행합니다:
-////
-////    주어진 id로 CmdRequestApproval 엔티티를 찾습니다.
-////    해당 엔티티의 approvalId를 가져옵니다.
-////    approvalId를 사용하여 동일한 approvalId를 가진 결재 요청 중에서 approvalOrder가 가장 큰 값을 찾습니다(findMaxOrderByApprovalId 메서드 사용).
-////    그 중에서 isApproved가 false인 레코드가 있다면, 그 레코드와 approvalOrder가 그 이하인 모든 레코드의 isCanceled 필드를 true로 업데이트합니다(updateIsCanceledByApprovalIdAndOrder 메서드 사용).
-////    isApproved가 false인 레코드가 없다면, 예외를 던집니다.
+//
+//    해당 객체가 없다면, 모든 요청 승인이 이미 처리되었기 때문에 예외를 던집니다.
+
+
+    public void cancelApproval(int requesterId, int approvalId) {
+        CmdApproval approval = approvalRepository.findById(approvalId)
+                .orElseThrow(() -> new IllegalArgumentException("Approval not found for approvalId: " + approvalId));
+
+        if (approval.getRequester().getId() != requesterId) {
+            throw new IllegalArgumentException("You are not authorized to cancel this approval");
+        }
+
+        List<CmdRequestApproval> requestApprovals = requestApprovalRepository.findByApprovalIdOrderByApprovalOrderAsc(approvalId);
+
+        Optional<CmdRequestApproval> pendingRequestApproval = requestApprovals.stream()
+                .filter(ra -> ra.getIsApproved().equals("WAITING"))
+                .findFirst();
+
+        if (pendingRequestApproval.isPresent()) {
+            int currentOrder = pendingRequestApproval.get().getApprovalOrder();
+            requestApprovals.stream()
+                    .filter(ra -> ra.getApprovalOrder() <= currentOrder)
+                    .forEach(ra -> {
+                        ra.setCanceled(true);
+                        requestApprovalRepository.save(ra);
+                    });
+        } else {
+            throw new IllegalStateException("Cannot cancel the approval as it has already been processed");
+        }
+    }
 
 
 
-    // 요청받은 결재 승인
 
+    // 4. 요청받은 결재 승인
 
-    // 요청받은 결재 승인 거부
-    // -> default가 false기 때문에 우선 그렇게 두면 됨
-    // 승인 대기 중 이런 거 안 만들어도 되나...?
-
-    // 요청받은 결재 승인 후 결재 대상자 추가
+    // 5. 요청받은 결재 승인 후 결재 대상자 추가
     // requestapproval 생성하기 -> approval_order랑 결재자만 다르게 해서 넣기
+
+    // 6. 요청받은 결재 승인 거부
+    // -> default가 false기 때문에 우선 그냥 두면 됨
+    // 승인 대기 중 이런 거 안 만들어도 되나...?
+    //-> String으로 바뀌었기 때문에 가능....
+    // WAITING/FALSE/TRUE
+
+
 }
