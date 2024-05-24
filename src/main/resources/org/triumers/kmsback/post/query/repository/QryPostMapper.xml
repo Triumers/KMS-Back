@@ -107,6 +107,7 @@
           LEFT JOIN tbl_tag C ON (B.TAG_ID = C.ID)
          WHERE A.ID = #{originId}
             OR A.ORIGIN_ID = #{originId}
+         ORDER BY CREATED_AT DESC
     </select>
 
     <select id="selectParticipantsListByOriginId" parameterType="_int">
