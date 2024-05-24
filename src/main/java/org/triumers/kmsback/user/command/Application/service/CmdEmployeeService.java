@@ -1,6 +1,6 @@
-package org.triumers.kmsback.employee.command.Application.service;
+package org.triumers.kmsback.user.command.Application.service;
 
-import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
+import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 
 import java.util.List;
 
