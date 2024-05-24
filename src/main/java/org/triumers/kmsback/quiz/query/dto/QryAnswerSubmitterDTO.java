@@ -1,23 +1,31 @@
 package org.triumers.kmsback.quiz.query.dto;
 
+import java.time.LocalDate;
+
 public class QryAnswerSubmitterDTO {
     private int id;
     private String answer;
+    private String commentary;
+    private boolean status;
     private int quizId;
     private int employeeId;
+    private LocalDate createdAt;
 
     public QryAnswerSubmitterDTO() {
     }
 
-    public QryAnswerSubmitterDTO(int id, String answer, int quizId, int employeeId) {
+    public QryAnswerSubmitterDTO(int id, String answer, String commentary, boolean status, int quizId, int employeeId, LocalDate createdAt) {
         this.id = id;
         this.answer = answer;
+        this.commentary = commentary;
+        this.status = status;
         this.quizId = quizId;
         this.employeeId = employeeId;
+        this.createdAt = createdAt;
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(int id) {
@@ -25,15 +33,31 @@ public class QryAnswerSubmitterDTO {
     }
 
     public String getAnswer() {
-        return answer;
+        return this.answer;
     }
 
     public void setAnswer(String answer) {
         this.answer = answer;
     }
 
+    public String getCommentary() {
+        return this.commentary;
+    }
+
+    public void setCommentary(String commentary) {
+        this.commentary = commentary;
+    }
+
+    public boolean isStatus() {
+        return this.status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
     public int getQuizId() {
-        return quizId;
+        return this.quizId;
     }
 
     public void setQuizId(int quizId) {
@@ -41,20 +65,22 @@ public class QryAnswerSubmitterDTO {
     }
 
     public int getEmployeeId() {
-        return employeeId;
+        return this.employeeId;
     }
 
     public void setEmployeeId(int employeeId) {
         this.employeeId = employeeId;
     }
 
-    @Override
+    public LocalDate getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public String toString() {
-        return "QryAnswerSubmitterDTO{" +
-                "id=" + id +
-                ", answer='" + answer + '\'' +
-                ", quizId=" + quizId +
-                ", employeeId=" + employeeId +
-                '}';
+        return "QryAnswerSubmitterDTO{id=" + this.id + ", answer='" + this.answer + "', commentary='" + this.commentary + "', status=" + this.status + ", quizId=" + this.quizId + ", employeeId=" + this.employeeId + ", createdAt=" + this.createdAt + "}";
     }
 }
