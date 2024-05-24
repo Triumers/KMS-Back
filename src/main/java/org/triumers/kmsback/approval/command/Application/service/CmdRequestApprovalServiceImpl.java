@@ -10,9 +10,9 @@ import org.triumers.kmsback.approval.command.domain.aggregate.entity.CmdRequestA
 import org.triumers.kmsback.approval.command.domain.repository.CmdApprovalRepository;
 import org.triumers.kmsback.approval.command.domain.repository.CmdApprovalTypeRepository;
 import org.triumers.kmsback.approval.command.domain.repository.CmdRequestApprovalRepository;
-import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
-import org.triumers.kmsback.employee.command.Application.service.CmdEmployeeService;
-import org.triumers.kmsback.employee.command.domain.aggregate.entity.CmdEmployee;
+import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
+import org.triumers.kmsback.user.command.Application.service.CmdEmployeeService;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,7 +52,7 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService 
 
         // 결재 요청자 조회
         CmdEmployeeDTO requesterDTO = cmdEmployeeService.findEmployeeById(requesterId);
-        CmdEmployee requester = convertToEntity(requesterDTO);
+        Employee requester = convertToEntity(requesterDTO);
 
         // 결재 유형 조회
         CmdApprovalType approvalType = approvalTypeRepository.findById(requestDto.getTypeId())
@@ -68,7 +68,7 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService 
 
         // 결재자 조회
         CmdEmployeeDTO approverDTO = cmdEmployeeService.findEmployeeById(requestDto.getApproverId());
-        CmdEmployee approver = convertToEntity(approverDTO);
+        Employee approver = convertToEntity(approverDTO);
 
         // RequestApproval 엔티티 생성 및 저장
         CmdRequestApproval requestApproval = new CmdRequestApproval();
@@ -79,8 +79,8 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService 
     }
 
     // DTO를 엔티티로 변환하는 메서드
-    private CmdEmployee convertToEntity(CmdEmployeeDTO dto) {
-        CmdEmployee employee = new CmdEmployee();
+    private Employee convertToEntity(CmdEmployeeDTO dto) {
+        Employee employee = new Employee();
         employee.setId(dto.getId());
         employee.setEmail(dto.getEmail());
         employee.setName(dto.getName());
@@ -199,7 +199,7 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService 
             throw new IllegalArgumentException("Employee not found with id: " + newApproverId);
         }
 
-        CmdEmployee newApprover = convertToEntity(newApproverDTO);
+        Employee newApprover = convertToEntity(newApproverDTO);
 
         int nextApprovalOrder = requestApproval.getApproval().getRequestApprovals().stream()
                 .mapToInt(CmdRequestApproval::getApprovalOrder)

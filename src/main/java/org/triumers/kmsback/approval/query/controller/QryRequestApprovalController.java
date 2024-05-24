@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.triumers.kmsback.approval.query.dto.QryRequestApprovalWithEmployeeDTO;
 import org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO;
 import org.triumers.kmsback.approval.query.service.QryRequestApprovalService;
-import org.triumers.kmsback.auth.command.Application.service.AuthService;
 import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.user.command.Application.service.AuthService;
 
 import java.time.LocalDateTime;
 import java.util.List;

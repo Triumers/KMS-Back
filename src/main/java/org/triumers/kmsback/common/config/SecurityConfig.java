@@ -16,7 +16,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.common.auth.JwtFilter;
 import org.triumers.kmsback.common.auth.JwtUtil;
 import org.triumers.kmsback.common.auth.LoginFilter;

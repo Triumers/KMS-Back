@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import org.triumers.kmsback.approval.command.Application.dto.CmdApprovalRequestDTO;
 import org.triumers.kmsback.approval.command.Application.service.CmdApprovalTypeService;
 import org.triumers.kmsback.approval.command.Application.service.CmdRequestApprovalService;
-import org.triumers.kmsback.auth.command.Application.service.AuthService;
 import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.user.command.Application.service.AuthService;
 
 @RestController
 @RequestMapping("/approval")

@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO;
 import org.triumers.kmsback.approval.query.dto.QryRequestApprovalWithEmployeeDTO;
 import org.triumers.kmsback.approval.query.repository.QryRequestApprovalMapper;
-import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
-import org.triumers.kmsback.employee.command.Application.service.CmdEmployeeService;
+import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
+import org.triumers.kmsback.user.command.Application.service.CmdEmployeeService;
 
 import java.time.LocalDateTime;
 import java.util.List;

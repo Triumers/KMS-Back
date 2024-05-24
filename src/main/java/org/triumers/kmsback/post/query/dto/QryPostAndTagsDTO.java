@@ -1,7 +1,7 @@
 package org.triumers.kmsback.post.query.dto;
 
 import lombok.Data;
-import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
+import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 
 import java.time.LocalDate;
 import java.util.List;
