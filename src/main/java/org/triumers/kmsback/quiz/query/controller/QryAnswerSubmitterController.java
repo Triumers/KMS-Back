@@ -8,7 +8,7 @@ import org.triumers.kmsback.quiz.query.dto.QryAnswerSubmitterDTO;
 import org.triumers.kmsback.quiz.query.service.QryAnswerSubmitterService;
 
 @RestController
-@RequestMapping({"/answer"})
+@RequestMapping("/answer")
 public class QryAnswerSubmitterController {
     private QryAnswerSubmitterService qryAnswerSubmitterService;
 
@@ -16,13 +16,13 @@ public class QryAnswerSubmitterController {
         this.qryAnswerSubmitterService = qryAnswerSubmitterService;
     }
 
-    @GetMapping({"/submitter"})
+    @GetMapping("/submitter")
     public List<QryAnswerSubmitterDTO> findQuizByIdAnswerSubmitter(int quizId) {
         List<QryAnswerSubmitterDTO> qryAnswerSubmitterDTOs = this.qryAnswerSubmitterService.findSubmitterByQuizId(quizId);
         return qryAnswerSubmitterDTOs;
     }
 
-    @GetMapping({"/count"})
+    @GetMapping("/count")
     public List<QryAnswerSubmitterDTO> findSubmitByEmployeeId(int employeeId) {
         List<QryAnswerSubmitterDTO> qryAnswerSubmitterDTOs = this.qryAnswerSubmitterService.findSubmitByEmployeeId(employeeId);
         return qryAnswerSubmitterDTOs;
