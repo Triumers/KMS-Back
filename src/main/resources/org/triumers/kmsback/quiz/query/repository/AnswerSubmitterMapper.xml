@@ -21,4 +21,15 @@
         WHERE QUIZ_ID = #{quizId}
     </select>
 
+    <select id="findSubmitByEmployeeId" resultMap="quizResultMap" parameterType="org.triumers.kmsback.quiz.query.aggregate.entity.QryAnswerSubmitter">
+        SELECT
+        ID
+        , ANSWER
+        , QUIZ_ID
+        , EMPLOYEE_ID
+        FROM tbl_quiz_answer_submitter
+        WHERE EmployeeId = #{employeeId}
+    </select>
+
+
 </mapper>
