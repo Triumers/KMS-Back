@@ -1,4 +1,4 @@
-package org.triumers.kmsback.employee.command.domain.aggregate.entity;
+package org.triumers.kmsback.user.command.domain.aggregate.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +15,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString
 @Table(name = "tbl_employee")
-public class CmdEmployee {
+public class Employee {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")

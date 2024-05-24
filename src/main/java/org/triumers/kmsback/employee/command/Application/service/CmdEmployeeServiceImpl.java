@@ -6,6 +6,8 @@ import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.employee.command.domain.aggregate.entity.CmdEmployee;
 import org.triumers.kmsback.employee.command.domain.repository.CmdEmployeeRepository;
 
+import java.util.List;
+
 @Service
 public class CmdEmployeeServiceImpl implements CmdEmployeeService {
 
@@ -28,8 +30,9 @@ public class CmdEmployeeServiceImpl implements CmdEmployeeService {
     }
 
     @Override
-    public CmdEmployeeDTO findEmployeeByName(String name) {
-        return employeeToEmployeeDTO(cmdEmployeeRepository.findByName(name));
+    public List<CmdEmployeeDTO> findEmployeeByName(String name) {
+//        return employeeToEmployeeDTO(cmdEmployeeRepository.findByName(name));
+        return null;
     }
 
     private CmdEmployeeDTO employeeToEmployeeDTO(CmdEmployee employee) {

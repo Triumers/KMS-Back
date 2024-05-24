@@ -6,10 +6,10 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.triumers.kmsback.auth.command.Application.dto.AuthDTO;
-import org.triumers.kmsback.auth.command.Application.service.AuthService;
-import org.triumers.kmsback.auth.command.domain.repository.EmployeeRepository;
-import org.triumers.kmsback.auth.command.domain.service.CustomUserDetailsService;
+import org.triumers.kmsback.user.command.Application.dto.AuthDTO;
+import org.triumers.kmsback.user.command.Application.service.AuthService;
+import org.triumers.kmsback.user.command.domain.repository.EmployeeRepository;
+import org.triumers.kmsback.user.command.domain.service.CustomUserDetailsService;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
 
 @Component

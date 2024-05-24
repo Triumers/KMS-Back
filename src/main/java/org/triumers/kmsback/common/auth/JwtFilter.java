@@ -8,9 +8,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.triumers.kmsback.auth.command.Application.dto.CustomUserDetails;
-import org.triumers.kmsback.auth.command.domain.aggregate.entity.Employee;
-import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
+import org.triumers.kmsback.user.command.Application.dto.CustomUserDetails;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
+import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 
 import java.io.IOException;
 

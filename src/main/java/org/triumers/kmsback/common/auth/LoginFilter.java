@@ -12,8 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.triumers.kmsback.auth.command.Application.dto.CustomUserDetails;
-import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
+import org.triumers.kmsback.user.command.Application.dto.CustomUserDetails;
+import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 
 import java.io.IOException;
 import java.util.Collection;
