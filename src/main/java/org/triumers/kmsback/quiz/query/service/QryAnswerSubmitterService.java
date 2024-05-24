@@ -1,10 +1,10 @@
 package org.triumers.kmsback.quiz.query.service;
 
+import java.util.List;
 import org.triumers.kmsback.quiz.query.dto.QryAnswerSubmitterDTO;
 
-import java.util.List;
-
 public interface QryAnswerSubmitterService {
-
     List<QryAnswerSubmitterDTO> findSubmitterByQuizId(int quizId);
+
+    List<QryAnswerSubmitterDTO> findSubmitByEmployeeId(int employeeId);
 }
