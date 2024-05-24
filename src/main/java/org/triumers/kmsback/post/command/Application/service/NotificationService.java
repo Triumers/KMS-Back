@@ -6,7 +6,7 @@ package org.triumers.kmsback.post.command.Application.service;
 //import org.springframework.mail.javamail.MimeMessageHelper;
 //import org.springframework.scheduling.annotation.Async;
 //import org.springframework.stereotype.Service;
-//import org.triumers.kmsback.employee.command.Application.dto.CmdEmployeeDTO;
+//import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 //import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
 
 //@Service

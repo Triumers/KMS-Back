@@ -3,8 +3,8 @@ package org.triumers.kmsback.approval.command.domain.aggregate.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.triumers.kmsback.employee.command.domain.aggregate.entity.CmdEmployee;
 import org.triumers.kmsback.tab.command.domain.aggregate.entity.CmdTabRelation;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class CmdApproval {
 
     @ManyToOne
     @JoinColumn(name = "EMPLOYEE_ID", nullable = false)
-    private CmdEmployee requester;
+    private Employee requester;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TAB_ID")

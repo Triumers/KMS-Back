@@ -5,7 +5,7 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
+import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;

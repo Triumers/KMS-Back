@@ -12,8 +12,8 @@ import org.triumers.kmsback.approval.command.domain.aggregate.entity.CmdRequestA
 import org.triumers.kmsback.approval.command.domain.repository.CmdApprovalRepository;
 import org.triumers.kmsback.approval.command.domain.repository.CmdApprovalTypeRepository;
 import org.triumers.kmsback.approval.command.domain.repository.CmdRequestApprovalRepository;
-import org.triumers.kmsback.employee.command.domain.aggregate.entity.CmdEmployee;
-import org.triumers.kmsback.employee.command.domain.repository.CmdEmployeeRepository;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
+import org.triumers.kmsback.user.command.domain.repository.EmployeeRepository;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ class CmdRequestApprovalServiceImplTests {
     private CmdRequestApprovalService cmdRequestApprovalService;
 
     @Autowired
-    private CmdEmployeeRepository employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private CmdApprovalTypeRepository approvalTypeRepository;
@@ -108,8 +108,8 @@ class CmdRequestApprovalServiceImplTests {
     @Test
     void approveRequestApproval() {
         // Given
-        CmdEmployee approver = employeeRepository.findById(1);
-        CmdEmployee requester = employeeRepository.findById(2);
+        Employee approver = employeeRepository.findById(1);
+        Employee requester = employeeRepository.findById(2);
         CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
@@ -135,8 +135,8 @@ class CmdRequestApprovalServiceImplTests {
     @Test
     void approveRequestApprovalAlreadyProcessed() {
         // Given
-        CmdEmployee approver = employeeRepository.findById(1);
-        CmdEmployee requester = employeeRepository.findById(2);
+        Employee approver = employeeRepository.findById(1);
+        Employee requester = employeeRepository.findById(2);
         CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
@@ -158,8 +158,8 @@ class CmdRequestApprovalServiceImplTests {
     @Test
     void rejectRequestApproval() {
         // Given
-        CmdEmployee approver = employeeRepository.findById(1);
-        CmdEmployee requester = employeeRepository.findById(2);
+        Employee approver = employeeRepository.findById(1);
+        Employee requester = employeeRepository.findById(2);
         CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
@@ -185,8 +185,8 @@ class CmdRequestApprovalServiceImplTests {
     @Test
     void rejectRequestApprovalAlreadyProcessed() {
         // Given
-        CmdEmployee approver = employeeRepository.findById(1);
-        CmdEmployee requester = employeeRepository.findById(2);
+        Employee approver = employeeRepository.findById(1);
+        Employee requester = employeeRepository.findById(2);
         CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
@@ -208,9 +208,9 @@ class CmdRequestApprovalServiceImplTests {
     @Test
     void requestApprovalUnauthorized() {
         // Given
-        CmdEmployee approver = employeeRepository.findById(1);
-        CmdEmployee otherEmployee = employeeRepository.findById(5);
-        CmdEmployee requester = employeeRepository.findById(3);
+        Employee approver = employeeRepository.findById(1);
+        Employee otherEmployee = employeeRepository.findById(5);
+        Employee requester = employeeRepository.findById(3);
         CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
@@ -233,9 +233,9 @@ class CmdRequestApprovalServiceImplTests {
     @Test
     void addApproverToRequestApproval() {
         // Given
-        CmdEmployee requester = employeeRepository.findById(5);
-        CmdEmployee approver = employeeRepository.findById(2);
-        CmdEmployee newApprover = employeeRepository.findById(3);
+        Employee requester = employeeRepository.findById(5);
+        Employee approver = employeeRepository.findById(2);
+        Employee newApprover = employeeRepository.findById(3);
         CmdApprovalType approvalType = approvalTypeRepository.findById(1).orElseThrow();
 
         CmdApproval approval = new CmdApproval();

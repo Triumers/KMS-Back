@@ -2,7 +2,7 @@ package org.triumers.kmsback.approval.command.domain.aggregate.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.triumers.kmsback.employee.command.domain.aggregate.entity.CmdEmployee;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,7 +29,7 @@ public class CmdRequestApproval {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMPLOYEE_ID", nullable = false)
-    private CmdEmployee approver;
+    private Employee approver;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "APPROVAL_ID", nullable = false)

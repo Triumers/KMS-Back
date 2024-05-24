@@ -1,5 +1,7 @@
 package org.triumers.kmsback.post.command.Application.service;
 
+import org.springframework.web.multipart.MultipartFile;
+import org.triumers.kmsback.common.exception.AwsS3Exception;
 import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
@@ -23,4 +25,6 @@ public interface CmdPostService {
     void changeEditing(int id);
 
     Boolean isAuthorizedToPost(int originId) throws NotLoginException;
+
+    String uploadFile(MultipartFile file) throws AwsS3Exception;
 }

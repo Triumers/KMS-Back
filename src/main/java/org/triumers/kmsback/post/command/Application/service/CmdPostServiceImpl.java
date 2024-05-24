@@ -2,11 +2,20 @@ package org.triumers.kmsback.post.command.Application.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.triumers.kmsback.auth.command.Application.service.AuthService;
-import org.triumers.kmsback.auth.command.domain.aggregate.entity.Auth;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import org.triumers.kmsback.common.exception.AwsS3Exception;
 import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.common.exception.NotLoginException;
-import org.triumers.kmsback.employee.command.Application.service.CmdEmployeeService;
+import org.triumers.kmsback.common.s3.service.AwsS3Service;
+
+import org.triumers.kmsback.user.command.Application.service.AuthService;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
+import org.triumers.kmsback.common.exception.NotAuthorizedException;
+import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.user.command.Application.service.CmdEmployeeService;
+
 import org.triumers.kmsback.post.command.Application.dto.*;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.*;
 import org.triumers.kmsback.post.command.domain.repository.*;
@@ -15,7 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole.ROLE_ADMIN;
+import static org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole.ROLE_ADMIN;
 
 @Service
 public class CmdPostServiceImpl implements CmdPostService {
@@ -26,6 +35,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     private final CmdLikeRepository cmdLikeRepository;
     private final CmdFavoritesRepository cmdFavoritesRepository;
 
+    private final AwsS3Service awsS3Service;
     private final CmdEmployeeService cmdEmployeeService;
     private final AuthService authService;
 
@@ -33,12 +43,13 @@ public class CmdPostServiceImpl implements CmdPostService {
 
     @Autowired
     public CmdPostServiceImpl(CmdPostRepository cmdPostRepository,
-                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository, CmdEmployeeService cmdEmployeeService, AuthService authService) {
+                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository, AwsS3Service awsS3Service, CmdEmployeeService cmdEmployeeService, AuthService authService) {
         this.cmdPostRepository = cmdPostRepository;
         this.cmdTagRepository = cmdTagRepository;
         this.cmdPostTagRepository = cmdPostTagRepository;
         this.cmdLikeRepository = cmdLikeRepository;
         this.cmdFavoritesRepository = cmdFavoritesRepository;
+        this.awsS3Service = awsS3Service;
         this.cmdEmployeeService = cmdEmployeeService;
         this.authService = authService;
     }
@@ -46,7 +57,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     @Override
     public CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post) throws NotLoginException {
 
-        Auth employee = authService.whoAmI();
+        Employee employee = authService.whoAmI();
         CmdPost registPost = new CmdPost(post.getId(), post.getTitle(), post.getContent(), post.getCreatedAt(),
                 employee.getId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
 
@@ -123,9 +134,10 @@ public class CmdPostServiceImpl implements CmdPostService {
     }
 
     @Override
+
     public Boolean isAuthorizedToPost(int originId) throws NotLoginException {
 
-        Auth employee = authService.whoAmI();
+        Employee employee = authService.whoAmI();
         int authorId = cmdPostRepository.findAuthorIdById(originId);
 
         if (employee.getId() == authorId || employee.getUserRole() == ROLE_ADMIN) {
@@ -137,7 +149,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     @Override
     public CmdLikeDTO likePost(CmdLikeDTO like) throws NotLoginException {
 
-        Auth employee = authService.whoAmI();
+        Employee employee = authService.whoAmI();
         try {
             CmdLike likePost = cmdLikeRepository.findByEmployeeIdAndPostId(employee.getId(), like.getPostId());
 
@@ -162,7 +174,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     @Override
     public CmdFavoritesDTO favoritePost(CmdFavoritesDTO favorite) throws NotLoginException {
 
-        Auth employee = authService.whoAmI();
+        Employee employee = authService.whoAmI();
         try {
             CmdFavorites favoritePost = cmdFavoritesRepository.findByEmployeeIdAndPostId(employee.getId(), favorite.getPostId());
             if (favoritePost != null) {  // unfavorite
@@ -179,6 +191,11 @@ public class CmdPostServiceImpl implements CmdPostService {
 
         CmdFavoritesDTO favoritesDTO = new CmdFavoritesDTO(favoritePost.getId(), favoritePost.getEmployeeId(), favoritePost.getPostId());
         return favoritesDTO;
+    }
+
+    @Override
+    public String uploadFile(MultipartFile file) throws AwsS3Exception {
+        return awsS3Service.upload(file);
     }
 
     @Override

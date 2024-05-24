@@ -47,10 +47,29 @@
                          SELECT RECENT_ID
                          FROM tbl_post
                          WHERE (ORIGIN_ID IS NULL AND RECENT_ID IS NOT NULL AND DELETED_AT IS NULL)
-                         ))
+                       ))
            AND A.TAB_RELATION_ID = #{request.tabRelationId}
         <if test="request.categoryId != null">
            AND A.CATEGORY_ID = #{request.categoryId}
+        </if>
+        <if test="request.title != null">
+           AND A.TITLE LIKE CONCAT('%', #{request.title}, '%')
+        </if>
+        <if test="request.keyword != null">
+           AND A.CONTENT LIKE CONCAT('%', #{request.keyword}, '%')
+        </if>
+        <if test="request.tags != null">
+           AND A.ID IN (
+                         SELECT B.POST_ID
+                           FROM tbl_post_tag B
+                           JOIN tbl_tag C ON B.TAG_ID = C.ID
+                          WHERE C.NAME IN
+                          <foreach collection="request.tags" item="tag" open="(" close=")" separator="," >
+                              #{tag}
+                          </foreach>
+                          GROUP BY B.POST_ID
+                         HAVING COUNT(DISTINCT C.NAME) = ${request.tags.size}
+                       )
         </if>
          ORDER BY COALESCE(A.ORIGIN_ID, A.ID) ASC
          LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
@@ -62,7 +81,7 @@
                B.NAME
           FROM tbl_post_tag A
           JOIN tbl_tag B ON (A.TAG_ID = B.ID)
-         WHERE A.ID = #{postId}
+         WHERE A.POST_ID = #{postId}
     </select>
 
 
@@ -107,6 +126,7 @@
           LEFT JOIN tbl_tag C ON (B.TAG_ID = C.ID)
          WHERE A.ID = #{originId}
             OR A.ORIGIN_ID = #{originId}
+         ORDER BY CREATED_AT DESC
     </select>
 
     <select id="selectParticipantsListByOriginId" parameterType="_int">
