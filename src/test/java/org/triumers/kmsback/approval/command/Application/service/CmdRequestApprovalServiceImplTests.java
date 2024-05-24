@@ -30,6 +30,7 @@ class CmdRequestApprovalServiceImplTests {
     @Autowired
     private CmdRequestApprovalService cmdRequestApprovalService;
 
+    @Transactional
     @Test
     void createApproval_ValidInput_ApprovalCreated() {
         // given
@@ -65,6 +66,7 @@ class CmdRequestApprovalServiceImplTests {
     }
 
 
+    @Transactional
     @Test
     void cancelApproval() {
         // given
@@ -87,6 +89,7 @@ class CmdRequestApprovalServiceImplTests {
         assertTrue(requestApprovals.stream().allMatch(ra -> ra.isCanceled()));
     }
 
+    @Transactional
     @Test
     void approveRequestApproval() {
         // Given
@@ -118,6 +121,7 @@ class CmdRequestApprovalServiceImplTests {
         assertEquals("APPROVED", updatedRequestApproval.getIsApproved());
     }
 
+    @Transactional
     @Test
     void approveRequestApprovalAlreadyProcessed() {
         // Given
@@ -145,6 +149,7 @@ class CmdRequestApprovalServiceImplTests {
         assertThrows(IllegalStateException.class, () -> cmdRequestApprovalService.approveRequestApproval(approver.getId(), requestApproval.getId()));
     }
 
+    @Transactional
     @Test
     void rejectRequestApproval() {
         // Given
@@ -176,6 +181,7 @@ class CmdRequestApprovalServiceImplTests {
         assertEquals("REJECTED", updatedRequestApproval.getIsApproved());
     }
 
+    @Transactional
     @Test
     void rejectRequestApprovalAlreadyProcessed() {
         // Given
@@ -203,6 +209,7 @@ class CmdRequestApprovalServiceImplTests {
         assertThrows(IllegalStateException.class, () -> cmdRequestApprovalService.rejectRequestApproval(approver.getId(), requestApproval.getId()));
     }
 
+    @Transactional
     @Test
     void requestApprovalUnauthorized() {
         // Given
@@ -234,6 +241,7 @@ class CmdRequestApprovalServiceImplTests {
         assertThrows(IllegalArgumentException.class, () -> cmdRequestApprovalService.rejectRequestApproval(otherEmployee.getId(), requestApproval.getId()));
     }
 
+    @Transactional
     @Test
     void addApproverToRequestApproval() {
         // Given

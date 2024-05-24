@@ -26,8 +26,7 @@ class CmdApprovalTypeServiceImplTests {
 
         cmdApprovalTypeService.addNewApprovalType(type);
 
-        CmdApprovalType savedApprovalType = cmdApprovalTypeRepository.findAll().get(3);
+        CmdApprovalType savedApprovalType = cmdApprovalTypeRepository.findAll().get(5);
         assertEquals(type, savedApprovalType.getType());
     }
-
 }

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.triumers.kmsback.approval.query.dto.QryRequestApprovalWithEmployeeDTO;
 import org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO;
@@ -103,15 +102,15 @@ public class QryRequestApprovalController {
 }
 
 @RestControllerAdvice
-class GlobalExceptionHandler {
+class ExceptionHandler {
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleIllegalArgumentException(IllegalArgumentException ex) {
         return ex.getMessage();
     }
 
-    @ExceptionHandler(NotLoginException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(NotLoginException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String handleNotLoginException(NotLoginException ex) {
         return "User is not logged in.";
