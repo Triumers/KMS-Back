@@ -1,6 +1,6 @@
 package org.triumers.kmsback.common;
 
-import org.triumers.kmsback.auth.command.domain.aggregate.enums.UserRole;
+import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 
 public class TestUserInfo {
     public static final String EMAIL = "testUnique@gmail.com";
