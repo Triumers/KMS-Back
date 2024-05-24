@@ -1,6 +1,7 @@
 package org.triumers.kmsback.approval.command.Application.service;
 
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,8 +10,10 @@ import org.triumers.kmsback.approval.command.domain.aggregate.entity.CmdApproval
 import org.triumers.kmsback.approval.command.domain.aggregate.entity.CmdApprovalType;
 import org.triumers.kmsback.approval.command.domain.aggregate.entity.CmdRequestApproval;
 import org.triumers.kmsback.approval.command.domain.repository.CmdApprovalRepository;
+import org.triumers.kmsback.approval.command.domain.repository.CmdApprovalTypeRepository;
 import org.triumers.kmsback.approval.command.domain.repository.CmdRequestApprovalRepository;
 import org.triumers.kmsback.employee.command.domain.aggregate.entity.CmdEmployee;
+import org.triumers.kmsback.employee.command.domain.repository.CmdEmployeeRepository;
 
 import java.util.List;
 
@@ -30,9 +33,22 @@ class CmdRequestApprovalServiceImplTests {
     @Autowired
     private CmdRequestApprovalService cmdRequestApprovalService;
 
+    @Autowired
+    private CmdEmployeeRepository employeeRepository;
+
+    @Autowired
+    private CmdApprovalTypeRepository approvalTypeRepository;
+
+    @BeforeEach
+    public void setup() {
+        // 기존 데이터 삭제
+        requestApprovalRepository.deleteAll();
+        approvalRepository.deleteAll();
+    }
+
     @Transactional
     @Test
-    void createApproval_ValidInput_ApprovalCreated() {
+    void createApproval() {
         // given
         int requesterId = 2;
         int approverId = 3;
@@ -49,22 +65,21 @@ class CmdRequestApprovalServiceImplTests {
 
         // then
         List<CmdApproval> approvals = approvalRepository.findAll();
-        assertThat(approvals).hasSize(6);
+        assertThat(approvals).hasSize(1);
 
-        CmdApproval createdApproval = approvals.get(5);
+        CmdApproval createdApproval = approvals.get(0);
         assertThat(createdApproval.getContent()).isEqualTo(content);
         assertThat(createdApproval.getType().getId()).isEqualTo(typeId);
         assertThat(createdApproval.getRequester().getId()).isEqualTo(requesterId);
 
         List<CmdRequestApproval> requestApprovals = requestApprovalRepository.findAll();
-        assertThat(requestApprovals).hasSize(7);
+        assertThat(requestApprovals).hasSize(1);
 
-        CmdRequestApproval createdRequestApproval = requestApprovals.get(6);
+        CmdRequestApproval createdRequestApproval = requestApprovals.get(0);
         assertThat(createdRequestApproval.getApprovalOrder()).isEqualTo(1);
         assertThat(createdRequestApproval.getApprover().getId()).isEqualTo(approverId);
         assertThat(createdRequestApproval.getApproval().getId()).isEqualTo(createdApproval.getId());
     }
-
 
     @Transactional
     @Test
@@ -93,14 +108,9 @@ class CmdRequestApprovalServiceImplTests {
     @Test
     void approveRequestApproval() {
         // Given
-        CmdEmployee approver = new CmdEmployee();
-        approver.setId(1);
-
-        CmdEmployee requester = new CmdEmployee();
-        requester.setId(2);
-
-        CmdApprovalType approvalType = new CmdApprovalType();
-        approvalType.setId(2); // 결재 유형 ID 2로 설정
+        CmdEmployee approver = employeeRepository.findById(1);
+        CmdEmployee requester = employeeRepository.findById(2);
+        CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
         approval.setRequester(requester);
@@ -125,14 +135,9 @@ class CmdRequestApprovalServiceImplTests {
     @Test
     void approveRequestApprovalAlreadyProcessed() {
         // Given
-        CmdEmployee approver = new CmdEmployee();
-        approver.setId(1);
-
-        CmdEmployee requester = new CmdEmployee();
-        requester.setId(2);
-
-        CmdApprovalType approvalType = new CmdApprovalType();
-        approvalType.setId(2);
+        CmdEmployee approver = employeeRepository.findById(1);
+        CmdEmployee requester = employeeRepository.findById(2);
+        CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
         approval.setRequester(requester);
@@ -153,14 +158,9 @@ class CmdRequestApprovalServiceImplTests {
     @Test
     void rejectRequestApproval() {
         // Given
-        CmdEmployee approver = new CmdEmployee();
-        approver.setId(1);
-
-        CmdEmployee requester = new CmdEmployee();
-        requester.setId(2);
-
-        CmdApprovalType approvalType = new CmdApprovalType();
-        approvalType.setId(2);
+        CmdEmployee approver = employeeRepository.findById(1);
+        CmdEmployee requester = employeeRepository.findById(2);
+        CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
         approval.setRequester(requester);
@@ -185,14 +185,9 @@ class CmdRequestApprovalServiceImplTests {
     @Test
     void rejectRequestApprovalAlreadyProcessed() {
         // Given
-        CmdEmployee approver = new CmdEmployee();
-        approver.setId(1);
-
-        CmdEmployee requester = new CmdEmployee();
-        requester.setId(2);
-
-        CmdApprovalType approvalType = new CmdApprovalType();
-        approvalType.setId(2);
+        CmdEmployee approver = employeeRepository.findById(1);
+        CmdEmployee requester = employeeRepository.findById(2);
+        CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
         approval.setRequester(requester);
@@ -213,17 +208,10 @@ class CmdRequestApprovalServiceImplTests {
     @Test
     void requestApprovalUnauthorized() {
         // Given
-        CmdEmployee approver = new CmdEmployee();
-        approver.setId(1);
-
-        CmdEmployee otherEmployee = new CmdEmployee();
-        otherEmployee.setId(5);
-
-        CmdEmployee requester = new CmdEmployee();
-        requester.setId(3);
-
-        CmdApprovalType approvalType = new CmdApprovalType();
-        approvalType.setId(2);
+        CmdEmployee approver = employeeRepository.findById(1);
+        CmdEmployee otherEmployee = employeeRepository.findById(5);
+        CmdEmployee requester = employeeRepository.findById(3);
+        CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
         approval.setRequester(requester);
@@ -245,21 +233,10 @@ class CmdRequestApprovalServiceImplTests {
     @Test
     void addApproverToRequestApproval() {
         // Given
-        int requesterId = 5;
-        int approverId = 2;
-        int newApproverId = 3;
-
-        CmdEmployee requester = new CmdEmployee();
-        requester.setId(requesterId);
-
-        CmdEmployee approver = new CmdEmployee();
-        approver.setId(approverId);
-
-        CmdEmployee newApprover = new CmdEmployee();
-        newApprover.setId(newApproverId);
-
-        CmdApprovalType approvalType = new CmdApprovalType();
-        approvalType.setId(1);
+        CmdEmployee requester = employeeRepository.findById(5);
+        CmdEmployee approver = employeeRepository.findById(2);
+        CmdEmployee newApprover = employeeRepository.findById(3);
+        CmdApprovalType approvalType = approvalTypeRepository.findById(1).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
         approval.setRequester(requester);
@@ -273,14 +250,13 @@ class CmdRequestApprovalServiceImplTests {
         requestApprovalRepository.save(requestApproval);
 
         // When
-        cmdRequestApprovalService.addApproverToRequestApproval(approverId, requestApproval.getId(), newApproverId);
+        cmdRequestApprovalService.addApproverToRequestApproval(approver.getId(), requestApproval.getId(), newApprover.getId());
 
         // Then
         List<CmdRequestApproval> requestApprovals = requestApprovalRepository.findByApprovalIdOrderByApprovalOrderAsc(approval.getId());
         assertEquals(2, requestApprovals.size());
         assertEquals("APPROVED", requestApprovals.get(0).getIsApproved());
-        assertEquals(newApproverId, requestApprovals.get(1).getApprover().getId());
+        assertEquals(newApprover.getId(), requestApprovals.get(1).getApprover().getId());
         assertEquals("WAITING", requestApprovals.get(1).getIsApproved());
     }
-
 }
