@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.common.TestUserInfo;
 import org.triumers.kmsback.user.command.Application.dto.ManageUserDTO;
+import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.user.command.domain.repository.EmployeeRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +32,7 @@ class ManagerServiceTest {
 
     @DisplayName("회원가입 테스트")
     @Test
-    void signup() {
+    void signupTest() {
 
         // given
         ManageUserDTO userDTO = new ManageUserDTO(TestUserInfo.EMAIL, TestUserInfo.PASSWORD, TestUserInfo.NAME, null,
@@ -47,7 +48,7 @@ class ManagerServiceTest {
 
     @DisplayName("기본 비밀번호로 회원가입 테스트")
     @Test
-    void signupWithDefaultPassword() {
+    void signupWithDefaultPasswordTest() {
 
         // given
         ManageUserDTO userDTO = new ManageUserDTO(TestUserInfo.EMAIL, null, TestUserInfo.NAME, null,
@@ -59,5 +60,30 @@ class ManagerServiceTest {
 
         // then
         assertTrue(bCryptPasswordEncoder.matches(DEFAULT_PASSWORD, employeeRepository.findByEmail(TestUserInfo.EMAIL).getPassword()));
+    }
+
+    @DisplayName("회원 권한 수정 테스트")
+    @Test
+    void editUserRoleTest() {
+
+        // given
+        addUserForTest();
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(TestUserInfo.EMAIL);
+        targetUser.setRole(UserRole.ROLE_LEADER.name());
+
+        // when
+        managerService.editUserRole(targetUser);
+
+        // then
+        assertEquals(targetUser.getRole(), UserRole.ROLE_LEADER.name());
+        assertNotEquals(targetUser.getRole(), TestUserInfo.USER_ROLE);
+    }
+
+    private void addUserForTest() {
+        ManageUserDTO userDTO = new ManageUserDTO(TestUserInfo.EMAIL, TestUserInfo.PASSWORD, TestUserInfo.NAME, null,
+                TestUserInfo.USER_ROLE, null, null, TestUserInfo.PHONE_NUMBER, 1, 1,
+                1);
+        managerService.signup(userDTO);
     }
 }
