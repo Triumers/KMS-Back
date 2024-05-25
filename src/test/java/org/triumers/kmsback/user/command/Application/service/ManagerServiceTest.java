@@ -86,7 +86,7 @@ class ManagerServiceTest {
         assertNotEquals(targetUser.getRole(), TestUserInfo.USER_ROLE);
     }
 
-    @DisplayName("자신의 권한을 초과하는 권한 부여 테스트")
+    @DisplayName("자신의 권한을 초과하는 권한 부여 예외 테스트")
     @Test
     void editOverRoleExceptionTest() {
 
@@ -103,7 +103,7 @@ class ManagerServiceTest {
         assertThrows(NotAuthorizedException.class, () -> managerService.editUserRole(targetUser));
     }
 
-    @DisplayName("자신의 권한을 초과하는 유저 권한 수정 테스트")
+    @DisplayName("자신의 권한을 초과하는 유저 권한 수정 예외 테스트")
     @Test
     void editOverRoleUSerExceptionTest() {
 
