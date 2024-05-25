@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.TestUserInfo;
 import org.triumers.kmsback.user.command.Application.dto.ManageUserDTO;
 import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
@@ -29,6 +30,9 @@ class ManagerServiceTest {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private LoggedInUser loggedInUser;
 
     @DisplayName("회원가입 테스트")
     @Test
@@ -73,11 +77,17 @@ class ManagerServiceTest {
         targetUser.setRole(UserRole.ROLE_LEADER.name());
 
         // when
-        managerService.editUserRole(targetUser);
+        loggedInUser.settingHrManager();
+        assertDoesNotThrow(() -> managerService.editUserRole(targetUser));
 
         // then
         assertEquals(targetUser.getRole(), UserRole.ROLE_LEADER.name());
         assertNotEquals(targetUser.getRole(), TestUserInfo.USER_ROLE);
+    }
+
+    @DisplayName("자신의 권한을 초과하는 권한 테스트")
+    void editOverRoleExceptionTest() {
+
     }
 
     private void addUserForTest() {
