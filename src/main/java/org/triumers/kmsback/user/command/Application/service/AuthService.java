@@ -8,7 +8,6 @@ import org.triumers.kmsback.common.exception.WrongInputTypeException;
 import org.triumers.kmsback.common.exception.WrongInputValueException;
 
 public interface AuthService {
-    void signup(AuthDTO authDTO);
 
     void editPassword(PasswordDTO passwordDTO) throws WrongInputTypeException, WrongInputValueException, NotLoginException;
 

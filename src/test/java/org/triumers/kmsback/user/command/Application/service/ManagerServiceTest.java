@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class ManagerServiceImplTest {
+class ManagerServiceTest {
 
     @Value("${password}")
     private String DEFAULT_PASSWORD;
