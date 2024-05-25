@@ -6,11 +6,10 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.triumers.kmsback.user.command.Application.dto.AuthDTO;
-import org.triumers.kmsback.user.command.Application.service.AuthService;
+import org.triumers.kmsback.user.command.Application.dto.ManageUserDTO;
+import org.triumers.kmsback.user.command.Application.service.ManagerService;
 import org.triumers.kmsback.user.command.domain.repository.EmployeeRepository;
 import org.triumers.kmsback.user.command.domain.service.CustomUserDetailsService;
-import org.triumers.kmsback.common.exception.WrongInputTypeException;
 
 @Component
 public class LoggedInUser {
@@ -21,25 +20,25 @@ public class LoggedInUser {
     private final String RIGHT_PHONE_NUMBER = TestUserInfo.PHONE_NUMBER;
 
     @Autowired
-    private AuthService authService;
+    private ManagerService managerService;
 
     @Autowired
     private EmployeeRepository employeeRepository;
 
     // 테스트용 계정 DTO 생성
-    private AuthDTO createRightAuthDTO() {
-        return new AuthDTO(RIGHT_FORMAT_EMAIL, RIGHT_FORMAT_PASSWORD, RIGHT_FORMAT_NAME, null,
+    private ManageUserDTO createRightAuthDTO() {
+        return new ManageUserDTO(RIGHT_FORMAT_EMAIL, RIGHT_FORMAT_PASSWORD, RIGHT_FORMAT_NAME, null,
                 RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
                 1);
     }
 
     // 테스트용 계정 회원가입
     private void setUser() {
-        authService.signup(createRightAuthDTO());
+        managerService.signup(createRightAuthDTO());
     }
 
     // 테스트용 계정으로 로그인
-    public void setting() throws WrongInputTypeException {
+    public void setting() {
         setUser();
         CustomUserDetailsService customUserDetailsService = new CustomUserDetailsService(employeeRepository);
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(RIGHT_FORMAT_EMAIL);
