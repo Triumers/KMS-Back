@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.TestUserInfo;
+import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.user.command.Application.dto.ManageUserDTO;
 import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.user.command.domain.repository.EmployeeRepository;
@@ -85,9 +86,21 @@ class ManagerServiceTest {
         assertNotEquals(targetUser.getRole(), TestUserInfo.USER_ROLE);
     }
 
-    @DisplayName("자신의 권한을 초과하는 권한 테스트")
+    @DisplayName("자신의 권한을 초과하는 권한 부여 테스트")
+    @Test
     void editOverRoleExceptionTest() {
 
+        // given
+        addUserForTest();
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(TestUserInfo.EMAIL);
+        targetUser.setRole(UserRole.ROLE_ADMIN.name());
+
+        // when
+        loggedInUser.settingHrManager();
+
+        // then
+        assertThrows(NotAuthorizedException.class, () -> managerService.editUserRole(targetUser));
     }
 
     private void addUserForTest() {
