@@ -103,9 +103,33 @@ class ManagerServiceTest {
         assertThrows(NotAuthorizedException.class, () -> managerService.editUserRole(targetUser));
     }
 
+    @DisplayName("자신의 권한을 초과하는 유저 권한 수정 테스트")
+    @Test
+    void editOverRoleUSerExceptionTest() {
+
+        // given
+        addHrManagerForTest();
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(TestUserInfo.HR_MANAGER_EMAIL);
+        targetUser.setRole(UserRole.ROLE_NORMAL.name());
+
+        // when
+        loggedInUser.setting();
+
+        // then
+        assertThrows(NotAuthorizedException.class, () -> managerService.editUserRole(targetUser));
+    }
+
     private void addUserForTest() {
         ManageUserDTO userDTO = new ManageUserDTO(TestUserInfo.EMAIL, TestUserInfo.PASSWORD, TestUserInfo.NAME, null,
                 TestUserInfo.USER_ROLE, null, null, TestUserInfo.PHONE_NUMBER, 1, 1,
+                1);
+        managerService.signup(userDTO);
+    }
+
+    private void addHrManagerForTest() {
+        ManageUserDTO userDTO = new ManageUserDTO(TestUserInfo.HR_MANAGER_EMAIL, TestUserInfo.PASSWORD, TestUserInfo.NAME, null,
+                TestUserInfo.HR_MANAGER_ROLE, null, null, TestUserInfo.PHONE_NUMBER, 1, 1,
                 1);
         managerService.signup(userDTO);
     }

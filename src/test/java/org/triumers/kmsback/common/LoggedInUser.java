@@ -18,7 +18,7 @@ public class LoggedInUser {
     private final String RIGHT_FORMAT_NAME = TestUserInfo.NAME;
     private final String RIGHT_FORMAT_USER_ROLE = TestUserInfo.USER_ROLE;
     private final String RIGHT_PHONE_NUMBER = TestUserInfo.PHONE_NUMBER;
-    private final String HR_MANAGER_EMAIL = TestUserInfo.ADMIN_EMAIL;
+    private final String HR_MANAGER_EMAIL = TestUserInfo.HR_MANAGER_EMAIL;
     private final String HR_MANAGER_ROLE = TestUserInfo.HR_MANAGER_ROLE;
 
     @Autowired
