@@ -1,7 +1,6 @@
 package org.triumers.kmsback.user.command.Application.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -9,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.user.command.Application.dto.AuthDTO;
 import org.triumers.kmsback.user.command.Application.dto.PasswordDTO;
 import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
-import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.user.command.domain.repository.EmployeeRepository;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.exception.WrongInputValueException;
@@ -17,21 +15,14 @@ import org.triumers.kmsback.common.exception.WrongInputValueException;
 @Transactional
 @Service
 public class AuthServiceImpl implements AuthService {
-    private final String DEFAULT_PASSWORD;
 
     private final EmployeeRepository employeeRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public AuthServiceImpl(@Value("${password}") String password, EmployeeRepository employeeRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.DEFAULT_PASSWORD = password;
+    public AuthServiceImpl(EmployeeRepository employeeRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.employeeRepository = employeeRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
-
-    @Override
-    public void signup(AuthDTO authDTO) {
-        employeeRepository.save(authDtoToEmployeeMapper(authDTO));
     }
 
     @Override
@@ -78,29 +69,6 @@ public class AuthServiceImpl implements AuthService {
         if (employee == null) {
             throw new NotLoginException();
         }
-
-        return employee;
-    }
-
-    private Employee authDtoToEmployeeMapper(AuthDTO authDTO) {
-        Employee employee = new Employee();
-
-        employee.setEmail(authDTO.getEmail());
-        employee.setName(authDTO.getName());
-        employee.setProfileImg(authDTO.getProfileImg());
-        employee.setUserRole(UserRole.valueOf(authDTO.getRole()));
-        employee.setStartDate(authDTO.getStartDate());
-        employee.setEndDate(authDTO.getEndDate());
-        employee.setPhoneNumber(authDTO.getPhoneNumber());
-        employee.setTeamId(authDTO.getTeamId());
-        employee.setPositionId(authDTO.getPositionId());
-        employee.setRankId(authDTO.getRankId());
-
-        if (authDTO.getPassword() != null) {
-            employee.setPassword(bCryptPasswordEncoder.encode(authDTO.getPassword()));
-            return employee;
-        }
-        employee.setPassword(bCryptPasswordEncoder.encode(DEFAULT_PASSWORD));
 
         return employee;
     }
