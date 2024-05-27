@@ -13,6 +13,8 @@ import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
 import org.triumers.kmsback.post.command.Application.dto.*;
+import org.triumers.kmsback.post.command.domain.aggregate.vo.CmdRequestPostAI;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +128,8 @@ public class CmdPostServiceTests {
         "    <h2>테스트</h2>\n" +
         "    <p>애플리케이션을 실행하고 API를 호출하여 제대로 작동  하는지 테스트합니다. Postman과 같은 도구를 사용하여 `t` 요청을 보내어 응답을 확인할 수 있습니다.</p>";
 
-        cmdPostService.requestToGPT("enhancement", testContent);
+        CmdRequestPostAI request = new CmdRequestPostAI("enhancement", testContent);
+        cmdPostService.requestToGPT(request);
     }
 
     private CmdPostAndTagsDTO createTestPost(){

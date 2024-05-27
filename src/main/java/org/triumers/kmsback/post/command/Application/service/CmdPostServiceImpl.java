@@ -7,12 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.triumers.kmsback.common.ai.dto.ChatGPTResponseDTO;
+import org.triumers.kmsback.common.ai.dto.Message;
 import org.triumers.kmsback.common.ai.service.OpenAIService;
 import org.triumers.kmsback.common.exception.AwsS3Exception;
 import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.s3.service.AwsS3Service;
 
+import org.triumers.kmsback.post.command.domain.aggregate.vo.CmdRequestPostAI;
 import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.user.command.Application.service.AuthService;
 import org.triumers.kmsback.user.command.Application.service.CmdEmployeeService;
@@ -219,17 +221,22 @@ public class CmdPostServiceImpl implements CmdPostService {
         return tagList;
     }
 
-    public String requestToGPT(String type, String content){
+    public String requestToGPT(CmdRequestPostAI request){
 
-        String prompt = getPromptByType(type, content);
-        ChatGPTResponseDTO response = openAIService.requestToGPT(prompt);
+        String prompt = getPromptByType(request);
+        ChatGPTResponseDTO responseGPT = openAIService.requestToGPT(prompt);
 
-        System.out.println("response = " + response);
-        
-        return "testGPT";
+        String responseContent = responseGPT.getChoices().get(0).getMessage().getContent();
+        int beginIdx = responseContent.indexOf("{");
+        int endIdx = responseContent.indexOf("}");
+
+        return responseContent.substring(beginIdx+1, endIdx).trim();
     }
 
-    String getPromptByType(String type, String content){
+    String getPromptByType(CmdRequestPostAI request){
+
+        String type = request.getType();
+        String content = request.getContent();
 
         switch (type){
             case "enhancement":
