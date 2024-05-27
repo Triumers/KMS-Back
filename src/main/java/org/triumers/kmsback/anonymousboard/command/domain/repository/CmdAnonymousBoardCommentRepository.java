@@ -6,5 +6,4 @@ import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAn
 
 @Repository
 public interface CmdAnonymousBoardCommentRepository extends JpaRepository<CmdAnonymousBoardComment, Integer> {
-
 }
