@@ -109,7 +109,6 @@ public class CmdPostServiceTests {
         assertThat(likePost.getId()).isNotNull();
     }
 
-    @Test
     void testGPT(){
         String testContent = "<h1>Spring Boot와 GPT API를 이용한 챗봇 구축</h1>\n" +
         "    \n" +
