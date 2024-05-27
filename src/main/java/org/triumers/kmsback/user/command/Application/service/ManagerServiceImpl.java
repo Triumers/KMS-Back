@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.user.command.Application.dto.ManageUserDTO;
 import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
@@ -17,6 +18,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 @Service
+@Transactional
 public class ManagerServiceImpl implements ManagerService {
     private final String DEFAULT_PASSWORD;
 
@@ -75,6 +77,42 @@ public class ManagerServiceImpl implements ManagerService {
         validateRole(employee);
 
         employee.setPassword(passwordEncoder(userDTO.getPassword()));
+        employeeRepository.save(employee);
+    }
+
+    @Override
+    public void editUserInfo(ManageUserDTO userDTO) throws NotAuthorizedException {
+
+        Employee employee = employeeRepository.findByEmail(userDTO.getEmail());
+
+        // 변경할 대상 권한이 자신의 권한이하인지 검증
+        validateRole(employee);
+
+        if (userDTO.getName() != null) {
+            employee.setName(userDTO.getName());
+        }
+        if (userDTO.getProfileImg() != null) {
+            employee.setProfileImg(userDTO.getProfileImg());
+        }
+        if(userDTO.getStartDate() != null) {
+            employee.setStartDate(userDTO.getStartDate());
+        }
+        if(userDTO.getEndDate() != null) {
+            employee.setEndDate(userDTO.getEndDate());
+        }
+        if (userDTO.getPhoneNumber() != null) {
+            employee.setPhoneNumber(userDTO.getPhoneNumber());
+        }
+        if (userDTO.getTeamId() != 0) {
+            employee.setTeamId(userDTO.getTeamId());
+        }
+        if (userDTO.getPositionId() != 0) {
+            employee.setPositionId(userDTO.getPositionId());
+        }
+        if (userDTO.getRankId() != 0) {
+            employee.setRankId(userDTO.getRankId());
+        }
+
         employeeRepository.save(employee);
     }
 
