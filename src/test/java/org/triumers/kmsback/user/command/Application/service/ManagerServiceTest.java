@@ -105,7 +105,7 @@ class ManagerServiceTest {
 
     @DisplayName("자신의 권한을 초과하는 유저 권한 수정 예외 테스트")
     @Test
-    void editOverRoleUSerExceptionTest() {
+    void editOverRoleUserExceptionTest() {
 
         // given
         addHrManagerForTest();
@@ -118,6 +118,64 @@ class ManagerServiceTest {
 
         // then
         assertThrows(NotAuthorizedException.class, () -> managerService.editUserRole(targetUser));
+    }
+
+    @DisplayName("지정 비밀번호 초기화 테스트")
+    @Test
+    void initializePasswordTest() {
+
+        // given
+        addUserForTest();
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(TestUserInfo.EMAIL);
+        String newPassword = "newPass123";
+        targetUser.setPassword(newPassword);
+
+        // when
+        loggedInUser.settingHrManager();
+        assertDoesNotThrow(() -> managerService.initializePassword(targetUser));
+
+        // then
+        assertTrue(bCryptPasswordEncoder.matches(
+                newPassword, employeeRepository.findByEmail(TestUserInfo.EMAIL).getPassword()));
+    }
+
+    @DisplayName("Default 비밀번호 초기화 테스트")
+    @Test
+    void initializeDefaultPasswordTest() {
+
+        // given
+        addUserForTest();
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(TestUserInfo.EMAIL);
+
+        // when
+        loggedInUser.settingHrManager();
+        assertDoesNotThrow(() -> managerService.initializePassword(targetUser));
+
+        // then
+        assertTrue(bCryptPasswordEncoder.matches(
+                DEFAULT_PASSWORD, employeeRepository.findByEmail(TestUserInfo.EMAIL).getPassword()));
+    }
+
+    @DisplayName("자신의 권한을 초과하는 유저 비밀번호 초기화 예외 테스트")
+    @Test
+    void initializePasswordOverRoleUserExceptionTest() {
+
+        // given
+        addHrManagerForTest();
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(TestUserInfo.HR_MANAGER_EMAIL);
+        String newPassword = "newPass123";
+        targetUser.setPassword(newPassword);
+
+        // when
+        loggedInUser.setting();
+        assertThrows(NotAuthorizedException.class, () -> managerService.initializePassword(targetUser));
+
+        // then
+        assertFalse(bCryptPasswordEncoder.matches(
+                newPassword, employeeRepository.findByEmail(TestUserInfo.HR_MANAGER_EMAIL).getPassword()));
     }
 
     private void addUserForTest() {
