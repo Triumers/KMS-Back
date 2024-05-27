@@ -20,6 +20,7 @@
         <result property="isEditing" column="IS_EDITING"/>
         <result property="title" column="TITLE"/>
         <result property="content" column="CONTENT"/>
+        <result property="postImg" column="POST_IMG"/>
         <result property="createdAt" column="CREATED_AT"/>
         <result property="deletedAt" column="DELETED_AT"/>
         <result property="authorId" column="AUTHOR_ID"/>
@@ -35,6 +36,7 @@
                A.ID AS POST_ID,
                A.TITLE,
                A.CONTENT,
+               A.POST_IMG,
                A.CREATED_AT,
                A.AUTHOR_ID,
                A.ORIGIN_ID,
@@ -90,6 +92,7 @@
                A.ID AS POST_ID,
                A.TITLE,
                A.CONTENT,
+               A.POST_IMG,
                A.CREATED_AT,
                A.AUTHOR_ID,
                A.ORIGIN_ID,
@@ -113,6 +116,7 @@
                A.ID AS POST_ID,
                A.TITLE,
                A.CONTENT,
+               A.POST_IMG,
                A.CREATED_AT,
                A.AUTHOR_ID,
                A.ORIGIN_ID,
