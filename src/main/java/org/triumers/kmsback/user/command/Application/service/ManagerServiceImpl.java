@@ -67,6 +67,17 @@ public class ManagerServiceImpl implements ManagerService {
         employeeRepository.save(employee);
     }
 
+    @Override
+    public void initializePassword(ManageUserDTO userDTO) throws NotAuthorizedException {
+        Employee employee = employeeRepository.findByEmail(userDTO.getEmail());
+
+        // 변경할 대상 권한이 자신의 권한이하인지 검증
+        validateRole(employee);
+
+        employee.setPassword(passwordEncoder(userDTO.getPassword()));
+        employeeRepository.save(employee);
+    }
+
     private String passwordEncoder(String password) {
         if (password != null) {
             return bCryptPasswordEncoder.encode(password);

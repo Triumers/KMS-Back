@@ -69,4 +69,22 @@ public class ManagerController {
                     new CmdResponseMessageVO(e.getMessage()));
         }
     }
+
+    @PostMapping("/edit/password")
+    public ResponseEntity<CmdResponseMessageVO> initializePassword(@Valid @RequestBody CmdRequestEditUserVO request) {
+        ManageUserDTO targetEmployee = new ManageUserDTO();
+
+        targetEmployee.setEmail(request.getEmail());
+        targetEmployee.setPassword(request.getPassword());
+
+        try {
+            managerService.initializePassword(targetEmployee);
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CmdResponseMessageVO("비밀번호 초기화 성공"));
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                    new CmdResponseMessageVO(e.getMessage()));
+        }
+    }
 }
