@@ -121,6 +121,6 @@ class QryPostServiceTest {
         tags.add("tag3");
         tags.add("tag4");
 
-        return new CmdPostAndTagsDTO("newTitle", "newContent", null, LocalDateTime.now(), 1, 1, tags);
+        return new CmdPostAndTagsDTO("newTitle", "newContent", "imgurl", LocalDateTime.now(), 1, 1, tags);
     }
 }
