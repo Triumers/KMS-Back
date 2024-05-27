@@ -151,6 +151,7 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService 
         return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
     }
 
+
     private List<QryRequestApprovalInfoDTO> getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(List<QryRequestApprovalInfoDTO> approvalInfoDTOS) {
         for (QryRequestApprovalInfoDTO approvalInfoDTO : approvalInfoDTOS) {
             CmdEmployeeDTO requester = cmdEmployeeService.findEmployeeById(approvalInfoDTO.getRequesterId());
@@ -169,5 +170,55 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService 
         }
 
         return approvalInfoDTOS;
+    }
+
+
+    public List<QryRequestApprovalInfoDTO> findByContent(int requesterId, String keyword, int page, int size) {
+        int offset = (page - 1) * size;
+        int limit = size;
+
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findByContent(requesterId, keyword, offset, limit);
+        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
+            throw new IllegalArgumentException("No approvals found for requesterId: " + requesterId + ", keyword: " + keyword);
+        }
+
+        return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
+    }
+
+    public List<QryRequestApprovalInfoDTO> findByStatus(int requesterId, String status, int page, int size) {
+
+        int offset = (page - 1) * size;
+        int limit = size;
+
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findByStatus(requesterId, status, offset, limit);
+        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
+            throw new IllegalArgumentException("No approvals found for requesterId: " + requesterId + ", status: " + status);
+        }
+
+        return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
+    }
+
+    public List<QryRequestApprovalInfoDTO> findReceivedByContent(int approverId, String keyword, int page, int size) {
+        int offset = (page - 1) * size;
+        int limit = size;
+
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findReceivedByContent(approverId, keyword, offset, limit);
+        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
+            throw new IllegalArgumentException("No approvals found for approverId: " + approverId + ", keyword: " + keyword);
+        }
+
+        return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
+    }
+
+    public List<QryRequestApprovalInfoDTO> findReceivedByStatus(int approverId, String status, int page, int size) {
+        int offset = (page - 1) * size;
+        int limit = size;
+
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findReceivedByStatus(approverId, status, offset, limit);
+        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
+            throw new IllegalArgumentException("No approvals found for approverId: " + approverId + ", status: " + status);
+        }
+
+        return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
     }
 }

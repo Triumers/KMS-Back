@@ -99,6 +99,51 @@ public class QryRequestApprovalController {
         int approverId = getCurrentUserId();
         return qryRequestApprovalService.findReceivedByDateRange(approverId, startDate, endDate, page, size);
     }
+
+    // 본인이 요청한 결재 내용 검색
+    @GetMapping("/search")
+    public List<QryRequestApprovalInfoDTO> findByContent(
+            @RequestParam("keyword") String keyword,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) throws NotLoginException {
+        int requesterId = getCurrentUserId();
+        return qryRequestApprovalService.findByContent(requesterId, keyword, page, size);
+    }
+
+    // 본인이 요청한 결재 승인 상태별 조회
+    @GetMapping("/status/{status}")
+    public List<QryRequestApprovalInfoDTO> findByStatus(
+            @PathVariable("status") String status,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) throws NotLoginException {
+        int requesterId = getCurrentUserId();
+        return qryRequestApprovalService.findByStatus(requesterId, status, page, size);
+    }
+
+    // 본인이 요청받은 결재 내용 검색
+    @GetMapping("/received/search")
+    public List<QryRequestApprovalInfoDTO> findReceivedByContent(
+            @RequestParam("keyword") String keyword,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) throws NotLoginException {
+        int approverId = getCurrentUserId();
+        return qryRequestApprovalService.findReceivedByContent(approverId, keyword, page, size);
+    }
+
+    // 본인이 요청받은 결재 승인 상태별 조회
+    @GetMapping("/received/status/{status}")
+    public List<QryRequestApprovalInfoDTO> findReceivedByStatus(
+            @PathVariable("status") String status,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) throws NotLoginException {
+        int approverId = getCurrentUserId();
+        return qryRequestApprovalService.findReceivedByStatus(approverId, status, page, size);
+    }
+
 }
 
 @RestControllerAdvice

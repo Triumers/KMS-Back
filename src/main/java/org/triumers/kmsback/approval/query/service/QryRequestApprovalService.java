@@ -18,4 +18,8 @@ public interface QryRequestApprovalService {
     List<QryRequestApprovalInfoDTO> findReceivedByType(int approverId, int typeId, int page, int size);
     List<QryRequestApprovalInfoDTO> findReceivedByDateRange(int approverId, LocalDateTime startDate, LocalDateTime endDate, int page, int size);
 
+    List<QryRequestApprovalInfoDTO> findByContent(int requesterId, String keyword, int page, int size);
+    List<QryRequestApprovalInfoDTO> findByStatus(int requesterId, String status, int page, int size);
+    List<QryRequestApprovalInfoDTO> findReceivedByContent(int approverId, String keyword, int page, int size);
+    List<QryRequestApprovalInfoDTO> findReceivedByStatus(int approverId, String status, int page, int size);
 }
