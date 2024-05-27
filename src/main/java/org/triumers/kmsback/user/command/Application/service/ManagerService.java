@@ -8,4 +8,6 @@ public interface ManagerService {
     void signup(ManageUserDTO userDTO);
 
     void editUserRole(ManageUserDTO userDTO) throws NotAuthorizedException;
+
+    void initializePassword(ManageUserDTO userDTO) throws NotAuthorizedException;
 }

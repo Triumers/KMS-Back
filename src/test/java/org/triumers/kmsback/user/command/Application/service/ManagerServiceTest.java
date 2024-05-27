@@ -120,6 +120,26 @@ class ManagerServiceTest {
         assertThrows(NotAuthorizedException.class, () -> managerService.editUserRole(targetUser));
     }
 
+    @DisplayName("지정 비밀번호 초기화 테스트")
+    @Test
+    void initializePasswordTest() {
+
+        // given
+        addUserForTest();
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(TestUserInfo.EMAIL);
+        String newPassword = "newPass123";
+        targetUser.setPassword(newPassword);
+
+        // when
+        loggedInUser.settingHrManager();
+        assertDoesNotThrow(() -> managerService.initializePassword(targetUser));
+
+        // then
+        assertTrue(bCryptPasswordEncoder.matches(
+                newPassword, employeeRepository.findByEmail(TestUserInfo.EMAIL).getPassword()));
+    }
+
     private void addUserForTest() {
         ManageUserDTO userDTO = new ManageUserDTO(TestUserInfo.EMAIL, TestUserInfo.PASSWORD, TestUserInfo.NAME, null,
                 TestUserInfo.USER_ROLE, null, null, TestUserInfo.PHONE_NUMBER, 1, 1,
