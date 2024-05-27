@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class CmdAnonymousBoardCommentServiceImplTest {
+class CmdAnonymousBoardCommentServiceImplTests {
 
     @Autowired
     private CmdAnonymousBoardCommentRepository cmdAnonymousBoardCommentRepository;
