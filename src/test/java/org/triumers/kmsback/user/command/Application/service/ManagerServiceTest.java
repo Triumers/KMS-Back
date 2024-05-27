@@ -234,7 +234,7 @@ class ManagerServiceTest {
         assertNull(employeeRepository.findByEmail(targetEmail));
     }
 
-    @DisplayName("자신의 권한을 초과하는 직원 퇴사 처리 예외 테스트")
+    @DisplayName("자신의 권한을 초과하는 직원 정보 수정 처리 예외 테스트")
     @Test
     void quitOverRoleUserExceptionTest() {
 
