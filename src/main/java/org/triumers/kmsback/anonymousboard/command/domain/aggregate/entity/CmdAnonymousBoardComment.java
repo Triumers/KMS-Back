@@ -1,14 +1,16 @@
 package org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "tbl_anonymous_board_comment")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 public class CmdAnonymousBoardComment {
 
     @Id
@@ -24,11 +26,19 @@ public class CmdAnonymousBoardComment {
 
     @CreationTimestamp
     @Column(name = "CREATED_DATE", nullable = false)
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDate = LocalDateTime.now();
 
     @Column(name = "MAC_ADDRESS", nullable = false)
     private String macAddress;
 
-    @Column(name = "ANONYMOUS_BOARD_ID", nullable = false)
-    private int anonymousBoardId;
+    @ManyToOne
+    @JoinColumn(name = "ANONYMOUS_BOARD_ID", nullable = false)
+    private CmdAnonymousBoard anonymousBoard;
+
+    public CmdAnonymousBoardComment(String nickname, String content, String macAddress, CmdAnonymousBoard anonymousBoard) {
+        this.nickname = nickname;
+        this.content = content;
+        this.macAddress = macAddress;
+        this.anonymousBoard = anonymousBoard;
+    }
 }
