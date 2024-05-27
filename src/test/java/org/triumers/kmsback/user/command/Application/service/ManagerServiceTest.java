@@ -140,6 +140,24 @@ class ManagerServiceTest {
                 newPassword, employeeRepository.findByEmail(TestUserInfo.EMAIL).getPassword()));
     }
 
+    @DisplayName("Default 비밀번호 초기화 테스트")
+    @Test
+    void initializeDefaultPasswordTest() {
+
+        // given
+        addUserForTest();
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(TestUserInfo.EMAIL);
+
+        // when
+        loggedInUser.settingHrManager();
+        assertDoesNotThrow(() -> managerService.initializePassword(targetUser));
+
+        // then
+        assertTrue(bCryptPasswordEncoder.matches(
+                DEFAULT_PASSWORD, employeeRepository.findByEmail(TestUserInfo.EMAIL).getPassword()));
+    }
+
     private void addUserForTest() {
         ManageUserDTO userDTO = new ManageUserDTO(TestUserInfo.EMAIL, TestUserInfo.PASSWORD, TestUserInfo.NAME, null,
                 TestUserInfo.USER_ROLE, null, null, TestUserInfo.PHONE_NUMBER, 1, 1,
