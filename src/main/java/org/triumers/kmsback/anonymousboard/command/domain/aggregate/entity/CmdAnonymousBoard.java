@@ -30,7 +30,7 @@ public class CmdAnonymousBoard {
 
     @CreationTimestamp
     @Column(name = "CREATED_DATE", nullable = false)
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDate = LocalDateTime.now();
 
     @Column(name = "MAC_ADDRESS", nullable = false)
     private String macAddress;
