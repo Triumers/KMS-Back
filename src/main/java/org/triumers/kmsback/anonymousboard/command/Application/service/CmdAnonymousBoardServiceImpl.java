@@ -24,14 +24,14 @@ public class CmdAnonymousBoardServiceImpl implements CmdAnonymousBoardService {
 
     // 엔티티를 DTO로 변환하는 메서드
     private CmdAnonymousBoardDTO convertToDto(CmdAnonymousBoard cmdAnonymousBoard) {
-        CmdAnonymousBoardDTO dto = new CmdAnonymousBoardDTO();
-        dto.setId(cmdAnonymousBoard.getId());
-        dto.setNickname(cmdAnonymousBoard.getNickname());
-        dto.setTitle(cmdAnonymousBoard.getTitle());
-        dto.setContent(cmdAnonymousBoard.getContent());
-        dto.setCreatedDate(cmdAnonymousBoard.getCreatedDate());
-        dto.setMacAddress(cmdAnonymousBoard.getMacAddress());
-        return dto;
+        return new CmdAnonymousBoardDTO(
+                cmdAnonymousBoard.getId(),
+                cmdAnonymousBoard.getNickname(),
+                cmdAnonymousBoard.getTitle(),
+                cmdAnonymousBoard.getContent(),
+                cmdAnonymousBoard.getCreatedDate(),
+                cmdAnonymousBoard.getMacAddress()
+        );
     }
 
     // 게시글 작성

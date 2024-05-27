@@ -29,10 +29,10 @@ public class QryAnonymousBoardServiceImpl implements QryAnonymousBoardService {
     }
 
     @Override
-    public Page<QryAnonymousBoardDTO> searchAnonymousBoard(String type, String keyword, Pageable pageable) {
+    public Page<QryAnonymousBoardDTO> searchAnonymousBoard(String keyword, String type, Pageable pageable) {
         List<QryAnonymousBoardDTO> anonymousBoardList;
         long total;
-        switch (type) {
+        switch (type.toLowerCase()) {
             case "title":
                 anonymousBoardList = qryAnonymousBoardMapper.searchAnonymousBoardByTitle(keyword, pageable);
                 total = qryAnonymousBoardMapper.countAnonymousBoardByTitle(keyword);
@@ -41,7 +41,7 @@ public class QryAnonymousBoardServiceImpl implements QryAnonymousBoardService {
                 anonymousBoardList = qryAnonymousBoardMapper.searchAnonymousBoardByContent(keyword, pageable);
                 total = qryAnonymousBoardMapper.countAnonymousBoardByContent(keyword);
                 break;
-            case "titleAndContent":
+            case "titleandcontent":
                 anonymousBoardList = qryAnonymousBoardMapper.searchAnonymousBoardByTitleAndContent(keyword, pageable);
                 total = qryAnonymousBoardMapper.countAnonymousBoardByTitleAndContent(keyword);
                 break;

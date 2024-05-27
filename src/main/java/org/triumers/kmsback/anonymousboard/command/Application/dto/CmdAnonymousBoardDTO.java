@@ -1,6 +1,8 @@
 package org.triumers.kmsback.anonymousboard.command.Application.dto;
 
 import lombok.*;
+import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAnonymousBoard;
+
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -16,5 +18,16 @@ public class CmdAnonymousBoardDTO {
     private String content;
     private LocalDateTime createdDate;
     private String macAddress;
+
+    public CmdAnonymousBoard toEntity() {
+        return new CmdAnonymousBoard(
+                this.id,
+                this.nickname,
+                this.title,
+                this.content,
+                this.createdDate,
+                this.macAddress
+        );
+    }
 
 }
