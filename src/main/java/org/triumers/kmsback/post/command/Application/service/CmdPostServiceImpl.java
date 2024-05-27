@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import org.triumers.kmsback.common.ai.dto.ChatGPTRequestDTO;
+import org.triumers.kmsback.common.ai.dto.ChatGPTResponseDTO;
+import org.triumers.kmsback.common.ai.service.OpenAIService;
 import org.triumers.kmsback.common.exception.AwsS3Exception;
 import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.common.exception.NotLoginException;
@@ -36,22 +39,24 @@ public class CmdPostServiceImpl implements CmdPostService {
     private final CmdFavoritesRepository cmdFavoritesRepository;
 
     private final AwsS3Service awsS3Service;
-    private final CmdEmployeeService cmdEmployeeService;
     private final AuthService authService;
-
-//    private final NotificationService notificationService;
+    private final NotificationService notificationService;
+    private final OpenAIService openAIService;
 
     @Autowired
     public CmdPostServiceImpl(CmdPostRepository cmdPostRepository,
-                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository, AwsS3Service awsS3Service, CmdEmployeeService cmdEmployeeService, AuthService authService) {
+                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository,
+                              CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository,
+                              AwsS3Service awsS3Service, AuthService authService, NotificationService notificationService, OpenAIService openAIService) {
         this.cmdPostRepository = cmdPostRepository;
         this.cmdTagRepository = cmdTagRepository;
         this.cmdPostTagRepository = cmdPostTagRepository;
         this.cmdLikeRepository = cmdLikeRepository;
         this.cmdFavoritesRepository = cmdFavoritesRepository;
         this.awsS3Service = awsS3Service;
-        this.cmdEmployeeService = cmdEmployeeService;
         this.authService = authService;
+        this.notificationService = notificationService;
+        this.openAIService = openAIService;
     }
 
     @Override
@@ -103,7 +108,7 @@ public class CmdPostServiceImpl implements CmdPostService {
         originPost.setIsEditing(false);
         cmdPostRepository.save(originPost);
 
-        // 추후 yml 수정 후 주석 제거
+        // notification
 //        try {
 //            CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(originPost.getAuthorId());
 //            notificationService.sendMailMime(employeeDTO, originPost);
@@ -209,5 +214,89 @@ public class CmdPostServiceImpl implements CmdPostService {
             tagList.add(new CmdTagDTO(tags.get(i)));
         }
         return tagList;
+    }
+
+    public String requestToGPT(String type, String content){
+
+        String prompt = getPromptByType(type, content);
+        ChatGPTResponseDTO response = openAIService.requestToGPT(prompt);
+
+        System.out.println("response = " + response);
+        
+        return "testGPT";
+    }
+
+    public String contentEnhancement(String content){
+        String prompt =
+                " 우리는 이제 글을 업그레이드 할 것이다." +
+                        "다음 { } 안에 들어간 내용이 우리가 업그레이드 해야하는 글이다.\n "+
+                        "내용 :{ "+ content + " }"
+                        + "\n { } 안에 들어간 내용의 태그 안에 있는 내용들이 맞는지 확인하고" +
+                        " 태그 안의 내용을 업그레이드 및 정리한 후에," +
+                        " 업그레이드 한 내용을 아래 예시처럼 답변 : {} 안에 담아 반환한다." +
+                        "예시\n" +
+                        example();
+        return prompt;
+    }
+
+    public String contentValidation(String content){
+        String prompt =
+                " 우리는 이제 글에 대한 내용을 검증할 것이다." +
+                        "다음 { } 안에 들어간 내용이 우리가 검증해야 하는 글이다.\n "+
+                        "내용 :{ "+ content + " }"
+                        + "{ } 안에 들어간 글의 내용들이 지식적으로 맞는지 검증하고 틀린 내용에 대한 의견과 이에 대한 옳은 내용을 정리해서 "
+                        + " 아래 예시처럼 답변 : {} 안에 담아 반환한다."
+                        + "예시\n" +
+                        example();
+
+        return prompt;
+    }
+
+    public String grammarCheck(String content){
+        String prompt =
+                " 우리는 이제 글의 맞춤법을 수정 할 것이다." +
+                        "다음 { } 안에 들어간 내용이 우리가 맞춤법을 수정해야 하는 글이다. "+
+                        "내용 :{ "+ content + " }"
+                        + "{ } 안에 들어간 글의 내용들의 맞춤법과 문맥을 검사하고 틀린 부분은 옳게 수정한 뒤"
+                        + " 아래 예시처럼 답변 : {} 안에 담아 반환한다."
+                        + "예시\n" +
+                        example();
+
+        return prompt;
+    }
+
+    public String search(String content){
+        String prompt =
+                " 우리는 이제 요청된 질문에 대해서 옳은 답을 할 것이다." +
+                        "다음 { } 안에 들어간 내용이 우리가 답변해야 하는 질문이다. "+
+                        "질문 :{ "+ content + " }"
+                        + "{ } 안에 들어간 질문에 대한 옳은 답변을 찾고 지식적으로 정리해서"
+                        + " 아래 예시처럼 답변 : {} 안에 담아 반환한다."
+                        + "예시\n" +
+                        example();
+
+        return prompt;
+    }
+
+    String getPromptByType(String type, String content){
+
+        switch (type){
+            case "enhancement":
+                return contentEnhancement(content);
+            case "validation":
+                return contentValidation(content);
+            case "grammar":
+                return grammarCheck(content);
+            case "search":
+                return search(content);
+        }
+
+        return content;
+    }
+
+    String example(){
+        return "답변 : { " +
+                " 요청에 대한 값" +
+                " }";
     }
 }

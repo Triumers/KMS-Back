@@ -27,4 +27,6 @@ public interface CmdPostService {
     Boolean isAuthorizedToPost(int originId) throws NotLoginException;
 
     String uploadFile(MultipartFile file) throws AwsS3Exception;
+
+    String requestToGPT(String type, String content);
 }

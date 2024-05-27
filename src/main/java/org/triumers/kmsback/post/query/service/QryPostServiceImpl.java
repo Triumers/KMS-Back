@@ -120,8 +120,6 @@ public class QryPostServiceImpl implements QryPostService {
         return postDTOList;
     }
 
-
-
     private List<String> convertTagToString(List<QryTag> tags) {
         List<String> tagList = new ArrayList<>();
         for (int i = 0; i < tags.size(); i++) {
