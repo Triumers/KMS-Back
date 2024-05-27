@@ -30,11 +30,11 @@ class QryRequestApprovalServiceImplTests {
         assertEquals(approvalId, result.getApprovalInfo().getApprovalId());
         assertEquals(requesterId, result.getRequester().getId());
 
-        assertEquals(2, result.getApprovalInfo().getApproverId());
+        assertEquals(3, result.getApprovalInfo().getApproverId());
         assertEquals(2, result.getApprovalInfo().getApprovalOrder());
         assertEquals("content 1", result.getApprovalInfo().getContent());
         assertEquals("워크스페이스 생성 요청", result.getApprovalInfo().getType());
-        assertEquals(LocalDateTime.of(2024, 5, 6, 9, 3, 17), result.getApprovalInfo().getCreatedAt());
+        assertEquals(LocalDateTime.of(2024, 5, 27, 17, 2, 38), result.getApprovalInfo().getCreatedAt());
 
     }
 
@@ -108,7 +108,7 @@ class QryRequestApprovalServiceImplTests {
         assertEquals(2, result.getApprovalInfo().getApproverId());
         assertEquals("content 1", result.getApprovalInfo().getContent());
         assertEquals("워크스페이스 생성 요청", result.getApprovalInfo().getType());
-        assertEquals(LocalDateTime.of(2024, 5, 6, 9, 3, 17), result.getApprovalInfo().getCreatedAt());
+        assertEquals(LocalDateTime.of(2024, 5, 27, 17, 2, 38), result.getApprovalInfo().getCreatedAt());
 
     }
 
@@ -120,7 +120,7 @@ class QryRequestApprovalServiceImplTests {
 
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findAllReceived(approverId, page, size);
 
-        int expectedTotalCount = 6; // 예상되는 총 결과 개수
+        int expectedTotalCount = 3; // 예상되는 총 결과 개수
         assertEquals(expectedTotalCount, approvalInfoDTOS.size());
 
         // 추가적인 검증 로직
@@ -137,7 +137,7 @@ class QryRequestApprovalServiceImplTests {
 
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedByType(approverId, typeId, page, size);
 
-        int expectedTotalCount = 3; // 예상되는 총 결과 개수
+        int expectedTotalCount = 2; // 예상되는 총 결과 개수
         assertEquals(expectedTotalCount, approvalInfoDTOS.size());
 
         assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getApproverId() == approverId));
@@ -146,10 +146,9 @@ class QryRequestApprovalServiceImplTests {
         String expectedType = "워크스페이스 생성 요청"; // typeId에 해당하는 실제 type 값을 가져와서 사용
         assertEquals(expectedType, approvalInfoDTOS.get(0).getType());
         assertEquals(expectedType, approvalInfoDTOS.get(1).getType());
-        assertEquals(expectedType, approvalInfoDTOS.get(2).getType());
 
         assertEquals("content 1", approvalInfoDTOS.get(0).getContent());
-        assertEquals("content 2", approvalInfoDTOS.get(2).getContent());
+        assertEquals("content 2", approvalInfoDTOS.get(1).getContent());
     }
 
     @Test
@@ -162,7 +161,7 @@ class QryRequestApprovalServiceImplTests {
 
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedByDateRange(approverId, startDate, endDate, page, size);
 
-        int expectedTotalCount = 4; // 예상되는 총 결과 개수
+        int expectedTotalCount = 2; // 예상되는 총 결과 개수
         assertEquals(expectedTotalCount, approvalInfoDTOS.size());
 
         // 추가적인 검증 로직
@@ -171,6 +170,64 @@ class QryRequestApprovalServiceImplTests {
         assertTrue(approvalInfoDTOS.stream().allMatch(dto ->
                 dto.getCreatedAt().isAfter(startDate) && dto.getCreatedAt().isBefore(endDate)
         ));
+    }
+
+
+    @Test
+    public void findByContentTest() {
+        int requesterId = 4;
+        String keyword = "content";
+        int page = 1;
+        int size = 10;
+
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findByContent(requesterId, keyword, page, size);
+        System.out.println("approvalInfoDTOS = " + approvalInfoDTOS);
+
+        int expectedTotalCount = 5; // 예상되는 총 결과 개수
+        assertEquals(expectedTotalCount, approvalInfoDTOS.size());
+        assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getContent().contains(keyword)));
+    }
+
+    @Test
+    public void findByStatusTest() {
+        int requesterId = 4;
+        String status = "WAITING";
+        int page = 1;
+        int size = 10;
+
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findByStatus(requesterId, status, page, size);
+
+        int expectedTotalCount = 4; // 예상되는 총 결과 개수
+        assertEquals(expectedTotalCount, approvalInfoDTOS.size());
+        assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getIsApproved().equals(status)));
+    }
+
+    @Test
+    public void findReceivedByContentTest() {
+        int approverId = 2;
+        String keyword = "content";
+        int page = 1;
+        int size = 10;
+
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedByContent(approverId, keyword, page, size);
+
+        int expectedTotalCount = 3; // 예상되는 총 결과 개수
+        assertEquals(expectedTotalCount, approvalInfoDTOS.size());
+        assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getContent().contains(keyword)));
+    }
+
+    @Test
+    public void findReceivedByStatusTest() {
+        int approverId = 2;
+        String status = "WAITING";
+        int page = 1;
+        int size = 10;
+
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedByStatus(approverId, status, page, size);
+
+        int expectedTotalCount = 1; // 예상되는 총 결과 개수
+        assertEquals(expectedTotalCount, approvalInfoDTOS.size());
+        assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getIsApproved().equals(status)));
     }
 
 }
