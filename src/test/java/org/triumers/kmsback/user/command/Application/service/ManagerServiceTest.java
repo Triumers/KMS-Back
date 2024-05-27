@@ -11,8 +11,11 @@ import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.TestUserInfo;
 import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.user.command.Application.dto.ManageUserDTO;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.user.command.domain.repository.EmployeeRepository;
+
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -176,6 +179,38 @@ class ManagerServiceTest {
         // then
         assertFalse(bCryptPasswordEncoder.matches(
                 newPassword, employeeRepository.findByEmail(TestUserInfo.HR_MANAGER_EMAIL).getPassword()));
+    }
+
+    @DisplayName("회원 정보 수정 테스트")
+    @Test
+    void editUserInfoTest() {
+
+        // given
+        addUserForTest();
+        String targetEmail = TestUserInfo.EMAIL;
+        String newName = "newName";
+        String newProfile = "newProfileURL";
+        LocalDate newStartDate = LocalDate.of(2020, 1, 1);
+        String newPhoneNumber = "010-9876-5432";
+
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(targetEmail);
+        targetUser.setName(newName);
+        targetUser.setProfileImg(newProfile);
+        targetUser.setStartDate(newStartDate);
+        targetUser.setPhoneNumber(newPhoneNumber);
+
+        // when
+        loggedInUser.settingHrManager();
+        assertDoesNotThrow(() -> managerService.editUserInfo(targetUser));
+
+        // then
+        Employee result = employeeRepository.findByEmail(targetEmail);
+
+        assertEquals(targetUser.getName(), result.getName());
+        assertEquals(targetUser.getProfileImg(), result.getProfileImg());
+        assertEquals(targetUser.getStartDate(), result.getStartDate());
+        assertEquals(targetUser.getPhoneNumber(), result.getPhoneNumber());
     }
 
     private void addUserForTest() {

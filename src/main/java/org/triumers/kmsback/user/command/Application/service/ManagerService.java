@@ -10,4 +10,6 @@ public interface ManagerService {
     void editUserRole(ManageUserDTO userDTO) throws NotAuthorizedException;
 
     void initializePassword(ManageUserDTO userDTO) throws NotAuthorizedException;
+
+    void editUserInfo(ManageUserDTO userDTO) throws NotAuthorizedException;
 }
