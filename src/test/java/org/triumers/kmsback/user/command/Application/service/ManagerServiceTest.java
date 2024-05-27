@@ -213,6 +213,27 @@ class ManagerServiceTest {
         assertEquals(targetUser.getPhoneNumber(), result.getPhoneNumber());
     }
 
+    @DisplayName("직원 퇴사 테스트(Soft Delete)")
+    @Test
+    void quitEmployeeTest() {
+
+        // given
+        addUserForTest();
+        String targetEmail = TestUserInfo.EMAIL;
+        LocalDate newEndDate = LocalDate.of(2020, 1, 1);
+
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(targetEmail);
+        targetUser.setEndDate(newEndDate);
+
+        // when
+        loggedInUser.settingHrManager();
+        assertDoesNotThrow(() -> managerService.editUserInfo(targetUser));
+
+        // then
+        assertNull(employeeRepository.findByEmail(targetEmail));
+    }
+
     private void addUserForTest() {
         ManageUserDTO userDTO = new ManageUserDTO(TestUserInfo.EMAIL, TestUserInfo.PASSWORD, TestUserInfo.NAME, null,
                 TestUserInfo.USER_ROLE, null, null, TestUserInfo.PHONE_NUMBER, 1, 1,
