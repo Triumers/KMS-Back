@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardCommentDTO;
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardDTO;
@@ -85,7 +84,6 @@ class CmdAnonymousBoardCommentServiceImplTests {
 
     // 유효한 ID로 댓글 삭제 성공 여부를 확인
     @Test
-    @Rollback(false)
     void deleteAnonymousBoardComment_ValidId_Success() {
         // given
         CmdAnonymousBoardCommentDTO savedCmdAnonymousBoardCommentDTO = cmdAnonymousBoardCommentService.saveAnonymousBoardComment(cmdAnonymousBoardCommentDTO);
