@@ -234,6 +234,38 @@ class ManagerServiceTest {
         assertNull(employeeRepository.findByEmail(targetEmail));
     }
 
+    @DisplayName("자신의 권한을 초과하는 직원 퇴사 처리 예외 테스트")
+    @Test
+    void quitOverRoleUserExceptionTest() {
+
+        // given
+        addHrManagerForTest();
+        String targetEmail = TestUserInfo.HR_MANAGER_EMAIL;
+        String newName = "newName";
+        String newProfile = "newProfileURL";
+        LocalDate newStartDate = LocalDate.of(2020, 1, 1);
+        String newPhoneNumber = "010-9876-5432";
+
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(targetEmail);
+        targetUser.setName(newName);
+        targetUser.setProfileImg(newProfile);
+        targetUser.setStartDate(newStartDate);
+        targetUser.setPhoneNumber(newPhoneNumber);
+
+        // when
+        loggedInUser.setting();
+        assertThrows(NotAuthorizedException.class, () -> managerService.editUserInfo(targetUser));
+
+        // then
+        Employee result = employeeRepository.findByEmail(targetEmail);
+
+        assertNotEquals(targetUser.getName(), result.getName());
+        assertNotEquals(targetUser.getProfileImg(), result.getProfileImg());
+        assertNotEquals(targetUser.getStartDate(), result.getStartDate());
+        assertNotEquals(targetUser.getPhoneNumber(), result.getPhoneNumber());
+    }
+
     private void addUserForTest() {
         ManageUserDTO userDTO = new ManageUserDTO(TestUserInfo.EMAIL, TestUserInfo.PASSWORD, TestUserInfo.NAME, null,
                 TestUserInfo.USER_ROLE, null, null, TestUserInfo.PHONE_NUMBER, 1, 1,
