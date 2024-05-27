@@ -10,6 +10,7 @@ public class CmdPostDTO {
     private Integer id;
     private String title;
     private String content;
+    private String postImg;
     private LocalDate createdAt;
     private LocalDate deletedAt;
     private Integer authorId;

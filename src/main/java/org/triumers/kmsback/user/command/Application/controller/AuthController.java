@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.triumers.kmsback.user.command.Application.dto.AuthDTO;
 import org.triumers.kmsback.user.command.Application.dto.PasswordDTO;
 import org.triumers.kmsback.user.command.Application.service.AuthService;
-import org.triumers.kmsback.user.command.domain.aggregate.vo.CmdRequestAuthVO;
 import org.triumers.kmsback.user.command.domain.aggregate.vo.CmdRequestEditMyInfoVO;
 import org.triumers.kmsback.user.command.domain.aggregate.vo.CmdRequestEditPasswordVO;
 import org.triumers.kmsback.user.command.domain.aggregate.vo.CmdResponseMessageVO;
@@ -30,16 +29,6 @@ public class AuthController {
     @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
-    }
-
-    @PostMapping("/signup")
-    public ResponseEntity<CmdResponseMessageVO> signup(@Valid @RequestBody CmdRequestAuthVO request) {
-        AuthDTO authDTO = authDtoMapper(request);
-
-        authService.signup(authDTO);
-
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CmdResponseMessageVO(authDTO.getName() + " 회원가입 성공"));
     }
 
     @PostMapping("/edit/password")
@@ -86,23 +75,5 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new CmdResponseMessageVO("잘못된 입력입니다."));
         }
-    }
-
-    private AuthDTO authDtoMapper(CmdRequestAuthVO request) {
-        AuthDTO auth = new AuthDTO();
-
-        auth.setEmail(request.getEmail());
-        auth.setPassword(request.getPassword());
-        auth.setName(request.getName());
-        auth.setProfileImg(request.getProfileImg());
-        auth.setRole(request.getRole());
-        auth.setStartDate(request.getStartDate());
-        auth.setEndDate(request.getEndDate());
-        auth.setPhoneNumber(request.getPhoneNumber());
-        auth.setTeamId(request.getTeamId());
-        auth.setPositionId(request.getPositionId());
-        auth.setRankId(request.getRankId());
-
-        return auth;
     }
 }

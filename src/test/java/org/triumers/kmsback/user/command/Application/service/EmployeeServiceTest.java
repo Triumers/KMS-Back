@@ -41,23 +41,9 @@ class EmployeeServiceTest {
     @Autowired
     private LoggedInUser loggedInUser;
 
-    @DisplayName("회원가입 테스트")
-    @Test
-    void signup() {
-
-        // given
-        AuthDTO newEmployee = createRightAuthDTO();
-
-        // when
-        assertDoesNotThrow(() -> authService.signup(newEmployee));
-
-        // then
-        assertNotNull(employeeRepository.findByEmail(newEmployee.getEmail()));
-    }
-
     @DisplayName("비밀번호 변경 테스트")
     @Test
-    void editPassword() throws WrongInputTypeException {
+    void editPassword() {
 
         // given
         loggedInUser.setting();
@@ -73,7 +59,7 @@ class EmployeeServiceTest {
 
     @DisplayName("잘못된 기존 비밀번호 변경 테스트")
     @Test
-    void wrongOldPasswordEditPassword() throws WrongInputTypeException {
+    void wrongOldPasswordEditPassword() {
 
         // given
         loggedInUser.setting();

@@ -9,6 +9,7 @@ public class QryPostDTO {
     private Integer id;
     private String title;
     private String content;
+    private String postImg;
     private LocalDate createdAt;
     private LocalDate deletedAt;
     private Integer authorId;
@@ -20,22 +21,14 @@ public class QryPostDTO {
     public QryPostDTO() {
     }
 
-    public QryPostDTO(String title, String content, LocalDate createdAt, Integer authorId, Integer tabRelationId) {
-        this.title = title;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.authorId = authorId;
-        this.tabRelationId = tabRelationId;
-    }
-
-    public QryPostDTO(String title, String content, LocalDate createdAt, Integer authorId,
+    public QryPostDTO(String title, String content, String postImg, LocalDate createdAt, Integer authorId,
                       Integer originId, Integer tabRelationId) {
         this.title = title;
         this.content = content;
+        this.postImg = postImg;
         this.createdAt = createdAt;
         this.authorId = authorId;
         this.originId = originId;
         this.tabRelationId = tabRelationId;
     }
-
 }
