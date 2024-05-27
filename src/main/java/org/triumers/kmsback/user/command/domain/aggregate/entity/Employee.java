@@ -2,6 +2,8 @@ package org.triumers.kmsback.user.command.domain.aggregate.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRoleConverter;
@@ -14,6 +16,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@SQLDelete(sql = "UPDATE tbl_employee SET END_DATE = CURRENT_DATE WHERE ID = ?")
+@Where(clause = "END_DATE IS NULL")
 @Table(name = "tbl_employee")
 public class Employee {
 
