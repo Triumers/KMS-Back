@@ -25,7 +25,7 @@ public class QryAnonymousBoardCommentServiceImpl implements QryAnonymousBoardCom
     public Page<QryAnonymousBoardCommentDTO> findAllAnonymousBoardComment(int anonymousBoardId, Pageable pageable) {
         List<QryAnonymousBoardCommentDTO> anonymousBoardCommentList = qryAnonymousBoardCommentMapper.findAllAnonymousBoardComment(anonymousBoardId, pageable);
         long total = qryAnonymousBoardCommentMapper.countAnonymousBoardComment(anonymousBoardId);
-        if (anonymousBoardCommentList.isEmpty() && total == 0) {
+        if (anonymousBoardCommentList.isEmpty()) {
             throw new NoSuchElementException("Anonymous board comments not found for anonymousBoardId: " + anonymousBoardId);
         }
         return new PageImpl<>(anonymousBoardCommentList, pageable, total);

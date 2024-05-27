@@ -1,148 +1,129 @@
 package org.triumers.kmsback.anonymousboard.query.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
+import org.triumers.kmsback.anonymousboard.command.Application.service.CmdAnonymousBoardService;
+import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardDTO;
 import org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO;
-import org.triumers.kmsback.anonymousboard.query.repository.QryAnonymousBoardMapper;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
 class QryAnonymousBoardServiceImplTests {
 
-    @Mock
-    private QryAnonymousBoardMapper qryAnonymousBoardMapper;
+    @Autowired
+    private QryAnonymousBoardService qryAnonymousBoardService;
 
-    @InjectMocks
-    private QryAnonymousBoardServiceImpl qryAnonymousBoardService;
+    @Autowired
+    private CmdAnonymousBoardService cmdAnonymousBoardService;
+
+    private static final int PAGE_SIZE = 10;
+
+    @BeforeEach
+    void setUp() {
+        CmdAnonymousBoardDTO cmdAnonymousBoardDTO1 = new CmdAnonymousBoardDTO(0, "익명", "제목1", "내용1", null, null);
+        CmdAnonymousBoardDTO cmdAnonymousBoardDTO2 = new CmdAnonymousBoardDTO(0, "익명", "제목2", "내용2", null, null);
+        CmdAnonymousBoardDTO cmdAnonymousBoardDTO3 = new CmdAnonymousBoardDTO(0, "익명", "title1", "content1", null, null);
+        CmdAnonymousBoardDTO cmdAnonymousBoardDTO4 = new CmdAnonymousBoardDTO(0, "익명", "title2", "content2", null, null);
+        CmdAnonymousBoardDTO cmdAnonymousBoardDTO5 = new CmdAnonymousBoardDTO(0, "익명", "title3", "content3", null, null);
+        cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO1);
+        cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO2);
+        cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO3);
+        cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO4);
+        cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO5);
+    }
 
     @Test
     void findAllAnonymousBoard() {
-        // given
-        List<QryAnonymousBoardDTO> anonymousBoardList = new ArrayList<>();
-        anonymousBoardList.add(new QryAnonymousBoardDTO());
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        given(qryAnonymousBoardMapper.findAllAnonymousBoard(pageRequest)).willReturn(anonymousBoardList);
-        given(qryAnonymousBoardMapper.countAllAnonymousBoard()).willReturn(1L);
+        Pageable pageable = PageRequest.of(0, PAGE_SIZE);
+        Page<QryAnonymousBoardDTO> page = qryAnonymousBoardService.findAllAnonymousBoard(pageable);
 
-        // when
-        Page<QryAnonymousBoardDTO> result = qryAnonymousBoardService.findAllAnonymousBoard(pageRequest);
-
-        // then
-        assertThat(result).isNotNull();
-        assertThat(result.getContent()).isEqualTo(anonymousBoardList);
-        assertThat(result.getTotalElements()).isEqualTo(1L);
+        assertThat(page.getTotalElements()).isEqualTo(5);
+        List<QryAnonymousBoardDTO> anonymousBoardList = page.getContent();
+        assertThat(anonymousBoardList).hasSize(5);
     }
 
     @Test
-    void searchAnonymousBoard_Title() {
-        // given
-        String type = "title";
+    void searchAnonymousBoardByTitle() {
         String keyword = "제목";
-        List<QryAnonymousBoardDTO> anonymousBoardList = new ArrayList<>();
-        anonymousBoardList.add(new QryAnonymousBoardDTO());
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        given(qryAnonymousBoardMapper.searchAnonymousBoardByTitle(eq(keyword), eq(pageRequest))).willReturn(anonymousBoardList);
-        given(qryAnonymousBoardMapper.countAnonymousBoardByTitle(keyword)).willReturn(1L);
+        Pageable pageable = PageRequest.of(0, PAGE_SIZE);
+        Page<QryAnonymousBoardDTO> page = qryAnonymousBoardService.searchAnonymousBoard(keyword, "title", pageable);
 
-        // when
-        Page<QryAnonymousBoardDTO> result = qryAnonymousBoardService.searchAnonymousBoard(type, keyword, pageRequest);
-
-        // then
-        assertThat(result).isNotNull();
-        assertThat(result.getContent()).isEqualTo(anonymousBoardList);
-        assertThat(result.getTotalElements()).isEqualTo(1L);
+        assertThat(page.getTotalElements()).isEqualTo(2);
+        List<QryAnonymousBoardDTO> anonymousBoardList = page.getContent();
+        assertThat(anonymousBoardList).hasSize(2);
     }
 
     @Test
-    void searchAnonymousBoard_Content() {
-        // given
-        String type = "content";
+    void searchAnonymousBoardByContent() {
         String keyword = "내용";
-        List<QryAnonymousBoardDTO> anonymousBoardList = new ArrayList<>();
-        anonymousBoardList.add(new QryAnonymousBoardDTO());
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        given(qryAnonymousBoardMapper.searchAnonymousBoardByContent(eq(keyword), eq(pageRequest))).willReturn(anonymousBoardList);
-        given(qryAnonymousBoardMapper.countAnonymousBoardByContent(keyword)).willReturn(1L);
+        Pageable pageable = PageRequest.of(0, PAGE_SIZE);
+        Page<QryAnonymousBoardDTO> page = qryAnonymousBoardService.searchAnonymousBoard(keyword, "content", pageable);
 
-        // when
-        Page<QryAnonymousBoardDTO> result = qryAnonymousBoardService.searchAnonymousBoard(type, keyword, pageRequest);
-
-        // then
-        assertThat(result).isNotNull();
-        assertThat(result.getContent()).isEqualTo(anonymousBoardList);
-        assertThat(result.getTotalElements()).isEqualTo(1L);
+        assertThat(page.getTotalElements()).isEqualTo(2);
+        List<QryAnonymousBoardDTO> anonymousBoardList = page.getContent();
+        assertThat(anonymousBoardList).hasSize(2);
     }
 
     @Test
-    void searchAnonymousBoard_TitleAndContent() {
-        // given
-        String type = "titleAndContent";
-        String keyword = "검색어";
-        List<QryAnonymousBoardDTO> anonymousBoardList = new ArrayList<>();
-        anonymousBoardList.add(new QryAnonymousBoardDTO());
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        given(qryAnonymousBoardMapper.searchAnonymousBoardByTitleAndContent(eq(keyword), eq(pageRequest))).willReturn(anonymousBoardList);
-        given(qryAnonymousBoardMapper.countAnonymousBoardByTitleAndContent(keyword)).willReturn(1L);
+    void searchAnonymousBoardByTitleAndContent() {
+        String keyword = "내용";
+        Pageable pageable = PageRequest.of(0, PAGE_SIZE);
+        Page<QryAnonymousBoardDTO> page = qryAnonymousBoardService.searchAnonymousBoard(keyword, "titleandcontent", pageable);
 
-        // when
-        Page<QryAnonymousBoardDTO> result = qryAnonymousBoardService.searchAnonymousBoard(type, keyword, pageRequest);
-
-        // then
-        assertThat(result).isNotNull();
-        assertThat(result.getContent()).isEqualTo(anonymousBoardList);
-        assertThat(result.getTotalElements()).isEqualTo(1L);
-    }
-
-    @Test
-    void searchAnonymousBoard_InvalidType() {
-        // given
-        String type = "invalid";
-        String keyword = "검색어";
-        PageRequest pageRequest = PageRequest.of(0, 10);
-
-        // when, then
-        assertThatThrownBy(() -> qryAnonymousBoardService.searchAnonymousBoard(type, keyword, pageRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Invalid search type: " + type);
+        assertThat(page.getTotalElements()).isEqualTo(2);
+        List<QryAnonymousBoardDTO> anonymousBoardList = page.getContent();
+        assertThat(anonymousBoardList).hasSize(2);
     }
 
     @Test
     void findAnonymousBoardById() {
-        // given
-        int id = 1;
-        QryAnonymousBoardDTO anonymousBoard = new QryAnonymousBoardDTO();
-        given(qryAnonymousBoardMapper.findAnonymousBoardById(id)).willReturn(anonymousBoard);
+        Pageable pageable = PageRequest.of(0, PAGE_SIZE);
+        Page<QryAnonymousBoardDTO> page = qryAnonymousBoardService.findAllAnonymousBoard(pageable);
+        List<QryAnonymousBoardDTO> anonymousBoardList = page.getContent();
+        QryAnonymousBoardDTO qryAnonymousBoardDTO = anonymousBoardList.get(0);
 
-        // when
-        QryAnonymousBoardDTO result = qryAnonymousBoardService.findAnonymousBoardById(id);
+        QryAnonymousBoardDTO foundAnonymousBoard = qryAnonymousBoardService.findAnonymousBoardById(qryAnonymousBoardDTO.getId());
 
-        // then
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualTo(anonymousBoard);
+        assertThat(foundAnonymousBoard.getTitle()).isEqualTo(qryAnonymousBoardDTO.getTitle());
+        assertThat(foundAnonymousBoard.getContent()).isEqualTo(qryAnonymousBoardDTO.getContent());
+        assertThat(foundAnonymousBoard.getCreatedDate()).isNotNull();
+        assertThat(foundAnonymousBoard.getMacAddress()).isNotNull();
     }
 
     @Test
-    void findAnonymousBoardById_NotFound() {
-        // given
-        int id = 1;
-        given(qryAnonymousBoardMapper.findAnonymousBoardById(id)).willReturn(null);
+    void searchAnonymousBoardByTitleCount() {
+        String keyword = "title";
+        Pageable pageable = PageRequest.of(0, PAGE_SIZE);
+        Page<QryAnonymousBoardDTO> page = qryAnonymousBoardService.searchAnonymousBoard(keyword, "title", pageable);
 
-        // when, then
-        assertThatThrownBy(() -> qryAnonymousBoardService.findAnonymousBoardById(id))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage("Anonymous board not found with id: " + id);
+        assertThat(page.getTotalElements()).isEqualTo(3);
+    }
+
+    @Test
+    void searchAnonymousBoardByContentCount() {
+        String keyword = "content";
+        Pageable pageable = PageRequest.of(0, PAGE_SIZE);
+        Page<QryAnonymousBoardDTO> page = qryAnonymousBoardService.searchAnonymousBoard(keyword, "content", pageable);
+
+        assertThat(page.getTotalElements()).isEqualTo(3);
+    }
+
+    @Test
+    void searchAnonymousBoardByTitleAndContentCount() {
+        String keyword = "title";
+        Pageable pageable = PageRequest.of(0, PAGE_SIZE);
+        Page<QryAnonymousBoardDTO> page = qryAnonymousBoardService.searchAnonymousBoard(keyword, "titleandcontent", pageable);
+
+        assertThat(page.getTotalElements()).isEqualTo(3);
     }
 }

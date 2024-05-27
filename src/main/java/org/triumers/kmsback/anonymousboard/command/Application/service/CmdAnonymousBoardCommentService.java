@@ -5,6 +5,5 @@ import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousB
 public interface CmdAnonymousBoardCommentService {
 
     CmdAnonymousBoardCommentDTO saveAnonymousBoardComment(CmdAnonymousBoardCommentDTO cmdAnonymousBoardCommentDTO);
-
     void deleteAnonymousBoardComment(int id);
 }

@@ -5,8 +5,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardCommentDTO;
+import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAnonymousBoard;
 import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAnonymousBoardComment;
 import org.triumers.kmsback.anonymousboard.command.domain.repository.CmdAnonymousBoardCommentRepository;
+import org.triumers.kmsback.anonymousboard.command.domain.repository.CmdAnonymousBoardRepository;
 import org.triumers.kmsback.common.util.MacAddressUtil;
 
 import java.util.NoSuchElementException;
@@ -16,22 +18,25 @@ import java.util.Optional;
 public class CmdAnonymousBoardCommentServiceImpl implements CmdAnonymousBoardCommentService {
 
     private final CmdAnonymousBoardCommentRepository cmdAnonymousBoardCommentRepository;
+    private final CmdAnonymousBoardRepository cmdAnonymousBoardRepository;
 
     @Autowired
-    public CmdAnonymousBoardCommentServiceImpl(CmdAnonymousBoardCommentRepository cmdAnonymousBoardCommentRepository) {
+    public CmdAnonymousBoardCommentServiceImpl(CmdAnonymousBoardCommentRepository cmdAnonymousBoardCommentRepository,
+                                               CmdAnonymousBoardRepository cmdAnonymousBoardRepository) {
         this.cmdAnonymousBoardCommentRepository = cmdAnonymousBoardCommentRepository;
+        this.cmdAnonymousBoardRepository = cmdAnonymousBoardRepository;
     }
 
     // 엔티티를 DTO로 변환하는 메서드
     private CmdAnonymousBoardCommentDTO convertToDto(CmdAnonymousBoardComment cmdAnonymousBoardComment) {
-        CmdAnonymousBoardCommentDTO dto = new CmdAnonymousBoardCommentDTO();
-        dto.setId(cmdAnonymousBoardComment.getId());
-        dto.setNickname(cmdAnonymousBoardComment.getNickname());
-        dto.setContent(cmdAnonymousBoardComment.getContent());
-        dto.setCreatedDate(cmdAnonymousBoardComment.getCreatedDate());
-        dto.setMacAddress(cmdAnonymousBoardComment.getMacAddress());
-        dto.setAnonymousBoardId(cmdAnonymousBoardComment.getAnonymousBoardId());
-        return dto;
+        return new CmdAnonymousBoardCommentDTO(
+                cmdAnonymousBoardComment.getId(),
+                cmdAnonymousBoardComment.getNickname(),
+                cmdAnonymousBoardComment.getContent(),
+                cmdAnonymousBoardComment.getCreatedDate(),
+                cmdAnonymousBoardComment.getMacAddress(),
+                cmdAnonymousBoardComment.getAnonymousBoard()
+        );
     }
 
     // 댓글 작성
@@ -41,16 +46,24 @@ public class CmdAnonymousBoardCommentServiceImpl implements CmdAnonymousBoardCom
         if (cmdAnonymousBoardCommentDTO.getContent() == null || cmdAnonymousBoardCommentDTO.getContent().isEmpty()) {
             throw new IllegalArgumentException("Content is required.");
         }
+        if (cmdAnonymousBoardCommentDTO.getAnonymousBoard() == null || cmdAnonymousBoardCommentDTO.getAnonymousBoard().getId() == 0) {
+            throw new IllegalArgumentException("Invalid anonymous board.");
+        }
 
         try {
             // MAC 주소 가져오기
             String macAddress = MacAddressUtil.getMacAddress();
 
-            CmdAnonymousBoardComment cmdAnonymousBoardComment = new CmdAnonymousBoardComment();
-            cmdAnonymousBoardComment.setNickname(cmdAnonymousBoardCommentDTO.getNickname());
-            cmdAnonymousBoardComment.setContent(cmdAnonymousBoardCommentDTO.getContent());
-            cmdAnonymousBoardComment.setMacAddress(macAddress);
-            cmdAnonymousBoardComment.setAnonymousBoardId(cmdAnonymousBoardCommentDTO.getAnonymousBoardId());
+            // CmdAnonymousBoard 조회
+            CmdAnonymousBoard anonymousBoard = cmdAnonymousBoardRepository.findById(cmdAnonymousBoardCommentDTO.getAnonymousBoard().getId())
+                    .orElseThrow(() -> new NoSuchElementException("Anonymous board not found with id: " + cmdAnonymousBoardCommentDTO.getAnonymousBoard().getId()));
+
+            CmdAnonymousBoardComment cmdAnonymousBoardComment = new CmdAnonymousBoardComment(
+                    cmdAnonymousBoardCommentDTO.getNickname(),
+                    cmdAnonymousBoardCommentDTO.getContent(),
+                    macAddress,
+                    anonymousBoard
+            );
 
             CmdAnonymousBoardComment savedCmdAnonymousBoardComment = cmdAnonymousBoardCommentRepository.save(cmdAnonymousBoardComment);
             return convertToDto(savedCmdAnonymousBoardComment);

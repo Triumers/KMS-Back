@@ -6,6 +6,6 @@ import org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO;
 
 public interface QryAnonymousBoardService {
     Page<QryAnonymousBoardDTO> findAllAnonymousBoard(Pageable pageable);
-    Page<QryAnonymousBoardDTO> searchAnonymousBoard(String type, String keyword, Pageable pageable);
+    Page<QryAnonymousBoardDTO> searchAnonymousBoard(String keyword, String type, Pageable pageable);
     QryAnonymousBoardDTO findAnonymousBoardById(int id);
 }
