@@ -58,8 +58,8 @@ public class CmdPostServiceImpl implements CmdPostService {
     public CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post) throws NotLoginException {
 
         Employee employee = authService.whoAmI();
-        CmdPost registPost = new CmdPost(post.getId(), post.getTitle(), post.getContent(), post.getCreatedAt(),
-                employee.getId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
+        CmdPost registPost = new CmdPost(post.getId(), post.getTitle(), post.getContent(), post.getPostImg(),
+                post.getCreatedAt(), employee.getId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
 
         if (post.getId() != null) {
             cmdPostTagRepository.deleteByPostId(post.getId());
@@ -126,9 +126,10 @@ public class CmdPostServiceImpl implements CmdPostService {
         deletePost.setDeletedAt(LocalDateTime.now());
         cmdPostRepository.save(deletePost);
 
-        CmdPostAndTagsDTO deletedPost = new CmdPostAndTagsDTO(deletePost.getId(), deletePost.getTitle(), deletePost.getContent(),
-                deletePost.getCreatedAt(), deletePost.getDeletedAt(), deletePost.getAuthorId(),
-                deletePost.getOriginId(), deletePost.getRecentId(), deletePost.getTabRelationId(), deletePost.getCategoryId());
+        CmdPostAndTagsDTO deletedPost = new CmdPostAndTagsDTO(deletePost.getId(), deletePost.getTitle(),
+                deletePost.getContent(), deletePost.getPostImg(), deletePost.getCreatedAt(), deletePost.getDeletedAt(),
+                deletePost.getAuthorId(), deletePost.getOriginId(), deletePost.getRecentId(),
+                deletePost.getTabRelationId(), deletePost.getCategoryId());
 
         return deletedPost;
     }
@@ -140,10 +141,7 @@ public class CmdPostServiceImpl implements CmdPostService {
         Employee employee = authService.whoAmI();
         int authorId = cmdPostRepository.findAuthorIdById(originId);
 
-        if (employee.getId() == authorId || employee.getUserRole() == ROLE_ADMIN) {
-            return true;
-        }
-        return false;
+        return (employee.getId() == authorId || employee.getUserRole() == ROLE_ADMIN);
     }
 
     @Override

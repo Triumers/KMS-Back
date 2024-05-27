@@ -140,7 +140,7 @@ public class CmdPostServiceTests {
         tags.add("tag3");
         tags.add("tag4");
 
-        return new CmdPostAndTagsDTO(type + "Title",  type + "Content", LocalDateTime.now(), 1, 1, tags);
+        return new CmdPostAndTagsDTO(type + "Title",  type + "Content", null, LocalDateTime.now(), 1, 1, tags);
     }
 
 }
