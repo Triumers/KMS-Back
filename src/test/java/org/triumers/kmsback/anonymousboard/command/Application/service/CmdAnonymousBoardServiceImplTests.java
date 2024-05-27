@@ -2,113 +2,133 @@ package org.triumers.kmsback.anonymousboard.command.Application.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardDTO;
-import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAnonymousBoard;
 import org.triumers.kmsback.anonymousboard.command.domain.repository.CmdAnonymousBoardRepository;
+import org.triumers.kmsback.common.util.MacAddressUtil;
 
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class CmdAnonymousBoardServiceImplTests {
+@SpringBootTest
+@Transactional
+class CmdAnonymousBoardServiceImplTests {
 
-    @Mock
+    @Autowired
     private CmdAnonymousBoardRepository cmdAnonymousBoardRepository;
 
-    @InjectMocks
-    private CmdAnonymousBoardServiceImpl cmdAnonymousBoardService;
+    @Autowired
+    private CmdAnonymousBoardService cmdAnonymousBoardService;
 
-    private CmdAnonymousBoard cmdAnonymousBoard1;
-    private CmdAnonymousBoard cmdAnonymousBoard2;
+    private CmdAnonymousBoardDTO cmdAnonymousBoardDTO;
 
     @BeforeEach
     void setUp() {
-        cmdAnonymousBoard1 = new CmdAnonymousBoard("Title 1", "Content 1", "MAC 1");
-        cmdAnonymousBoard1.setId(1);
-        cmdAnonymousBoard1.setCreatedDate(LocalDateTime.now());
-
-        cmdAnonymousBoard2 = new CmdAnonymousBoard("Title 2", "Content 2", "MAC 2");
-        cmdAnonymousBoard2.setId(2);
-        cmdAnonymousBoard2.setCreatedDate(LocalDateTime.now());
+        cmdAnonymousBoardDTO = new CmdAnonymousBoardDTO();
+        cmdAnonymousBoardDTO.setTitle("Test Title");
+        cmdAnonymousBoardDTO.setContent("Test Content");
     }
 
-    // saveAnonymousBoard 메서드가 CmdAnonymousBoard를 저장하고, MAC 주소를 실제로 가져와서 저장하는지 확인
-    // MacAddressUtil.getMacAddress() 메서드를 호출하고, 반환된 MAC 주소 값을 검증
+    // 유효한 입력값으로 게시글 저장 성공 여부를 확인
     @Test
-    void saveAnonymousBoard_shouldSaveCmdAnonymousBoard() throws Exception {
-        CmdAnonymousBoardDTO cmdAnonymousBoardDTO = new CmdAnonymousBoardDTO();
-        cmdAnonymousBoardDTO.setTitle("Title");
-        cmdAnonymousBoardDTO.setContent("Content");
+    void saveAnonymousBoard_ValidInput_Success() {
+        // when
+        CmdAnonymousBoardDTO savedCmdAnonymousBoardDTO = cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
 
-        when(cmdAnonymousBoardRepository.save(any(CmdAnonymousBoard.class))).thenAnswer(invocation -> {
-            CmdAnonymousBoard savedCmdAnonymousBoard = invocation.getArgument(0);
-            assertNotNull(savedCmdAnonymousBoard.getMacAddress());
-            return savedCmdAnonymousBoard;
-        });
-
-        CmdAnonymousBoardDTO result = cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
-
-        assertNotNull(result);
-        assertNotNull(result.getMacAddress());
-        verify(cmdAnonymousBoardRepository, times(1)).save(any(CmdAnonymousBoard.class));
+        // then
+        assertNotNull(savedCmdAnonymousBoardDTO);
+        assertEquals(cmdAnonymousBoardDTO.getTitle(), savedCmdAnonymousBoardDTO.getTitle());
+        assertEquals(cmdAnonymousBoardDTO.getContent(), savedCmdAnonymousBoardDTO.getContent());
+        assertNotNull(savedCmdAnonymousBoardDTO.getMacAddress());
     }
 
-    // saveAnonymousBoard 메서드에서 제목이 없는 경우 IllegalArgumentException이 발생하는지 확인
+    // 제목이 비어있는 경우 예외 발생 여부를 확인
     @Test
-    void saveAnonymousBoard_shouldThrowIllegalArgumentException_whenTitleIsMissing() {
-        CmdAnonymousBoardDTO cmdAnonymousBoardDTO = new CmdAnonymousBoardDTO();
-        cmdAnonymousBoardDTO.setContent("Content");
+    void saveAnonymousBoard_EmptyTitle_ThrowsIllegalArgumentException() {
+        // given
+        cmdAnonymousBoardDTO.setTitle("");
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
-        });
-
-        verify(cmdAnonymousBoardRepository, never()).save(any(CmdAnonymousBoard.class));
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO));
     }
 
-    // saveAnonymousBoard 메서드에서 내용이 없는 경우 IllegalArgumentException이 발생하는지 확인
+    // 내용이 비어있는 경우 예외 발생 여부를 확인
     @Test
-    void saveAnonymousBoard_shouldThrowIllegalArgumentException_whenContentIsMissing() {
-        CmdAnonymousBoardDTO cmdAnonymousBoardDTO = new CmdAnonymousBoardDTO();
-        cmdAnonymousBoardDTO.setTitle("Title");
+    void saveAnonymousBoard_EmptyContent_ThrowsIllegalArgumentException() {
+        // given
+        cmdAnonymousBoardDTO.setContent("");
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
-        });
-
-        verify(cmdAnonymousBoardRepository, never()).save(any(CmdAnonymousBoard.class));
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO));
     }
 
-    // deleteAnonymousBoard 메서드가 주어진 id에 해당하는 CmdAnonymousBoard를 삭제하는지 확인
+    // 유효한 ID로 게시글 삭제 성공 여부를 확인
     @Test
-    void deleteAnonymousBoard_shouldDeleteCmdAnonymousBoard() {
-        int id = 1;
-        when(cmdAnonymousBoardRepository.findById(eq(id))).thenReturn(Optional.of(cmdAnonymousBoard1));
+    void deleteAnonymousBoard_ValidId_Success() {
+        // given
+        CmdAnonymousBoardDTO savedCmdAnonymousBoardDTO = cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
 
-        cmdAnonymousBoardService.deleteAnonymousBoard(id);
+        // when
+        cmdAnonymousBoardService.deleteAnonymousBoard(savedCmdAnonymousBoardDTO.getId());
 
-        verify(cmdAnonymousBoardRepository, times(1)).delete(eq(cmdAnonymousBoard1));
+        // then
+        assertFalse(cmdAnonymousBoardRepository.findById(savedCmdAnonymousBoardDTO.getId()).isPresent());
     }
 
-    // deleteAnonymousBoard 메서드에서 주어진 id에 해당하는 CmdAnonymousBoard가 없는 경우 NoSuchElementException이 발생하는지 확인
+    // 유효하지 않은 ID로 삭제 시도 시 예외 발생 여부를 확인
     @Test
-    void deleteAnonymousBoard_shouldThrowNoSuchElementException_whenAnonymousBoardNotFound() {
-        int id = 1;
-        when(cmdAnonymousBoardRepository.findById(eq(id))).thenReturn(Optional.empty());
+    void deleteAnonymousBoard_InvalidId_ThrowsNoSuchElementException() {
+        // given
+        int invalidId = 9999;
 
-        assertThrows(NoSuchElementException.class, () -> {
-            cmdAnonymousBoardService.deleteAnonymousBoard(id);
-        });
+        // when & then
+        assertThrows(NoSuchElementException.class, () -> cmdAnonymousBoardService.deleteAnonymousBoard(invalidId));
+    }
 
-        verify(cmdAnonymousBoardRepository, never()).delete(any(CmdAnonymousBoard.class));
+    // 맥 어드레스 유효성 검증
+    @Test
+    void saveAnonymousBoard_verifyMacAddress() throws Exception {
+        // when
+        CmdAnonymousBoardDTO savedDto = cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
+
+        // then
+        assertThat(savedDto.getTitle()).isEqualTo(cmdAnonymousBoardDTO.getTitle());
+        assertThat(savedDto.getContent()).isEqualTo(cmdAnonymousBoardDTO.getContent());
+
+        // MAC 주소 검증
+        String actualMacAddress = savedDto.getMacAddress();
+        assertThat(actualMacAddress).isNotNull();
+        assertThat(isValidMacAddress(actualMacAddress)).isTrue();
+    }
+
+    // MAC 주소 유효성 검사 메서드
+    private boolean isValidMacAddress(String macAddress) {
+        String macRegex = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
+        return macAddress.matches(macRegex);
+    }
+
+    // 실제 맥 주소와 일치하는지 검증
+    @Test
+    void saveAnonymousBoard_checkMacAddress() throws Exception {
+        // given
+        CmdAnonymousBoardDTO dto = new CmdAnonymousBoardDTO();
+        dto.setTitle("New Title");
+        dto.setContent("New Content");
+
+        // when
+        CmdAnonymousBoardDTO savedDto = cmdAnonymousBoardService.saveAnonymousBoard(dto);
+
+        // then
+        assertThat(savedDto.getTitle()).isEqualTo(dto.getTitle());
+        assertThat(savedDto.getContent()).isEqualTo(dto.getContent());
+
+        // MAC 주소 검증
+        String actualMacAddress = savedDto.getMacAddress();
+        assertThat(actualMacAddress).isNotNull();
+        assertThat(actualMacAddress).isEqualTo(MacAddressUtil.getMacAddress());
     }
 }
