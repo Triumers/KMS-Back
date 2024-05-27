@@ -2,8 +2,8 @@
 <mapper namespace="org.triumers.kmsback.anonymousboard.query.repository.QryAnonymousBoardCommentMapper">
     <!-- mapper 내용 -->
     <select id="findAllAnonymousBoardComment" resultType="org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardCommentDTO">
-        SELECT id, nickname, content, created_date, mac_address, anonymous_board_id
-        FROM anonymous_board_comment
+        SELECT id, nickname, content, created_date AS createdDate, mac_address AS macAddress, anonymous_board_id
+        FROM tbl_anonymous_board_comment
         WHERE anonymous_board_id = #{anonymousBoardId}
         ORDER BY id DESC
             LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
@@ -11,7 +11,7 @@
 
     <select id="countAnonymousBoardComment" resultType="long">
         SELECT COUNT(*)
-        FROM anonymous_board_comment
+        FROM tbl_anonymous_board_comment
         WHERE anonymous_board_id = #{anonymousBoardId}
     </select>
 

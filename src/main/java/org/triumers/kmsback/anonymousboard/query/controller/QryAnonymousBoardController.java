@@ -4,13 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO;
 import org.triumers.kmsback.anonymousboard.query.service.QryAnonymousBoardService;
-
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/anonymous-board")
@@ -24,7 +21,7 @@ public class QryAnonymousBoardController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<QryAnonymousBoardDTO>> getAllAnonymousBoards(Pageable pageable) {
+    public ResponseEntity<Page<QryAnonymousBoardDTO>> getAllAnonymousBoards(@PageableDefault(size = 10) Pageable pageable) {
         Page<QryAnonymousBoardDTO> anonymousBoardPage = qryAnonymousBoardService.findAllAnonymousBoard(pageable);
         return ResponseEntity.ok(anonymousBoardPage);
     }
@@ -34,7 +31,7 @@ public class QryAnonymousBoardController {
     public ResponseEntity<Page<QryAnonymousBoardDTO>> searchAnonymousBoards(
             @RequestParam(value = "keyword", required = true) String keyword,
             @RequestParam(value = "type", required = false, defaultValue = "titleandcontent") String type,
-            Pageable pageable) {
+            @PageableDefault(size = 10) Pageable pageable) {
         Page<QryAnonymousBoardDTO> anonymousBoardPage = qryAnonymousBoardService.searchAnonymousBoard(keyword, type, pageable);
         return ResponseEntity.ok(anonymousBoardPage);
     }
