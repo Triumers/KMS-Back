@@ -87,4 +87,29 @@ public class ManagerController {
                     new CmdResponseMessageVO(e.getMessage()));
         }
     }
+
+    @PostMapping("/edit/info")
+    public ResponseEntity<CmdResponseMessageVO> editInfo(@Valid @RequestBody CmdRequestEditUserVO request) {
+        ManageUserDTO targetEmployee = new ManageUserDTO();
+
+        targetEmployee.setEmail(request.getEmail());
+        targetEmployee.setName(request.getName());
+        targetEmployee.setProfileImg(request.getProfileImg());
+        targetEmployee.setStartDate(request.getStartDate());
+        targetEmployee.setEndDate(request.getEndDate());
+        targetEmployee.setPhoneNumber(request.getPhoneNumber());
+        targetEmployee.setTeamId(request.getTeamId());
+        targetEmployee.setPositionId(request.getPositionId());
+        targetEmployee.setRankId(request.getRankId());
+
+        try {
+            managerService.editUserInfo(targetEmployee);
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CmdResponseMessageVO("정보 수정 성공"));
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                    new CmdResponseMessageVO(e.getMessage()));
+        }
+    }
 }
