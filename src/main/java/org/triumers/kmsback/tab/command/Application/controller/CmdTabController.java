@@ -46,4 +46,9 @@ public class CmdTabController {
         CmdTabRelationDTO registTab = cmdTabService.registTab(tabRelationDTO, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(registTab);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<String> getTabName(@PathVariable int id){
+        return ResponseEntity.status(HttpStatus.CREATED).body(cmdTabService.getTabName(id));
+    }
 }
