@@ -10,6 +10,7 @@ public class QryPost {
     private Boolean isEditing;
     private String title;
     private String content;
+    private String postImg;
     private LocalDate createdAt;
     private LocalDate deletedAt;
     private Integer authorId;
