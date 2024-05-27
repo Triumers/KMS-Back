@@ -1,16 +1,17 @@
 package org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "tbl_anonymous_board")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class CmdAnonymousBoard {
 
     @Id
@@ -39,5 +40,4 @@ public class CmdAnonymousBoard {
         this.content = content;
         this.macAddress = macAddress;
     }
-
 }
