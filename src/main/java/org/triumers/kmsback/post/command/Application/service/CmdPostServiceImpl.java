@@ -1,11 +1,11 @@
 package org.triumers.kmsback.post.command.Application.service;
 
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import org.triumers.kmsback.common.ai.dto.ChatGPTRequestDTO;
 import org.triumers.kmsback.common.ai.dto.ChatGPTResponseDTO;
 import org.triumers.kmsback.common.ai.service.OpenAIService;
 import org.triumers.kmsback.common.exception.AwsS3Exception;
@@ -13,11 +13,10 @@ import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.s3.service.AwsS3Service;
 
+import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.user.command.Application.service.AuthService;
-import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
-import org.triumers.kmsback.common.exception.NotAuthorizedException;
-import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.user.command.Application.service.CmdEmployeeService;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 
 import org.triumers.kmsback.post.command.Application.dto.*;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.*;
@@ -40,14 +39,17 @@ public class CmdPostServiceImpl implements CmdPostService {
 
     private final AwsS3Service awsS3Service;
     private final AuthService authService;
+    private final CmdEmployeeService cmdEmployeeService;
+
     private final NotificationService notificationService;
     private final OpenAIService openAIService;
 
     @Autowired
-    public CmdPostServiceImpl(CmdPostRepository cmdPostRepository,
-                              CmdTagRepository cmdTagRepository, CmdPostTagRepository cmdPostTagRepository,
-                              CmdLikeRepository cmdLikeRepository, CmdFavoritesRepository cmdFavoritesRepository,
-                              AwsS3Service awsS3Service, AuthService authService, NotificationService notificationService, OpenAIService openAIService) {
+    public CmdPostServiceImpl(CmdPostRepository cmdPostRepository, CmdTagRepository cmdTagRepository,
+                              CmdPostTagRepository cmdPostTagRepository, CmdLikeRepository cmdLikeRepository,
+                              CmdFavoritesRepository cmdFavoritesRepository, AwsS3Service awsS3Service,
+                              AuthService authService, CmdEmployeeService cmdEmployeeService,
+                              NotificationService notificationService, OpenAIService openAIService) {
         this.cmdPostRepository = cmdPostRepository;
         this.cmdTagRepository = cmdTagRepository;
         this.cmdPostTagRepository = cmdPostTagRepository;
@@ -55,6 +57,7 @@ public class CmdPostServiceImpl implements CmdPostService {
         this.cmdFavoritesRepository = cmdFavoritesRepository;
         this.awsS3Service = awsS3Service;
         this.authService = authService;
+        this.cmdEmployeeService = cmdEmployeeService;
         this.notificationService = notificationService;
         this.openAIService = openAIService;
     }
@@ -109,12 +112,12 @@ public class CmdPostServiceImpl implements CmdPostService {
         cmdPostRepository.save(originPost);
 
         // notification
-//        try {
-//            CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(originPost.getAuthorId());
-//            notificationService.sendMailMime(employeeDTO, originPost);
-//        } catch (MessagingException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(originPost.getAuthorId());
+            notificationService.sendMailMime(employeeDTO, originPost);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
 
         return modifypost;
 
@@ -226,6 +229,22 @@ public class CmdPostServiceImpl implements CmdPostService {
         return "testGPT";
     }
 
+    String getPromptByType(String type, String content){
+
+        switch (type){
+            case "enhancement":
+                return contentEnhancement(content);
+            case "validation":
+                return contentValidation(content);
+            case "grammar":
+                return grammarCheck(content);
+            case "search":
+                return search(content);
+        }
+
+        return content;
+    }
+
     public String contentEnhancement(String content){
         String prompt =
                 " 우리는 이제 글을 업그레이드 할 것이다." +
@@ -276,22 +295,6 @@ public class CmdPostServiceImpl implements CmdPostService {
                         example();
 
         return prompt;
-    }
-
-    String getPromptByType(String type, String content){
-
-        switch (type){
-            case "enhancement":
-                return contentEnhancement(content);
-            case "validation":
-                return contentValidation(content);
-            case "grammar":
-                return grammarCheck(content);
-            case "search":
-                return search(content);
-        }
-
-        return content;
     }
 
     String example(){
