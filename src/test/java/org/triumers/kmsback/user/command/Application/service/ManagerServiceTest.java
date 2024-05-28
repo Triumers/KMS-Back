@@ -11,8 +11,11 @@ import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.TestUserInfo;
 import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.user.command.Application.dto.ManageUserDTO;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 import org.triumers.kmsback.user.command.domain.repository.EmployeeRepository;
+
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -176,6 +179,91 @@ class ManagerServiceTest {
         // then
         assertFalse(bCryptPasswordEncoder.matches(
                 newPassword, employeeRepository.findByEmail(TestUserInfo.HR_MANAGER_EMAIL).getPassword()));
+    }
+
+    @DisplayName("회원 정보 수정 테스트")
+    @Test
+    void editUserInfoTest() {
+
+        // given
+        addUserForTest();
+        String targetEmail = TestUserInfo.EMAIL;
+        String newName = "newName";
+        String newProfile = "newProfileURL";
+        LocalDate newStartDate = LocalDate.of(2020, 1, 1);
+        String newPhoneNumber = "010-9876-5432";
+
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(targetEmail);
+        targetUser.setName(newName);
+        targetUser.setProfileImg(newProfile);
+        targetUser.setStartDate(newStartDate);
+        targetUser.setPhoneNumber(newPhoneNumber);
+
+        // when
+        loggedInUser.settingHrManager();
+        assertDoesNotThrow(() -> managerService.editUserInfo(targetUser));
+
+        // then
+        Employee result = employeeRepository.findByEmail(targetEmail);
+
+        assertEquals(targetUser.getName(), result.getName());
+        assertEquals(targetUser.getProfileImg(), result.getProfileImg());
+        assertEquals(targetUser.getStartDate(), result.getStartDate());
+        assertEquals(targetUser.getPhoneNumber(), result.getPhoneNumber());
+    }
+
+    @DisplayName("직원 퇴사 테스트(Soft Delete)")
+    @Test
+    void quitEmployeeTest() {
+
+        // given
+        addUserForTest();
+        String targetEmail = TestUserInfo.EMAIL;
+        LocalDate newEndDate = LocalDate.of(2020, 1, 1);
+
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(targetEmail);
+        targetUser.setEndDate(newEndDate);
+
+        // when
+        loggedInUser.settingHrManager();
+        assertDoesNotThrow(() -> managerService.editUserInfo(targetUser));
+
+        // then
+        assertNull(employeeRepository.findByEmail(targetEmail));
+    }
+
+    @DisplayName("자신의 권한을 초과하는 직원 정보 수정 처리 예외 테스트")
+    @Test
+    void quitOverRoleUserExceptionTest() {
+
+        // given
+        addHrManagerForTest();
+        String targetEmail = TestUserInfo.HR_MANAGER_EMAIL;
+        String newName = "newName";
+        String newProfile = "newProfileURL";
+        LocalDate newStartDate = LocalDate.of(2020, 1, 1);
+        String newPhoneNumber = "010-9876-5432";
+
+        ManageUserDTO targetUser = new ManageUserDTO();
+        targetUser.setEmail(targetEmail);
+        targetUser.setName(newName);
+        targetUser.setProfileImg(newProfile);
+        targetUser.setStartDate(newStartDate);
+        targetUser.setPhoneNumber(newPhoneNumber);
+
+        // when
+        loggedInUser.setting();
+        assertThrows(NotAuthorizedException.class, () -> managerService.editUserInfo(targetUser));
+
+        // then
+        Employee result = employeeRepository.findByEmail(targetEmail);
+
+        assertNotEquals(targetUser.getName(), result.getName());
+        assertNotEquals(targetUser.getProfileImg(), result.getProfileImg());
+        assertNotEquals(targetUser.getStartDate(), result.getStartDate());
+        assertNotEquals(targetUser.getPhoneNumber(), result.getPhoneNumber());
     }
 
     private void addUserForTest() {
