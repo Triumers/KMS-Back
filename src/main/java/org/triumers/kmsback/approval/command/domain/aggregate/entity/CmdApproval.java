@@ -38,12 +38,6 @@ public class CmdApproval {
     @JoinColumn(name = "EMPLOYEE_ID", nullable = false)
     private Employee requester;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TAB_ID")
-    private CmdTabRelation tab = null;
-
     @OneToMany(mappedBy = "approval", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CmdRequestApproval> requestApprovals = new ArrayList<>();
-
-
 }

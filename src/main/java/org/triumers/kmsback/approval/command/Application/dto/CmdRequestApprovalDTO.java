@@ -9,7 +9,7 @@ import lombok.*;
 @ToString
 public class CmdRequestApprovalDTO {
     private int approvalOrder;
-    private boolean isApproved;
+    private String isApproved;
     private boolean isCanceled;
     private int approvalId;
 }

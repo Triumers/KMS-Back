@@ -1,12 +1,12 @@
 package org.triumers.kmsback.approval.command.Application.service;
 
 import org.triumers.kmsback.approval.command.Application.dto.CmdApprovalRequestDTO;
+import org.triumers.kmsback.common.exception.NotLoginException;
 
 public interface CmdRequestApprovalService {
-
-    void createApproval(CmdApprovalRequestDTO requestDto, int requesterId);
-    void cancelApproval(int requesterId, int approvalId);
-    void approveRequestApproval(int approverId, int requestApprovalId);
-    void rejectRequestApproval(int approverId, int requestApprovalId);
-    void addApproverToRequestApproval(int approverId, int requestApprovalId, int newApproverId);
+    void createApproval(CmdApprovalRequestDTO requestDto) throws NotLoginException;
+    void cancelApproval(int approvalId) throws NotLoginException;
+    void approveRequestApproval(int requestApprovalId) throws NotLoginException;
+    void rejectRequestApproval(int requestApprovalId) throws NotLoginException;
+    void addApproverToRequestApproval(int requestApprovalId, int newApproverId) throws NotLoginException;
 }

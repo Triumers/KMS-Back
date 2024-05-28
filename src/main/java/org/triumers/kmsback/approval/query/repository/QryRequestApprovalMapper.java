@@ -19,5 +19,8 @@ public interface QryRequestApprovalMapper {
     List<QryRequestApprovalInfoDTO> findReceivedByType(@Param("approverId") int employeeId, @Param("typeId") int typeId, @Param("offset") int offset, @Param("limit") int limit);
     List<QryRequestApprovalInfoDTO> findReceivedByDateRange(@Param("approverId") int employeeId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("offset") int offset, @Param("limit") int limit);
 
-
+    List<QryRequestApprovalInfoDTO> findByContent(@Param("requesterId") int requesterId, @Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
+    List<QryRequestApprovalInfoDTO> findByStatus(@Param("requesterId") int requesterId, @Param("status") String status, @Param("offset") int offset, @Param("limit") int limit);
+    List<QryRequestApprovalInfoDTO> findReceivedByContent(@Param("approverId") int approverId, @Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
+    List<QryRequestApprovalInfoDTO> findReceivedByStatus(@Param("approverId") int approverId, @Param("status") String status, @Param("offset") int offset, @Param("limit") int limit);
 }

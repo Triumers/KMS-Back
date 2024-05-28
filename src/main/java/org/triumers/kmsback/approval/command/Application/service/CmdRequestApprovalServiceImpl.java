@@ -10,7 +10,9 @@ import org.triumers.kmsback.approval.command.domain.aggregate.entity.CmdRequestA
 import org.triumers.kmsback.approval.command.domain.repository.CmdApprovalRepository;
 import org.triumers.kmsback.approval.command.domain.repository.CmdApprovalTypeRepository;
 import org.triumers.kmsback.approval.command.domain.repository.CmdRequestApprovalRepository;
+import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
+import org.triumers.kmsback.user.command.Application.service.AuthService;
 import org.triumers.kmsback.user.command.Application.service.CmdEmployeeService;
 import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 
@@ -21,34 +23,24 @@ import java.util.Optional;
 @Service
 public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService {
 
-    // insert문
-    // 1. 결재 대상자를 택해 권한 신청(결재)
-    // ㄴ 결재 대상자는 한 명
-    // ㄴ 워크스페이스 생성 요청
-    // ㄴ 스터디 생성 요청
-    // ㄴ 속하지 않은 워크스페이스 열람(읽기) 요청
-    // approval에 우선 하나 추가하고 request_approval에 approval_order 1인 거 하나 추가하기
-
-    // 그리고 그 요청하는 사람 레벨도 설정해야 됨... 냅다 신입사원이 신청할 수 없게
-    // 날짜 시간은 선택할 수 없고 입력한 시간으로 바로 되는 걸로 -> now로 만들기
-    // approver 선택하는 거는 employeeservice 쪽 메소드 끌어와서 만들기
-    // 탭간 관계 id 그냥 null로 함
-
     private final CmdApprovalRepository approvalRepository;
     private final CmdRequestApprovalRepository requestApprovalRepository;
     private final CmdEmployeeService cmdEmployeeService;
     private final CmdApprovalTypeRepository approvalTypeRepository;
+    private final AuthService authService;
 
     @Autowired
-    public CmdRequestApprovalServiceImpl(CmdApprovalRepository approvalRepository, CmdRequestApprovalRepository requestApprovalRepository, CmdEmployeeService cmdEmployeeService, CmdApprovalTypeRepository approvalTypeRepository) {
+    public CmdRequestApprovalServiceImpl(CmdApprovalRepository approvalRepository, CmdRequestApprovalRepository requestApprovalRepository, CmdEmployeeService cmdEmployeeService, CmdApprovalTypeRepository approvalTypeRepository, AuthService authService) {
         this.approvalRepository = approvalRepository;
         this.requestApprovalRepository = requestApprovalRepository;
         this.cmdEmployeeService = cmdEmployeeService;
         this.approvalTypeRepository = approvalTypeRepository;
+        this.authService = authService;
     }
 
     @Transactional
-    public void createApproval(CmdApprovalRequestDTO requestDto, int requesterId) {
+    public void createApproval(CmdApprovalRequestDTO requestDto) throws NotLoginException {
+        int requesterId = getCurrentUserId();
 
         // 결재 요청자 조회
         CmdEmployeeDTO requesterDTO = cmdEmployeeService.findEmployeeById(requesterId);
@@ -78,41 +70,10 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService 
         requestApprovalRepository.save(requestApproval);
     }
 
-    // DTO를 엔티티로 변환하는 메서드
-    private Employee convertToEntity(CmdEmployeeDTO dto) {
-        Employee employee = new Employee();
-        employee.setId(dto.getId());
-        employee.setEmail(dto.getEmail());
-        employee.setName(dto.getName());
-        employee.setProfileImg(dto.getProfileImg());
-        employee.setName(dto.getName());
-        employee.setEndDate(dto.getEndDate());
-        employee.setStartDate(dto.getStartDate());
-        employee.setPhoneNumber(dto.getPhoneNumber());
-        employee.setPositionId(dto.getPositionId());
-        employee.setRankId(dto.getRankId());
-        employee.setTeamId(dto.getTeamId());
-        return employee;
-    }
-
-
-    // update
-    // 본인이 요청한 결재 취소
-//    메서드는 requesterId와 approvalId를 파라미터로 받습니다.
-//    approvalRepository에서 approvalId에 해당하는 CmdApproval 객체를 찾습니다. 객체가 없으면 예외를 던집니다.
-//    CmdApproval 객체의 getRequester().getId()와 requesterId가 일치하는지 확인합니다. 일치하지 않으면 예외를 던집니다. 이를 통해 본인이 요청한 결재만 취소할 수 있도록 제한합니다.
-//    requestApprovalRepository에서 approvalId에 해당하는 모든 CmdRequestApproval 객체 리스트를 가져옵니다. 이때 approvalOrder로 오름차순 정렬합니다.
-//    리스트에서 isApproved가 WAITING 상태인 객체를 찾습니다. 이는 아직 승인되지 않은 요청 승인 객체입니다.
-//    해당 객체가 있다면:
-//
-//    현재 approvalOrder를 가져옵니다.
-//    리스트에서 approvalOrder가 현재 approvalOrder 이하인 모든 객체를 찾습니다.
-//    해당 객체들의 isCanceled를 true로 설정하고, 데이터베이스에 저장합니다.
-//
-//    해당 객체가 없다면, 모든 요청 승인이 이미 처리되었기 때문에 예외를 던집니다.
-
     @Transactional
-    public void cancelApproval(int requesterId, int approvalId) {
+    public void cancelApproval(int approvalId) throws NotLoginException {
+        int requesterId = getCurrentUserId();
+
         CmdApproval approval = approvalRepository.findById(approvalId)
                 .orElseThrow(() -> new IllegalArgumentException("Approval not found for approvalId: " + approvalId));
 
@@ -139,11 +100,10 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService 
         }
     }
 
-    // 요청받은 결재 승인
-    // request approval id 받아서
-    // is_approved WAITING인 거 APPROVED로 바꾸기
     @Transactional
-    public void approveRequestApproval(int approverId, int requestApprovalId) {
+    public void approveRequestApproval(int requestApprovalId) throws NotLoginException {
+        int approverId = getCurrentUserId();
+
         CmdRequestApproval requestApproval = requestApprovalRepository.findById(requestApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Request approval not found with id: " + requestApprovalId));
 
@@ -159,11 +119,10 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService 
         requestApprovalRepository.save(requestApproval);
     }
 
-    // 요청받은 결재 승인 거부
-    // request approval id 받아서
-    // is_approved WAITING인 거 REJECTED로 바꾸기
     @Transactional
-    public void rejectRequestApproval(int approverId, int requestApprovalId) {
+    public void rejectRequestApproval(int requestApprovalId) throws NotLoginException {
+        int approverId = getCurrentUserId();
+
         CmdRequestApproval requestApproval = requestApprovalRepository.findById(requestApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Request approval not found with id: " + requestApprovalId));
 
@@ -179,10 +138,10 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService 
         requestApprovalRepository.save(requestApproval);
     }
 
-    // 요청받은 결재 승인 후 결재 대상자 추가
-    // requestapproval 생성하기 -> approval_order랑 결재자만 다르게 해서 넣기
     @Transactional
-    public void addApproverToRequestApproval(int approverId, int requestApprovalId, int newApproverId) {
+    public void addApproverToRequestApproval(int requestApprovalId, int newApproverId) throws NotLoginException {
+        int approverId = getCurrentUserId();
+
         CmdRequestApproval requestApproval = requestApprovalRepository.findById(requestApprovalId)
                 .orElseThrow(() -> new IllegalArgumentException("Request approval not found with id: " + requestApprovalId));
 
@@ -217,4 +176,25 @@ public class CmdRequestApprovalServiceImpl implements CmdRequestApprovalService 
         requestApprovalRepository.save(requestApproval);
     }
 
+    // DTO를 엔티티로 변환하는 메서드
+    private Employee convertToEntity(CmdEmployeeDTO dto) {
+        Employee employee = new Employee();
+        employee.setId(dto.getId());
+        employee.setEmail(dto.getEmail());
+        employee.setName(dto.getName());
+        employee.setProfileImg(dto.getProfileImg());
+        employee.setName(dto.getName());
+        employee.setEndDate(dto.getEndDate());
+        employee.setStartDate(dto.getStartDate());
+        employee.setPhoneNumber(dto.getPhoneNumber());
+        employee.setPositionId(dto.getPositionId());
+        employee.setRankId(dto.getRankId());
+        employee.setTeamId(dto.getTeamId());
+        return employee;
+    }
+
+    // 현재 사용자의 ID를 얻는 헬퍼 메서드
+    private int getCurrentUserId() throws NotLoginException {
+        return authService.whoAmI().getId();
+    }
 }

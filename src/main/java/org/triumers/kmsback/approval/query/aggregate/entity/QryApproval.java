@@ -15,5 +15,4 @@ public class QryApproval {
     private LocalDateTime createdAt;
     private int typeId;
     private int employeeId;
-    private int tabId;
 }

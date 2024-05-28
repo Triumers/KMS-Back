@@ -12,6 +12,12 @@ import org.triumers.kmsback.approval.command.domain.aggregate.entity.CmdRequestA
 import org.triumers.kmsback.approval.command.domain.repository.CmdApprovalRepository;
 import org.triumers.kmsback.approval.command.domain.repository.CmdApprovalTypeRepository;
 import org.triumers.kmsback.approval.command.domain.repository.CmdRequestApprovalRepository;
+import org.triumers.kmsback.common.LoggedInUser;
+import org.triumers.kmsback.common.TestUserInfo;
+import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.user.command.Application.dto.ManageUserDTO;
+import org.triumers.kmsback.user.command.Application.service.AuthService;
+import org.triumers.kmsback.user.command.Application.service.ManagerService;
 import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 import org.triumers.kmsback.user.command.domain.repository.EmployeeRepository;
 
@@ -39,6 +45,15 @@ class CmdRequestApprovalServiceImplTests {
     @Autowired
     private CmdApprovalTypeRepository approvalTypeRepository;
 
+    @Autowired
+    private AuthService authService;
+
+    @Autowired
+    private LoggedInUser loggedInUser;
+
+    @Autowired
+    private ManagerService managerService;
+
     @BeforeEach
     public void setup() {
         // 기존 데이터 삭제
@@ -48,10 +63,14 @@ class CmdRequestApprovalServiceImplTests {
 
     @Transactional
     @Test
-    void createApproval() {
+    void createApproval() throws NotLoginException {
         // given
-        int requesterId = 2;
-        int approverId = 3;
+        loggedInUser.setting();
+        addHrManagerForTest();
+
+        int requesterId = authService.whoAmI().getId();
+        int approverId = employeeRepository.findByEmail(TestUserInfo.HR_MANAGER_EMAIL).getId();
+
         int typeId = 1;
         String content = "Test Approval";
 
@@ -61,7 +80,7 @@ class CmdRequestApprovalServiceImplTests {
         requestDto.setContent(content);
 
         // when
-        cmdRequestApprovalService.createApproval(requestDto, requesterId);
+        cmdRequestApprovalService.createApproval(requestDto);
 
         // then
         List<CmdApproval> approvals = approvalRepository.findAll();
@@ -83,21 +102,26 @@ class CmdRequestApprovalServiceImplTests {
 
     @Transactional
     @Test
-    void cancelApproval() {
+    void cancelApproval() throws NotLoginException {
         // given
-        int requesterId = 3;
+        loggedInUser.setting();
+        addHrManagerForTest();
+
+        int requesterId = authService.whoAmI().getId();
+        int approverId = employeeRepository.findByEmail(TestUserInfo.HR_MANAGER_EMAIL).getId();
+
         CmdApprovalRequestDTO requestDto = new CmdApprovalRequestDTO();
         requestDto.setContent("Test Approval");
         requestDto.setTypeId(1);
-        requestDto.setApproverId(4);
+        requestDto.setApproverId(approverId);
 
-        cmdRequestApprovalService.createApproval(requestDto, requesterId);
+        cmdRequestApprovalService.createApproval(requestDto);
 
         CmdApproval approval = approvalRepository.findByRequesterIdAndIdIsNotNull(requesterId)
                 .orElseThrow(() -> new IllegalArgumentException("Approval not found for requester id: " + requesterId));
 
         // when
-        cmdRequestApprovalService.cancelApproval(requesterId, approval.getId());
+        cmdRequestApprovalService.cancelApproval(approval.getId());
 
         // then
         List<CmdRequestApproval> requestApprovals = requestApprovalRepository.findByApprovalIdOrderByApprovalOrderAsc(approval.getId());
@@ -106,25 +130,34 @@ class CmdRequestApprovalServiceImplTests {
 
     @Transactional
     @Test
-    void approveRequestApproval() {
+    void approveRequestApproval() throws NotLoginException {
         // Given
-        Employee approver = employeeRepository.findById(1);
-        Employee requester = employeeRepository.findById(2);
-        CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
+        loggedInUser.settingHrManager();
+        addUserForTest();
+
+        int approverId = authService.whoAmI().getId();
+        int requesterId = employeeRepository.findByEmail(TestUserInfo.EMAIL).getId();
+
+        Employee approver = employeeRepository.findById(approverId);
+        Employee requester = employeeRepository.findById(requesterId);
+        CmdApprovalType approvalType = approvalTypeRepository.findById(1).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
         approval.setRequester(requester);
         approval.setType(approvalType);
         approval = approvalRepository.save(approval);
+        System.out.println("approval = " + approval);
 
         CmdRequestApproval requestApproval = new CmdRequestApproval();
         requestApproval.setApproval(approval);
         requestApproval.setApprover(approver);
         requestApproval.setIsApproved("WAITING");
         requestApprovalRepository.save(requestApproval);
+        System.out.println("requestApproval = " + requestApproval);
 
         // When
-        cmdRequestApprovalService.approveRequestApproval(approver.getId(), requestApproval.getId());
+        cmdRequestApprovalService.approveRequestApproval(requestApproval.getId());
+        System.out.println("requestApproval = " + requestApproval);
 
         // Then
         CmdRequestApproval updatedRequestApproval = requestApprovalRepository.findById(requestApproval.getId()).orElseThrow();
@@ -133,10 +166,16 @@ class CmdRequestApprovalServiceImplTests {
 
     @Transactional
     @Test
-    void approveRequestApprovalAlreadyProcessed() {
+    void approveRequestApprovalAlreadyProcessed() throws NotLoginException {
         // Given
-        Employee approver = employeeRepository.findById(1);
-        Employee requester = employeeRepository.findById(2);
+        loggedInUser.settingHrManager();
+        addUserForTest();
+
+        int approverId = authService.whoAmI().getId();
+        int requesterId = employeeRepository.findByEmail(TestUserInfo.EMAIL).getId();
+
+        Employee approver = employeeRepository.findById(approverId);
+        Employee requester = employeeRepository.findById(requesterId);
         CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
@@ -151,15 +190,21 @@ class CmdRequestApprovalServiceImplTests {
         requestApprovalRepository.save(requestApproval);
 
         // When, Then
-        assertThrows(IllegalStateException.class, () -> cmdRequestApprovalService.approveRequestApproval(approver.getId(), requestApproval.getId()));
+        assertThrows(IllegalStateException.class, () -> cmdRequestApprovalService.approveRequestApproval(requestApproval.getId()));
     }
 
     @Transactional
     @Test
-    void rejectRequestApproval() {
+    void rejectRequestApproval() throws NotLoginException {
         // Given
-        Employee approver = employeeRepository.findById(1);
-        Employee requester = employeeRepository.findById(2);
+        loggedInUser.settingHrManager();
+        addUserForTest();
+
+        int approverId = authService.whoAmI().getId();
+        int requesterId = employeeRepository.findByEmail(TestUserInfo.EMAIL).getId();
+
+        Employee approver = employeeRepository.findById(approverId);
+        Employee requester = employeeRepository.findById(requesterId);
         CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
@@ -174,7 +219,7 @@ class CmdRequestApprovalServiceImplTests {
         requestApprovalRepository.save(requestApproval);
 
         // When
-        cmdRequestApprovalService.rejectRequestApproval(approver.getId(), requestApproval.getId());
+        cmdRequestApprovalService.rejectRequestApproval(requestApproval.getId());
 
         // Then
         CmdRequestApproval updatedRequestApproval = requestApprovalRepository.findById(requestApproval.getId()).orElseThrow();
@@ -183,10 +228,16 @@ class CmdRequestApprovalServiceImplTests {
 
     @Transactional
     @Test
-    void rejectRequestApprovalAlreadyProcessed() {
+    void rejectRequestApprovalAlreadyProcessed() throws NotLoginException {
         // Given
-        Employee approver = employeeRepository.findById(1);
-        Employee requester = employeeRepository.findById(2);
+        loggedInUser.settingHrManager();
+        addUserForTest();
+
+        int approverId = authService.whoAmI().getId();
+        int requesterId = employeeRepository.findByEmail(TestUserInfo.EMAIL).getId();
+
+        Employee approver = employeeRepository.findById(approverId);
+        Employee requester = employeeRepository.findById(requesterId);
         CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
@@ -201,16 +252,21 @@ class CmdRequestApprovalServiceImplTests {
         requestApprovalRepository.save(requestApproval);
 
         // When, Then
-        assertThrows(IllegalStateException.class, () -> cmdRequestApprovalService.rejectRequestApproval(approver.getId(), requestApproval.getId()));
+        assertThrows(IllegalStateException.class, () -> cmdRequestApprovalService.rejectRequestApproval(requestApproval.getId()));
     }
 
     @Transactional
     @Test
-    void requestApprovalUnauthorized() {
+    void requestApprovalUnauthorized() throws NotLoginException {
         // Given
-        Employee approver = employeeRepository.findById(1);
-        Employee otherEmployee = employeeRepository.findById(5);
-        Employee requester = employeeRepository.findById(3);
+        loggedInUser.settingHrManager();
+        addUserForTest();
+
+        int approverId = employeeRepository.findByEmail(TestUserInfo.EMAIL).getId();
+        int requesterId = employeeRepository.findByEmail(TestUserInfo.EMAIL).getId();
+
+        Employee approver = employeeRepository.findById(approverId);
+        Employee requester = employeeRepository.findById(requesterId);
         CmdApprovalType approvalType = approvalTypeRepository.findById(2).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
@@ -225,17 +281,24 @@ class CmdRequestApprovalServiceImplTests {
         requestApprovalRepository.save(requestApproval);
 
         // When, Then
-        assertThrows(IllegalArgumentException.class, () -> cmdRequestApprovalService.approveRequestApproval(otherEmployee.getId(), requestApproval.getId()));
-        assertThrows(IllegalArgumentException.class, () -> cmdRequestApprovalService.rejectRequestApproval(otherEmployee.getId(), requestApproval.getId()));
+        assertThrows(IllegalArgumentException.class, () -> cmdRequestApprovalService.approveRequestApproval(requestApproval.getId()));
+        assertThrows(IllegalArgumentException.class, () -> cmdRequestApprovalService.rejectRequestApproval(requestApproval.getId()));
     }
 
     @Transactional
     @Test
-    void addApproverToRequestApproval() {
+    void addApproverToRequestApproval() throws NotLoginException {
         // Given
-        Employee requester = employeeRepository.findById(5);
-        Employee approver = employeeRepository.findById(2);
-        Employee newApprover = employeeRepository.findById(3);
+        loggedInUser.settingHrManager();
+        addUserForTest();
+
+        int approverId = authService.whoAmI().getId();
+        int requesterId = employeeRepository.findByEmail(TestUserInfo.EMAIL).getId();
+        int otherEmployeeId = employeeRepository.findByEmail(TestUserInfo.HR_MANAGER_EMAIL).getId();
+
+        Employee requester = employeeRepository.findById(requesterId);
+        Employee approver = employeeRepository.findById(approverId);
+        Employee newApprover = employeeRepository.findById(otherEmployeeId);
         CmdApprovalType approvalType = approvalTypeRepository.findById(1).orElseThrow();
 
         CmdApproval approval = new CmdApproval();
@@ -250,7 +313,7 @@ class CmdRequestApprovalServiceImplTests {
         requestApprovalRepository.save(requestApproval);
 
         // When
-        cmdRequestApprovalService.addApproverToRequestApproval(approver.getId(), requestApproval.getId(), newApprover.getId());
+        cmdRequestApprovalService.addApproverToRequestApproval(requestApproval.getId(), newApprover.getId());
 
         // Then
         List<CmdRequestApproval> requestApprovals = requestApprovalRepository.findByApprovalIdOrderByApprovalOrderAsc(approval.getId());
@@ -258,5 +321,19 @@ class CmdRequestApprovalServiceImplTests {
         assertEquals("APPROVED", requestApprovals.get(0).getIsApproved());
         assertEquals(newApprover.getId(), requestApprovals.get(1).getApprover().getId());
         assertEquals("WAITING", requestApprovals.get(1).getIsApproved());
+    }
+
+    private void addUserForTest() {
+        ManageUserDTO userDTO = new ManageUserDTO(TestUserInfo.EMAIL, TestUserInfo.PASSWORD, TestUserInfo.NAME, null,
+                TestUserInfo.USER_ROLE, null, null, TestUserInfo.PHONE_NUMBER, 1, 1,
+                1);
+        managerService.signup(userDTO);
+    }
+
+    private void addHrManagerForTest() {
+        ManageUserDTO userDTO = new ManageUserDTO(TestUserInfo.HR_MANAGER_EMAIL, TestUserInfo.PASSWORD, TestUserInfo.NAME, null,
+                TestUserInfo.HR_MANAGER_ROLE, null, null, TestUserInfo.PHONE_NUMBER, 1, 1,
+                1);
+        managerService.signup(userDTO);
     }
 }
