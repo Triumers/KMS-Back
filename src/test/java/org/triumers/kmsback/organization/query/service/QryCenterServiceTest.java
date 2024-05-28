@@ -60,9 +60,11 @@ class QryCenterServiceTest {
         List<QryCenterDTO> resultList = qryCenterService.findCenterListByName(target);
 
         // then
-        for (QryCenterDTO result : resultList) {
+        for (QryCenterDTO result : resultList) {    // 결과가 검색어를 포함하는지 여부
             assertTrue(result.getName().contains(target));
         }
+
+        assertTrue(resultList.size() >= names.size());  // 테스트용으로 추가한 값 이상으로 검색되는지
     }
 
     private int addCenterForTest(String centerName) {
