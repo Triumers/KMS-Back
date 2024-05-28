@@ -10,6 +10,7 @@ import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdFavorites;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdLike;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
+import org.triumers.kmsback.post.command.domain.aggregate.vo.CmdRequestPostAI;
 
 public interface CmdPostService {
     CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post) throws NotLoginException;
@@ -27,4 +28,6 @@ public interface CmdPostService {
     Boolean isAuthorizedToPost(int originId) throws NotLoginException;
 
     String uploadFile(MultipartFile file) throws AwsS3Exception;
+
+    String requestToGPT(CmdRequestPostAI request);
 }

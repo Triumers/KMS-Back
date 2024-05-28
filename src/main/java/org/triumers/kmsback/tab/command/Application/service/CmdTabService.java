@@ -9,4 +9,6 @@ public interface CmdTabService {
     CmdJoinEmployeeDTO deleteEmployeeTab(CmdJoinEmployeeDTO employee);
 
     CmdTabRelationDTO registTab(CmdTabRelationDTO tabRelation, int employeeId);
+
+    String getTabName(int id);
 }

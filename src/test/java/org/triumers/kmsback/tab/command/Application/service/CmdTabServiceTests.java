@@ -55,7 +55,6 @@ class CmdTabServiceTests {
     @Test
     @DisplayName("탭 추가")
     void registTab(){
-
         boolean isPublic = false;
         CmdTabDTO top = new CmdTabDTO("top");
         CmdTabDTO bottom = new CmdTabDTO("bottom");

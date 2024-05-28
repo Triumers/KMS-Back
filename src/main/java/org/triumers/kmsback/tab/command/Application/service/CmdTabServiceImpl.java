@@ -76,6 +76,19 @@ public class CmdTabServiceImpl implements CmdTabService {
         return newTabRelation;
     }
 
+    @Override
+    public String getTabName(int id) {
+
+        CmdTabRelation tabRelation = cmdTabRelationRepository.findById(id);
+        if(tabRelation.getBottomTabId() != null){
+            String tabName = cmdTabBottomRepository.findNameById(tabRelation.getBottomTabId());
+            return tabName;
+        }
+
+        String tabName = cmdTabTopRepository.findNameById(tabRelation.getTopTabId());
+        return tabName;
+    }
+
     public CmdTabDTO registTopTab(CmdTabDTO top) {
 
         CmdTabTop tabTop = cmdTabTopRepository.getByName(top.getName());

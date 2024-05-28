@@ -12,6 +12,7 @@ import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
 import org.triumers.kmsback.post.command.Application.service.CmdPostService;
+import org.triumers.kmsback.post.command.domain.aggregate.vo.CmdRequestPostAI;
 
 @RestController
 @RequestMapping("/post")
@@ -76,6 +77,11 @@ public class CmdPostController {
         return ResponseEntity.status(HttpStatus.OK).body(favorite);
     }
 
+    @GetMapping("/ai")
+    public ResponseEntity<String> requestToAI(@RequestBody CmdRequestPostAI request){
+        return ResponseEntity.status(HttpStatus.OK).body(cmdPostService.requestToGPT(request));
+    }
+
     @PostMapping("/isEditing/{id}")
     public void editingPost(@PathVariable int id){
         cmdPostService.changeEditing(id);
@@ -85,7 +91,6 @@ public class CmdPostController {
     public String uploadFile(@RequestBody MultipartFile file) throws AwsS3Exception {
         return cmdPostService.uploadFile(file);
     }
-
 
     @GetMapping("/isAuthor/{originId}")
     public Boolean isAuthorizedToPost(@PathVariable int originId) throws NotLoginException {
