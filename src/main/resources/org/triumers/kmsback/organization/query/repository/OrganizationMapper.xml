@@ -17,8 +17,8 @@
 
     <select id="findCenterListByName" resultMap="centerMap" parameterType="String">
         SELECT *
-        FROM tbl_center
-        WHERE NAME LIKE CONCAT('%', #{name}, '%')
+          FROM tbl_center
+         WHERE NAME LIKE CONCAT('%', #{name}, '%')
     </select>
 
 </mapper>
