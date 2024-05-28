@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.triumers.kmsback.organization.query.repository.OrganizationMapper">
+    
+    <resultMap id="centerMap" type="org.triumers.kmsback.organization.query.aggregate.entity.QryCenter">
+        <id property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+    </resultMap>
+
+    <select id="findCenterById" resultMap="centerMap" parameterType="int">
+        SELECT *
+          FROM tbl_center
+         WHERE ID = #{id}
+    </select>
+
+    <select id="findCenterListByName" resultMap="centerMap" parameterType="String">
+        SELECT *
+        FROM tbl_center
+        WHERE NAME LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+</mapper>
