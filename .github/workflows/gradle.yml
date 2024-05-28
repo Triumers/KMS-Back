@@ -3,9 +3,9 @@ name: CI with Gradle
 
 on:
   push:
-    branches: [ "develop", "main" ]
+    branches: [ "dev", "main" ]
   pull_request:
-    branches: [ "develop", "main" ]
+    branches: [ "dev", "main" ]
 
 jobs:
   build:
@@ -24,6 +24,12 @@ jobs:
 
       - name: Gradle 설정
         uses: gradle/actions/setup-gradle@v3
+
+      - name: Make application.yml
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.DB_YML }}" | base64 --decode > src/main/resources/application.yml
+          find src
 
       - name: Gradle 빌드
         run: ./gradlew build

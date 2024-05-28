@@ -45,4 +45,4 @@ out/
 .vscode/
 
 ### YMl ###
-.yml
+*.yml
