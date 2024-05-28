@@ -1,6 +1,7 @@
 package org.triumers.kmsback.common.config;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -29,10 +30,13 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
+    private final String defaultPassword;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtUtil jwtUtil) {
+
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtUtil jwtUtil, @Value("${password}") String defaultPassword) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
+        this.defaultPassword = defaultPassword;
     }
 
     @Bean
@@ -100,7 +104,7 @@ public class SecurityConfig {
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
 
         // 로그인 필터
-        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, defaultPassword, bCryptPasswordEncoder()),
                 UsernamePasswordAuthenticationFilter.class);
 
         //세션 설정
