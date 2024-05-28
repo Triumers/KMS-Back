@@ -9,6 +9,12 @@
         <result property="name" column="NAME"/>
     </resultMap>
 
+    <resultMap id="departmentMap" type="org.triumers.kmsback.organization.query.aggregate.entity.QryDepartment">
+        <id property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="centerId" column="CENTER_ID"/>
+    </resultMap>
+
     <select id="findCenterById" resultMap="centerMap" parameterType="int">
         SELECT *
           FROM tbl_center
@@ -19,6 +25,24 @@
         SELECT *
           FROM tbl_center
          WHERE NAME LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <select id="findDepartmentById" resultMap="departmentMap" parameterType="int">
+        SELECT *
+          FROM tbl_department
+         WHERE ID = #{id}
+    </select>
+
+    <select id="findDepartmentListByName" resultMap="departmentMap" parameterType="String">
+        SELECT *
+          FROM tbl_department
+         WHERE NAME LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <select id="findDepartmentListByCenterId" resultMap="departmentMap" parameterType="int">
+        SELECT *
+          FROM tbl_department
+         WHERE CENTER_ID = #{centerId}
     </select>
 
 </mapper>
