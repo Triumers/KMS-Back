@@ -7,12 +7,12 @@ import org.triumers.kmsback.organization.command.domain.aggregate.entity.CmdDepa
 import org.triumers.kmsback.organization.command.domain.repository.DepartmentRepository;
 
 @Service
-public class CmdDepartmentImpl implements CmdDepartmentService {
+public class CmdDepartmentServiceImpl implements CmdDepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
     @Autowired
-    public CmdDepartmentImpl(DepartmentRepository departmentRepository) {
+    public CmdDepartmentServiceImpl(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
     }
 
