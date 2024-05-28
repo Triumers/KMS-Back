@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.triumers.kmsback.user.command.Application.dto.CustomUserDetails;
 import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
@@ -23,17 +24,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final String defaultPassword;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, String defaultPassword, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.defaultPassword = defaultPassword;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
             LoginVO loginVO = new ObjectMapper().readValue(request.getInputStream(), LoginVO.class);
-
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(loginVO.getEmail(), loginVO.getPassword(), null);
 
@@ -61,6 +65,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         response.addHeader("Authorization", "Bearer " + token);
         response.addHeader("UserRole", role.name());
+
+        // Default 비밀번호인 경우 비밀번호 변경을 유도하기 위해 307 반환
+        if (bCryptPasswordEncoder.matches(defaultPassword, customUserDetails.getPassword())) {
+            response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("비밀번호를 변경해주세요.");
+            response.getWriter().flush();
+        }
     }
 
     @Override
