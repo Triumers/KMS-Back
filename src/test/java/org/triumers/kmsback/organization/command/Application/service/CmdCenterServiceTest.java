@@ -56,7 +56,7 @@ class CmdCenterServiceTest {
 
     @DisplayName("본부 삭제 테스트")
     @Test
-    void removeCenter() {
+    void removeCenterById() {
 
         // given
         int targetId = addCenterForTest();
@@ -64,7 +64,7 @@ class CmdCenterServiceTest {
         centerDTO.setId(targetId);
 
         // when
-        cmdCenterService.removeCenter(centerDTO);
+        cmdCenterService.removeCenterById(centerDTO);
 
         // then
         assertNull(centerRepository.findById(targetId));

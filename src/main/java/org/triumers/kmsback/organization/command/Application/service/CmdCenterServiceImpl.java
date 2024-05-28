@@ -31,8 +31,7 @@ public class CmdCenterServiceImpl implements CmdCenterService {
     }
 
     @Override
-    public void removeCenter(CmdCenterDTO centerDTO) {
-        CmdCenter center = centerRepository.findById(centerDTO.getId());
-        centerRepository.deleteById(center.getId());
+    public void removeCenterById(CmdCenterDTO centerDTO) {
+        centerRepository.delete(centerRepository.findById(centerDTO.getId()));
     }
 }

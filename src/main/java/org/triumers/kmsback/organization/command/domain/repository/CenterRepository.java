@@ -8,6 +8,4 @@ import org.triumers.kmsback.organization.command.domain.aggregate.entity.CmdCent
 public interface CenterRepository extends JpaRepository<CmdCenter, Integer> {
 
     CmdCenter findById(int id);
-
-    CmdCenter deleteById(int id);
 }

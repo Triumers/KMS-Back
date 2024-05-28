@@ -8,5 +8,5 @@ public interface CmdCenterService {
 
     void editCenterName(CmdCenterDTO centerDTO);
 
-    void removeCenter(CmdCenterDTO centerDTO);
+    void removeCenterById(CmdCenterDTO centerDTO);
 }
