@@ -47,7 +47,7 @@ public class CmdTabController {
         return ResponseEntity.status(HttpStatus.CREATED).body(registTab);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/name/{id}")
     public ResponseEntity<String> getTabName(@PathVariable int id){
         return ResponseEntity.status(HttpStatus.CREATED).body(cmdTabService.getTabName(id));
     }

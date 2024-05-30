@@ -1,7 +1,8 @@
 package org.triumers.kmsback.post.query.aggregate.entity;
 
 import lombok.Data;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 
 
 @Data
@@ -11,8 +12,8 @@ public class QryPost {
     private String title;
     private String content;
     private String postImg;
-    private LocalDate createdAt;
-    private LocalDate deletedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime deletedAt;
     private Integer authorId;
     private Integer originId;
     private Integer recentId;

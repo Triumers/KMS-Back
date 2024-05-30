@@ -54,6 +54,9 @@
         <if test="request.categoryId != null">
            AND A.CATEGORY_ID = #{request.categoryId}
         </if>
+        <if test="request.categoryId == null">
+            AND A.CATEGORY_ID IS NULL
+        </if>
         <if test="request.title != null">
            AND A.TITLE LIKE CONCAT('%', #{request.title}, '%')
         </if>
