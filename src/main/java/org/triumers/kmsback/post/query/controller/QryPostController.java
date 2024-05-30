@@ -24,14 +24,15 @@ public class QryPostController {
         this.qryPostService = qryPostService;
     }
 
-    @GetMapping("/tab")
+    @PostMapping("/tab")
     public ResponseEntity<Page<QryPostAndTagsDTO>> findPostListByTab(@RequestBody QryRequestPost request, Pageable pageable){
+
         Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(request, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(postList);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("find/{id}")
     public ResponseEntity<QryPostAndTagsDTO> findPostById(@PathVariable int id){
         QryPostAndTagsDTO post = qryPostService.findPostById(id);
 

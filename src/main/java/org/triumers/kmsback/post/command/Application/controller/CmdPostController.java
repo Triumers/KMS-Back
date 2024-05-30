@@ -77,7 +77,7 @@ public class CmdPostController {
         return ResponseEntity.status(HttpStatus.OK).body(favorite);
     }
 
-    @GetMapping("/ai")
+    @PostMapping("/ai")
     public ResponseEntity<String> requestToAI(@RequestBody CmdRequestPostAI request){
         return ResponseEntity.status(HttpStatus.OK).body(cmdPostService.requestToGPT(request));
     }

@@ -2,7 +2,7 @@ package org.triumers.kmsback.post.query.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class QryPostDTO {
@@ -10,8 +10,8 @@ public class QryPostDTO {
     private String title;
     private String content;
     private String postImg;
-    private LocalDate createdAt;
-    private LocalDate deletedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime deletedAt;
     private Integer authorId;
     private Integer originId;
     private Integer recentId;
@@ -21,7 +21,7 @@ public class QryPostDTO {
     public QryPostDTO() {
     }
 
-    public QryPostDTO(String title, String content, String postImg, LocalDate createdAt, Integer authorId,
+    public QryPostDTO(String title, String content, String postImg, LocalDateTime createdAt, Integer authorId,
                       Integer originId, Integer tabRelationId) {
         this.title = title;
         this.content = content;

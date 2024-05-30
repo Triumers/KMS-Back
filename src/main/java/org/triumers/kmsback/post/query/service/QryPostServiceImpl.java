@@ -56,6 +56,7 @@ public class QryPostServiceImpl implements QryPostService {
         postDTO.setTags(convertTagToString(post.getTags()));
         postDTO.setHistory(findHistoryListByOriginId(postId));
         postDTO.setParticipants(findParticipantsListByOriginId(postId));
+        postDTO.setLikeList(findLikeListByPostId(postId));
 
         return postDTO;
     }
@@ -115,6 +116,11 @@ public class QryPostServiceImpl implements QryPostService {
                     post.getPostImg(), post.getCreatedAt(), employeeDTO, post.getOriginId(),
                     post.getRecentId(), post.getTabRelationId(), post.getCategoryId());
             postDTO.setTags(convertTagToString(post.getTags()));
+
+            if(type.equals("origin")){
+                List<CmdEmployeeDTO> like = findLikeListByPostId((post.getOriginId() != null) ? post.getOriginId() : post.getId());
+                postDTO.setLikeList(like);
+            }
             postDTOList.add(postDTO);
         }
         return postDTOList;
