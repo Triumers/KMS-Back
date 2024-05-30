@@ -43,4 +43,18 @@
          WHERE ID = #{id}
     </select>
 
+    <select id="findQuizByPostId" resultMap="quizResultMap" parameterType="org.triumers.kmsback.quiz.query.aggregate.entity.QryQuiz">
+        SELECT
+               ID
+             , CONTENT
+             , ANSWER
+             , COMMENTARY
+             , STATUS
+             , QUESTIONER_ID
+             , POST_ID
+             , TAB_ID
+          FROM tbl_quiz
+         WHERE POST_ID = #{postId}
+    </select>
+
 </mapper>
