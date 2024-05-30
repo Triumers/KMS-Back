@@ -22,6 +22,12 @@ public class QryDutyServiceImpl implements QryDutyService {
     }
 
     @Override
+    public QryPositionDTO findPositionById(int id) {
+        QryPosition position = dutyMapper.findPositionById(id);
+        return new QryPositionDTO(position.getId(), position.getName());
+    }
+
+    @Override
     public List<QryPositionDTO> findAllPosition() {
 
         List<QryPosition> positionList = dutyMapper.findAllPosition();
@@ -45,6 +51,12 @@ public class QryDutyServiceImpl implements QryDutyService {
         }
 
         return positionDTOList;
+    }
+
+    @Override
+    public QryRankDTO findRankById(int id) {
+        QryRank rank = dutyMapper.findRankById(id);
+        return new QryRankDTO(rank.getId(), rank.getName());
     }
 
     @Override

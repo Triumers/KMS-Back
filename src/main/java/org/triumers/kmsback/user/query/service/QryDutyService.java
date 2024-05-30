@@ -7,9 +7,13 @@ import java.util.List;
 
 public interface QryDutyService {
 
+    QryPositionDTO findPositionById(int id);
+
     List<QryPositionDTO> findAllPosition();
 
     List<QryPositionDTO> findPositionByName(String name);
+
+    QryRankDTO findRankById(int id);
 
     List<QryRankDTO> findAllRank();
 
