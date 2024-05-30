@@ -22,6 +22,7 @@ public class QryPostAndTagsDTO {
 
     private List<QryPostAndTagsDTO> history;
     private List<CmdEmployeeDTO> participants;
+    private List<CmdEmployeeDTO> likeList;
 
     public QryPostAndTagsDTO() {
     }
