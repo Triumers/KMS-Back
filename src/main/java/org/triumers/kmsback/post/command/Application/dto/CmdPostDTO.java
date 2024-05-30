@@ -2,8 +2,7 @@ package org.triumers.kmsback.post.command.Application.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 public class CmdPostDTO {
@@ -11,8 +10,8 @@ public class CmdPostDTO {
     private String title;
     private String content;
     private String postImg;
-    private LocalDate createdAt;
-    private LocalDate deletedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime deletedAt;
     private Integer authorId;
     private Integer originId;
     private Integer recentId;
@@ -22,7 +21,7 @@ public class CmdPostDTO {
     public CmdPostDTO() {
     }
 
-    public CmdPostDTO(String title, String content, LocalDate createdAt, Integer authorId, Integer tabRelationId) {
+    public CmdPostDTO(String title, String content, LocalDateTime createdAt, Integer authorId, Integer tabRelationId) {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
@@ -30,7 +29,7 @@ public class CmdPostDTO {
         this.tabRelationId = tabRelationId;
     }
 
-    public CmdPostDTO(String title, String content, LocalDate createdAt, Integer authorId,
+    public CmdPostDTO(String title, String content, LocalDateTime createdAt, Integer authorId,
                       Integer originId, Integer tabRelationId) {
         this.title = title;
         this.content = content;
