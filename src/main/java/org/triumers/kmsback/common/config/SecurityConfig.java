@@ -97,7 +97,7 @@ public class SecurityConfig {
         // 경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/**").permitAll()
-                .requestMatchers("/manager/signup").hasAnyRole("HR_MANAGER")
+                .requestMatchers("/manager/*").hasAnyRole("HR_MANAGER")
                 .anyRequest().authenticated());
 
         // JWT 필터
