@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.triumers.kmsback.comment.query.repository.CommentMapper">
+
+    <select id="selectCommentsByPostId" resultType="org.triumers.kmsback.comment.query.dto.CommentDTO">
+        SELECT id, content, created_at AS createdAt, author_id AS authorId, post_id AS postId
+        FROM tbl_comment
+        WHERE post_id = #{postId} AND deleted_at IS NULL
+    </select>
+
+</mapper>
