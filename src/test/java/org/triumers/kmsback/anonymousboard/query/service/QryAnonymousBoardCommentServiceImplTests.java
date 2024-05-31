@@ -11,6 +11,8 @@ import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousB
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardDTO;
 import org.triumers.kmsback.anonymousboard.command.Application.service.CmdAnonymousBoardCommentService;
 import org.triumers.kmsback.anonymousboard.command.Application.service.CmdAnonymousBoardService;
+import org.triumers.kmsback.anonymousboard.command.domain.repository.CmdAnonymousBoardCommentRepository;
+import org.triumers.kmsback.anonymousboard.command.domain.repository.CmdAnonymousBoardRepository;
 import org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardCommentDTO;
 
 import java.util.NoSuchElementException;
@@ -30,10 +32,20 @@ class QryAnonymousBoardCommentServiceImplTests {
     @Autowired
     private CmdAnonymousBoardCommentService cmdAnonymousBoardCommentService;
 
+    @Autowired
+    private CmdAnonymousBoardRepository cmdAnonymousBoardRepository;
+
+    @Autowired
+    private CmdAnonymousBoardCommentRepository cmdAnonymousBoardCommentRepository;
+
     private int anonymousBoardId;
 
     @BeforeEach
     void setUp() {
+
+        cmdAnonymousBoardCommentRepository.deleteAll();
+        cmdAnonymousBoardRepository.deleteAll();
+
         CmdAnonymousBoardDTO cmdAnonymousBoardDTO = new CmdAnonymousBoardDTO();
         cmdAnonymousBoardDTO.setTitle("Test Board");
         cmdAnonymousBoardDTO.setContent("Test Board Content");
