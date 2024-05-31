@@ -87,7 +87,7 @@ class QryTeamServiceTest {
 
     @DisplayName("팀 검색 by 부서")
     @Test
-    void findTeamListByDepartment() {
+    void findTeamListByDepartmentId() {
 
         // given
         int departmentId = addDepartmentForTest();
@@ -104,7 +104,7 @@ class QryTeamServiceTest {
         }
 
         // when
-        List<QryTeamDTO> resultList = qryTeamService.findTeamListByDepartment(departmentId);
+        List<QryTeamDTO> resultList = qryTeamService.findTeamListByDepartmentId(departmentId);
 
         // then
         for (QryTeamDTO result : resultList) {  // 결과가 검색어를 포함하는지 여부

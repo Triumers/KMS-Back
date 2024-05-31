@@ -11,5 +11,7 @@ public interface QryTeamService {
 
     List<QryTeamDTO> findTeamListByName(String teamName);
 
-    List<QryTeamDTO> findTeamListByDepartment(int departmentId);
+    List<QryTeamDTO> findTeamListByDepartmentId(int departmentId);
+
+    List<QryTeamDTO> findTeamDetailListByDepartmentId(int departmentId);
 }

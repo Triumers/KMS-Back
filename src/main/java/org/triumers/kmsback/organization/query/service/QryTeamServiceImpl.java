@@ -33,6 +33,7 @@ public class QryTeamServiceImpl implements QryTeamService {
         return teamToDto(organizationMapper.findTeamById(id));
     }
 
+    // 팀원 포함 조회
     @Override
     public QryTeamDTO findQryTeamDetailById(int teamId) {
         QryTeam team = organizationMapper.findTeamById(teamId);
@@ -54,13 +55,26 @@ public class QryTeamServiceImpl implements QryTeamService {
     }
 
     @Override
-    public List<QryTeamDTO> findTeamListByDepartment(int departmentId) {
+    public List<QryTeamDTO> findTeamListByDepartmentId(int departmentId) {
         List<QryTeam> teamList = organizationMapper.findTeamListByDepartmentId(departmentId);
         List<QryTeamDTO> teamDtoList = new ArrayList<>();
 
         for (QryTeam team : teamList) {
             teamDtoList.add(teamToDto(team));
         }
+        return teamDtoList;
+    }
+
+    @Override
+    public List<QryTeamDTO> findTeamDetailListByDepartmentId(int departmentId) {
+        List<QryTeam> teamList = organizationMapper.findTeamListByDepartmentId(departmentId);
+        List<QryTeamDTO> teamDtoList = new ArrayList<>();
+
+        for (QryTeam team : teamList) {
+            List<QryEmployeeDTO> teamMembers = qryEmployeeService.findSimpleInfoByTeamId(team.getId());
+            teamDtoList.add(new QryTeamDTO(team.getId(), team.getName(), team.getDepartmentId(), null, teamMembers));
+        }
+
         return teamDtoList;
     }
 
