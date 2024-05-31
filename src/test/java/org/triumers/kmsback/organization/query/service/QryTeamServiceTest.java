@@ -85,8 +85,33 @@ class QryTeamServiceTest {
         assertTrue(resultList.size() >= names.size());  // 테스트용으로 추가한 값 이상으로 검색되는지
     }
 
+    @DisplayName("팀 검색 by 부서")
     @Test
     void findTeamListByDepartment() {
+
+        // given
+        int departmentId = addDepartmentForTest();
+
+        List<String> names = new ArrayList<>();
+
+        names.add(TEST_TEAM_NAME);
+        names.add(TEST_TEAM_NAME + "테스트");
+        names.add("테스트" + TEST_TEAM_NAME);
+        names.add("테스트" + TEST_TEAM_NAME + "테스트");
+
+        for (String name : names) {
+            addTeamForTest(departmentId, name);
+        }
+
+        // when
+        List<QryTeamDTO> resultList = qryTeamService.findTeamListByDepartment(departmentId);
+
+        // then
+        for (QryTeamDTO result : resultList) {  // 결과가 검색어를 포함하는지 여부
+            assertTrue(result.getName().contains(TEST_TEAM_NAME));
+        }
+
+        assertTrue(resultList.size() >= names.size());  // 테스트용으로 추가한 값 이상으로 검색되는지
     }
 
     private int addCenterForTest() {
