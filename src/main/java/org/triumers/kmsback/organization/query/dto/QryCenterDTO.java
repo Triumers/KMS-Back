@@ -2,6 +2,8 @@ package org.triumers.kmsback.organization.query.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -10,4 +12,5 @@ import lombok.*;
 public class QryCenterDTO {
     int id;
     String name;
+    List<QryDepartmentDTO> belongDepartments;
 }
