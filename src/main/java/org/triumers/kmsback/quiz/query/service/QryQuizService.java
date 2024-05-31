@@ -9,4 +9,6 @@ public interface QryQuizService {
     List<QryQuizDTO> findQuizByStatus(boolean status);
 
     QryQuizDTO findQuizById(int id);
+
+    QryQuizDTO findQuizByPostId(int postId);
 }

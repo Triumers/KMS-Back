@@ -33,4 +33,11 @@ public class QryQuizController {
         QryQuizDTO quizDTO = qryQuizService.findQuizById(id);
         return ResponseEntity.ok(quizDTO);
     }
+
+    /* 설명. 게시글 ID로 퀴즈 문제, 정답, 해설, 참조 게시글 조회 */
+    @GetMapping("/exist")
+    public ResponseEntity<QryQuizDTO> findQuizByPostId(@RequestParam int postId) {
+        QryQuizDTO quizDTO = qryQuizService.findQuizByPostId(postId);
+        return ResponseEntity.ok(quizDTO);
+    }
 }
