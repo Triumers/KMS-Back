@@ -1,6 +1,7 @@
 package org.triumers.kmsback.user.query.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.organization.query.service.QryTeamService;
 import org.triumers.kmsback.user.query.aggregate.entity.QryEmployee;
@@ -20,12 +21,13 @@ public class QryEmployeeServiceImpl implements QryEmployeeService {
     private final QryDutyService qryDutyService;
 
     @Autowired
-    public QryEmployeeServiceImpl(EmployeeMapper employeeMapper, QryTeamService qryTeamService, QryDutyService qryDutyService) {
+    public QryEmployeeServiceImpl(EmployeeMapper employeeMapper,
+                                  @Lazy QryTeamService qryTeamService,
+                                  QryDutyService qryDutyService) {
         this.employeeMapper = employeeMapper;
         this.qryTeamService = qryTeamService;
         this.qryDutyService = qryDutyService;
     }
-
 
     @Override
     public QryEmployeeDTO findEmployeeById(int id) {
@@ -73,6 +75,24 @@ public class QryEmployeeServiceImpl implements QryEmployeeService {
 
         for (QryEmployee employee : employeeList) {
             employeeDTOList.add(employeeToDTO(employee));
+        }
+
+        return employeeDTOList;
+    }
+
+    @Override
+    public List<QryEmployeeDTO> findSimpleInfoByTeamId(int teamId) {
+
+        List<QryEmployee> employeeList = employeeMapper.findSimpleInfoByTeamId(teamId);
+        List<QryEmployeeDTO> employeeDTOList = new ArrayList<>();
+
+        for (QryEmployee employee : employeeList) {
+            QryEmployeeDTO employeeDTO = new QryEmployeeDTO();
+            employeeDTO.setId(employee.getId());
+            employeeDTO.setName(employee.getName());
+            employeeDTO.setProfileImg(employee.getProfileImg());
+
+            employeeDTOList.add(employeeDTO);
         }
 
         return employeeDTOList;

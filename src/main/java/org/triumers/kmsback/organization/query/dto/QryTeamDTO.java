@@ -1,6 +1,9 @@
 package org.triumers.kmsback.organization.query.dto;
 
 import lombok.*;
+import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,4 +15,5 @@ public class QryTeamDTO {
     String name;
     int departmentId;
     String departmentName;
+    List<QryEmployeeDTO> teamMembers;
 }

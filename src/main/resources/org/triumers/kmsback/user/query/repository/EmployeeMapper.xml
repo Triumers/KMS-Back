@@ -52,4 +52,13 @@
            AND END_DATE IS NULL
     </select>
 
+    <select id="findSimpleInfoByTeamId" resultMap="employeeMap" parameterType="int">
+        SELECT ID,
+               NAME,
+               PROFILE_IMG
+          FROM tbl_employee
+         WHERE TEAM_ID = #{teamId}
+           AND END_DATE IS NULL
+    </select>
+
 </mapper>

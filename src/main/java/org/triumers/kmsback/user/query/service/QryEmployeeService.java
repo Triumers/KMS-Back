@@ -15,4 +15,6 @@ public interface QryEmployeeService {
     List<QryEmployeeDTO> findEmployeeByName(String name);
 
     List<QryEmployeeDTO> findEmployeeByTeamId(int teamId);
+
+    List<QryEmployeeDTO> findSimpleInfoByTeamId(int teamId);
 }

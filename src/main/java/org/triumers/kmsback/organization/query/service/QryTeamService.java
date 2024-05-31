@@ -7,6 +7,8 @@ import java.util.List;
 public interface QryTeamService {
     QryTeamDTO findQryTeamById(int id);
 
+    QryTeamDTO findQryTeamDetailById(int id);
+
     List<QryTeamDTO> findTeamListByName(String teamName);
 
     List<QryTeamDTO> findTeamListByDepartment(int departmentId);
