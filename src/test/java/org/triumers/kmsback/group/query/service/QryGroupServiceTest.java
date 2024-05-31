@@ -29,7 +29,7 @@ class QryGroupServiceTest {
         qryGroupDTO.setDepartmentName("ROOT");
         qryGroupDTO.setCenterId(1);
         qryGroupDTO.setCenterName("ROOT");
-        qryGroupDTO.setTabId(1);
+        qryGroupDTO.setTabId(5);
         qryGroupDTO.setTopTabId(3);
         qryGroupDTO.setTopTabName("스터디");
         qryGroupDTO.setBottomTabId(1);
