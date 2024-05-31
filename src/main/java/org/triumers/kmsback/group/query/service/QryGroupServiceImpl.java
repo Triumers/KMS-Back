@@ -22,4 +22,9 @@ public class QryGroupServiceImpl implements QryGroupService {
     public List<QryGroupDTO> findGroupByEmployeeId(int employeeId) {
         return groupMapper.findGroupByEmployeeId(employeeId);
     }
+
+    @Override
+    public List<Integer> findGroupIdByEmployeeId(int employeeId) {
+        return groupMapper.findGroupIdByEmployeeId(employeeId);
+    }
 }

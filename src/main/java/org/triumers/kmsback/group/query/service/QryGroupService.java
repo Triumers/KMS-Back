@@ -7,4 +7,6 @@ import java.util.List;
 public interface QryGroupService {
 
     List<QryGroupDTO> findGroupByEmployeeId(int employeeId);
+
+    List<Integer> findGroupIdByEmployeeId(int id);
 }
