@@ -68,8 +68,8 @@
         <if test="request.title != null">
            AND A.TITLE LIKE CONCAT('%', #{request.title}, '%')
         </if>
-        <if test="request.keyword != null">
-           AND A.CONTENT LIKE CONCAT('%', #{request.keyword}, '%')
+        <if test="request.content != null">
+           AND A.CONTENT LIKE CONCAT('%', #{request.content}, '%')
         </if>
         <if test="request.tags != null and !request.tags.isEmpty()">
            AND A.ID IN (
@@ -127,8 +127,8 @@
         <if test="request.title != null">
             AND A.TITLE LIKE CONCAT('%', #{request.title}, '%')
         </if>
-        <if test="request.keyword != null">
-            AND A.CONTENT LIKE CONCAT('%', #{request.keyword}, '%')
+        <if test="request.content != null">
+            AND A.CONTENT LIKE CONCAT('%', #{request.content}, '%')
         </if>
         <if test="request.tags != null and !request.tags.isEmpty()">
             AND A.ID IN (

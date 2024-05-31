@@ -15,7 +15,7 @@ public class QryRequestPost {
     private Integer categoryId;
 
     private String title;
-    private String keyword;
+    private String content;
     private List<String> tags;
     private List<Integer> tabList;
 
