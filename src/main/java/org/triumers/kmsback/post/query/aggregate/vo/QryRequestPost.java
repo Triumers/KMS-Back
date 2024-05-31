@@ -17,6 +17,7 @@ public class QryRequestPost {
     private String title;
     private String keyword;
     private List<String> tags;
+    private List<Integer> tabList;
 
     public QryRequestPost(Integer tabRelationId, Integer categoryId) {
         this.tabRelationId = tabRelationId;
