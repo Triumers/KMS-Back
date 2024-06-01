@@ -37,7 +37,7 @@ public class OrganizationController {
     }
 
     @GetMapping("/center/all-detail")
-    public ResponseEntity<List<QryCenterVO>> findAllTeamDetail() {
+    public ResponseEntity<List<QryCenterVO>> findAllCenterDetail() {
 
         List<QryCenterDTO> allCenter = qryCenterService.findAllCenterDetailList();
         List<QryCenterVO> allCenterVO = new ArrayList<>();
@@ -54,11 +54,13 @@ public class OrganizationController {
         qryCenterVO.setId(qryCenterDTO.getId());
         qryCenterVO.setName(qryCenterDTO.getName());
 
-        List<QryDepartmentVO> belongDepartmentVO = new ArrayList<>();
-        for (QryDepartmentDTO departmentDTO : qryCenterDTO.getBelongDepartments()) {
-            belongDepartmentVO.add(departmentDetailToVO(departmentDTO));
+        if (qryCenterDTO.getBelongDepartments() != null) {
+            List<QryDepartmentVO> belongDepartmentVO = new ArrayList<>();
+            for (QryDepartmentDTO departmentDTO : qryCenterDTO.getBelongDepartments()) {
+                belongDepartmentVO.add(departmentDetailToVO(departmentDTO));
+            }
+            qryCenterVO.setBelongDepartments(belongDepartmentVO);
         }
-        qryCenterVO.setBelongDepartments(belongDepartmentVO);
 
         return qryCenterVO;
     }
@@ -70,10 +72,12 @@ public class OrganizationController {
 
         List<QryTeamVO> belongTeamVOList = new ArrayList<>();
 
-        for (QryTeamDTO teamDTO : departmentDTO.getBelongTeams()) {
-            belongTeamVOList.add(teamDetailToVO(teamDTO));
+        if (departmentDTO.getBelongTeams() != null) {
+            for (QryTeamDTO teamDTO : departmentDTO.getBelongTeams()) {
+                belongTeamVOList.add(teamDetailToVO(teamDTO));
+            }
+            departmentVO.setBelongTeams(belongTeamVOList);
         }
-        departmentVO.setBelongTeams(belongTeamVOList);
 
         return departmentVO;
     }
@@ -83,11 +87,13 @@ public class OrganizationController {
         qryTeamVO.setId(qryTeamDTO.getId());
         qryTeamVO.setName(qryTeamDTO.getName());
 
-        List<QryTeamMemberVO> teamMemberList = new ArrayList<>();
-        for (QryEmployeeDTO employee : qryTeamDTO.getTeamMembers()) {
-            teamMemberList.add(new QryTeamMemberVO(employee.getId(), employee.getName(), employee.getProfileImg()));
+        if (qryTeamDTO.getTeamMembers() != null) {
+            List<QryTeamMemberVO> teamMemberList = new ArrayList<>();
+            for (QryEmployeeDTO employee : qryTeamDTO.getTeamMembers()) {
+                teamMemberList.add(new QryTeamMemberVO(employee.getId(), employee.getName(), employee.getProfileImg()));
+            }
+            qryTeamVO.setMembers(teamMemberList);
         }
-        qryTeamVO.setMembers(teamMemberList);
 
         return qryTeamVO;
     }
