@@ -88,4 +88,20 @@ class QryAnonymousBoardCommentServiceImplTests {
             qryAnonymousBoardCommentService.findAllAnonymousBoardComment(invalidAnonymousBoardId, pageRequest);
         });
     }
+
+    @Test
+    void countAnonymousBoardComment_ValidAnonymousBoardId_ReturnsCommentCount() {
+        long commentCount = qryAnonymousBoardCommentService.countAnonymousBoardComment(anonymousBoardId);
+
+        assertEquals(2, commentCount);
+    }
+
+    @Test
+    void countAnonymousBoardComment_InvalidAnonymousBoardId_ReturnsZero() {
+        int invalidAnonymousBoardId = 999;
+
+        long commentCount = qryAnonymousBoardCommentService.countAnonymousBoardComment(invalidAnonymousBoardId);
+
+        assertEquals(0, commentCount);
+    }
 }

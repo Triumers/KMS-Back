@@ -6,4 +6,5 @@ import org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardCommentDTO
 
 public interface QryAnonymousBoardCommentService {
     Page<QryAnonymousBoardCommentDTO> findAllAnonymousBoardComment(int anonymousBoardId, Pageable pageable);
+    long countAnonymousBoardComment(int anonymousBoardId);
 }
