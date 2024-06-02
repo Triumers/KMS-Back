@@ -21,11 +21,11 @@ public interface QryPostMapper {
 
     List<QryTag> selectTagList(int postId);
 
-    long countTabPostList(int tabId);
-
     boolean selectIsEditingByPostId(int postId);
 
     List<Integer> selectParticipantsListByOriginId(int postId);
 
     Integer originAuthorId(Integer postId);
+
+    Integer selectPostCount(QryRequestPost request, Pageable pageable);
 }
