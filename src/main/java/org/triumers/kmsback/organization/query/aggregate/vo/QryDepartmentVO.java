@@ -1,4 +1,4 @@
-package org.triumers.kmsback.organization.query.dto;
+package org.triumers.kmsback.organization.query.aggregate.vo;
 
 import lombok.*;
 
@@ -9,8 +9,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class QryCenterDTO {
+public class QryDepartmentVO {
     int id;
     String name;
-    List<QryDepartmentDTO> belongDepartments;
+    List<QryTeamVO> belongTeams;
 }

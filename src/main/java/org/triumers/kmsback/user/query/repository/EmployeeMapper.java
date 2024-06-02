@@ -17,4 +17,6 @@ public interface EmployeeMapper {
     List<QryEmployee> findByName(String name);
 
     List<QryEmployee> findByTeamId(int teamId);
+
+    List<QryEmployee> findSimpleInfoByTeamId(int teamId);
 }
