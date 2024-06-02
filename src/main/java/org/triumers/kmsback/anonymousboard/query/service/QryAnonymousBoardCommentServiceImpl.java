@@ -30,4 +30,9 @@ public class QryAnonymousBoardCommentServiceImpl implements QryAnonymousBoardCom
         }
         return new PageImpl<>(anonymousBoardCommentList, pageable, total);
     }
+
+    @Override
+    public long countAnonymousBoardComment(int anonymousBoardId) {
+        return qryAnonymousBoardCommentMapper.countAnonymousBoardComment(anonymousBoardId);
+    }
 }
