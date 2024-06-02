@@ -61,6 +61,21 @@ class QryPostServiceTest {
     }
 
     @Test
+    @DisplayName("회원이 속한 전체 게시글 리스트 조회")
+    void findAllPostListByTab() throws NotLoginException {
+
+        registPost();
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        QryRequestPost request = new QryRequestPost(1, null);
+
+        Page<QryPostAndTagsDTO> postList = qryPostService.findAllPostListByEmployee(request, pageRequest);
+
+        assertFalse(postList.isEmpty());
+    }
+
+    @Test
     @DisplayName("단일 게시글 조회")
     void findPostById() throws NotLoginException {
 
