@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.organization.query.aggregate.vo.*;
 import org.triumers.kmsback.organization.query.dto.QryCenterDTO;
 import org.triumers.kmsback.organization.query.dto.QryDepartmentDTO;
@@ -139,6 +140,81 @@ public class OrganizationController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(allDepartmentVO);
+    }
+
+    @GetMapping("/team/id/{id}")
+    public ResponseEntity<QryTeamVO> findTeamById(@PathVariable("id") int id) {
+
+        QryTeamDTO team;
+        try {
+            team = qryTeamService.findQryTeamById(id);
+        } catch (WrongInputValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(teamDetailToVO(team));
+    }
+
+    @GetMapping("/team/detail/id/{id}")
+    public ResponseEntity<QryTeamVO> findTeamDetailById(@PathVariable("id") int id) {
+
+        QryTeamDTO team;
+        try {
+            team = qryTeamService.findQryTeamDetailById(id);
+        } catch (WrongInputValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(teamDetailToVO(team));
+    }
+
+    @PostMapping("/team/name")
+    public ResponseEntity<List<QryTeamVO>> findTeamByName(@RequestBody QryRequestSearchNameVO request) {
+
+        List<QryTeamDTO> allTeam;
+        try {
+            allTeam = qryTeamService.findTeamListByName(request.getName());
+        } catch (WrongInputValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        List<QryTeamVO> allTeamVO = new ArrayList<>();
+
+        for (QryTeamDTO team : allTeam) {
+            allTeamVO.add(teamDetailToVO(team));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(allTeamVO);
+    }
+
+    @GetMapping("/team/department-id/{departmentId}")
+    public ResponseEntity<List<QryTeamVO>> findTeamByDepartmentId(@PathVariable("departmentId") int departmentId) {
+
+        List<QryTeamDTO> allTeam;
+        try {
+            allTeam = qryTeamService.findTeamListByDepartmentId(departmentId);
+        } catch (WrongInputValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        List<QryTeamVO> allTeamVO = new ArrayList<>();
+
+        for (QryTeamDTO team : allTeam) {
+            allTeamVO.add(teamDetailToVO(team));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(allTeamVO);
+    }
+
+    @GetMapping("/team/detail/department-id/{departmentId}")
+    public ResponseEntity<List<QryTeamVO>> findTeamDetailByDepartmentId(@PathVariable("departmentId") int departmentId) {
+
+        List<QryTeamDTO> allTeam = qryTeamService.findTeamDetailListByDepartmentId(departmentId);
+        List<QryTeamVO> allTeamVO = new ArrayList<>();
+
+        for (QryTeamDTO team : allTeam) {
+            allTeamVO.add(teamDetailToVO(team));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(allTeamVO);
     }
 
     private QryCenterVO centerDetailToVO(QryCenterDTO qryCenterDTO) {

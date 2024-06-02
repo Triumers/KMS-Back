@@ -3,6 +3,7 @@ package org.triumers.kmsback.organization.query.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.organization.query.aggregate.entity.QryTeam;
 import org.triumers.kmsback.organization.query.dto.QryTeamDTO;
 import org.triumers.kmsback.organization.query.repository.OrganizationMapper;
@@ -29,20 +30,23 @@ public class QryTeamServiceImpl implements QryTeamService {
     }
 
     @Override
-    public QryTeamDTO findQryTeamById(int id) {
+    public QryTeamDTO findQryTeamById(int id) throws WrongInputValueException {
         return teamToDto(organizationMapper.findTeamById(id));
     }
 
     // 팀원 포함 조회
     @Override
-    public QryTeamDTO findQryTeamDetailById(int teamId) {
+    public QryTeamDTO findQryTeamDetailById(int teamId) throws WrongInputValueException {
         QryTeam team = organizationMapper.findTeamById(teamId);
+        if (team == null) {
+            throw new WrongInputValueException();
+        }
         List<QryEmployeeDTO> teamMembers = qryEmployeeService.findSimpleInfoByTeamId(teamId);
         return new QryTeamDTO(team.getId(), team.getName(), team.getDepartmentId(), null, teamMembers);
     }
 
     @Override
-    public List<QryTeamDTO> findTeamListByName(String teamName) {
+    public List<QryTeamDTO> findTeamListByName(String teamName) throws WrongInputValueException {
 
         List<QryTeam> teamList = organizationMapper.findTeamListByName(teamName);
         List<QryTeamDTO> teamDtoList = new ArrayList<>();
@@ -55,7 +59,7 @@ public class QryTeamServiceImpl implements QryTeamService {
     }
 
     @Override
-    public List<QryTeamDTO> findTeamListByDepartmentId(int departmentId) {
+    public List<QryTeamDTO> findTeamListByDepartmentId(int departmentId) throws WrongInputValueException {
         List<QryTeam> teamList = organizationMapper.findTeamListByDepartmentId(departmentId);
         List<QryTeamDTO> teamDtoList = new ArrayList<>();
 
@@ -78,8 +82,13 @@ public class QryTeamServiceImpl implements QryTeamService {
         return teamDtoList;
     }
 
-    private QryTeamDTO teamToDto(QryTeam qryTeam) {
+    private QryTeamDTO teamToDto(QryTeam qryTeam) throws WrongInputValueException {
+        if (qryTeam == null) {
+            throw new WrongInputValueException();
+        }
+
         String departmentName = qryDepartmentService.findDepartmentById(qryTeam.getDepartmentId()).getName();
+
         return new QryTeamDTO(qryTeam.getId(), qryTeam.getName(), qryTeam.getDepartmentId(), departmentName, null);
     }
 }

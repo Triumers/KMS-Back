@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.organization.command.Application.dto.CmdCenterDTO;
 import org.triumers.kmsback.organization.command.Application.dto.CmdDepartmentDTO;
 import org.triumers.kmsback.organization.command.Application.dto.CmdTeamDTO;
@@ -41,7 +42,7 @@ class QryTeamServiceTest {
 
     @DisplayName("팀 검색 by Id")
     @Test
-    void findQryTeamById() {
+    void findQryTeamById() throws WrongInputValueException {
 
         // given
         int teamId = addTeamForTest();
@@ -57,7 +58,7 @@ class QryTeamServiceTest {
 
     @DisplayName("팀 검색 by 팀명")
     @Test
-    void findTeamListByName() {
+    void findTeamListByName() throws WrongInputValueException {
 
         // given
         int departmentId = addDepartmentForTest();
@@ -87,7 +88,7 @@ class QryTeamServiceTest {
 
     @DisplayName("팀 검색 by 부서")
     @Test
-    void findTeamListByDepartmentId() {
+    void findTeamListByDepartmentId() throws WrongInputValueException {
 
         // given
         int departmentId = addDepartmentForTest();
