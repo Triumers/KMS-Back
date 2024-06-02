@@ -3,13 +3,8 @@ package org.triumers.kmsback.organization.query.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.triumers.kmsback.organization.query.aggregate.vo.QryCenterVO;
-import org.triumers.kmsback.organization.query.aggregate.vo.QryDepartmentVO;
-import org.triumers.kmsback.organization.query.aggregate.vo.QryTeamMemberVO;
-import org.triumers.kmsback.organization.query.aggregate.vo.QryTeamVO;
+import org.springframework.web.bind.annotation.*;
+import org.triumers.kmsback.organization.query.aggregate.vo.*;
 import org.triumers.kmsback.organization.query.dto.QryCenterDTO;
 import org.triumers.kmsback.organization.query.dto.QryDepartmentDTO;
 import org.triumers.kmsback.organization.query.dto.QryTeamDTO;
@@ -36,10 +31,52 @@ public class OrganizationController {
         this.qryTeamService = qryTeamService;
     }
 
-    @GetMapping("/center/all-detail")
+    @GetMapping("/center/detail/all")
     public ResponseEntity<List<QryCenterVO>> findAllCenterDetail() {
 
         List<QryCenterDTO> allCenter = qryCenterService.findAllCenterDetailList();
+        List<QryCenterVO> allCenterVO = new ArrayList<>();
+
+        for (QryCenterDTO centerDTO : allCenter) {
+            allCenterVO.add(centerDetailToVO(centerDTO));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(allCenterVO);
+    }
+
+    @GetMapping("/center/all")
+    public ResponseEntity<List<QryCenterVO>> findAllCenter() {
+
+        List<QryCenterDTO> allCenter = qryCenterService.findAllCenterList();
+        List<QryCenterVO> allCenterVO = new ArrayList<>();
+
+        for (QryCenterDTO centerDTO : allCenter) {
+            allCenterVO.add(centerDetailToVO(centerDTO));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(allCenterVO);
+    }
+
+    @GetMapping("/center/id/{id}")
+    public ResponseEntity<QryCenterVO> findCenterById(@PathVariable("id") int id) {
+
+        QryCenterDTO qryCenterDTO = qryCenterService.findCenterById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(centerDetailToVO(qryCenterDTO));
+    }
+
+    @GetMapping("/center/detail/id/{id}")
+    public ResponseEntity<QryCenterVO> findCenterDetailById(@PathVariable("id") int id) {
+
+        QryCenterDTO qryCenterDTO = qryCenterService.findCenterDetailById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(centerDetailToVO(qryCenterDTO));
+    }
+
+    @PostMapping("center/name")
+    public ResponseEntity<List<QryCenterVO>> findCenterByName(@RequestBody QryRequestSearchNameVO request) {
+
+        List<QryCenterDTO> allCenter = qryCenterService.findCenterListByName(request.getName());
         List<QryCenterVO> allCenterVO = new ArrayList<>();
 
         for (QryCenterDTO centerDTO : allCenter) {
