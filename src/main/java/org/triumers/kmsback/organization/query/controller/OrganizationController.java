@@ -86,6 +86,61 @@ public class OrganizationController {
         return ResponseEntity.status(HttpStatus.OK).body(allCenterVO);
     }
 
+    @GetMapping("/department/id/{id}")
+    public ResponseEntity<QryDepartmentVO> findDepartmentById(@PathVariable("id") int id) {
+
+        QryDepartmentDTO qryDepartmentDTO = qryDepartmentService.findDepartmentById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(departmentDetailToVO(qryDepartmentDTO));
+    }
+
+    @GetMapping("/department/detail/id/{id}")
+    public ResponseEntity<QryDepartmentVO> findDepartmentDetailById(@PathVariable("id") int id) {
+
+        QryDepartmentDTO qryDepartmentDTO = qryDepartmentService.findDepartmentDetailById(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(departmentDetailToVO(qryDepartmentDTO));
+    }
+
+    @PostMapping("/department/name")
+    public ResponseEntity<List<QryDepartmentVO>> findDepartmentByName(@RequestBody QryRequestSearchNameVO request) {
+
+        List<QryDepartmentDTO> allDepartment = qryDepartmentService.findDepartmentListByName(request.getName());
+        List<QryDepartmentVO> allDepartmentVO = new ArrayList<>();
+
+        for (QryDepartmentDTO departmentDTO : allDepartment) {
+            allDepartmentVO.add(departmentDetailToVO(departmentDTO));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(allDepartmentVO);
+    }
+
+    @GetMapping("/department/center-id/{centerId}")
+    public ResponseEntity<List<QryDepartmentVO>> findDepartmentCenterById(@PathVariable("centerId") int centerId) {
+
+        List<QryDepartmentDTO> allDepartment = qryDepartmentService.findDepartmentListByCenterId(centerId);
+        List<QryDepartmentVO> allDepartmentVO = new ArrayList<>();
+
+        for (QryDepartmentDTO departmentDTO : allDepartment) {
+            allDepartmentVO.add(departmentDetailToVO(departmentDTO));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(allDepartmentVO);
+    }
+
+    @GetMapping("/department/detail/center-id/{centerId}")
+    public ResponseEntity<List<QryDepartmentVO>> findDepartmentDetailCenterById(@PathVariable("centerId") int centerId) {
+
+        List<QryDepartmentDTO> allDepartment = qryDepartmentService.findDepartmentDetailListByCenterId(centerId);
+        List<QryDepartmentVO> allDepartmentVO = new ArrayList<>();
+
+        for (QryDepartmentDTO departmentDTO : allDepartment) {
+            allDepartmentVO.add(departmentDetailToVO(departmentDTO));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(allDepartmentVO);
+    }
+
     private QryCenterVO centerDetailToVO(QryCenterDTO qryCenterDTO) {
         QryCenterVO qryCenterVO = new QryCenterVO();
         qryCenterVO.setId(qryCenterDTO.getId());
