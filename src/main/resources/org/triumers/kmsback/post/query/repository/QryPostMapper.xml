@@ -50,17 +50,28 @@
                          FROM tbl_post
                          WHERE (ORIGIN_ID IS NULL AND RECENT_ID IS NOT NULL AND DELETED_AT IS NULL)
                        ))
-           AND A.TAB_RELATION_ID = #{request.tabRelationId}
+        <if test="request.tabRelationId != null">
+            AND A.TAB_RELATION_ID = #{request.tabRelationId}
+        </if>
+        <if test="request.tabRelationId == null and !request.tabList.isEmpty() ">
+            AND A.TAB_RELATION_ID IN
+            <foreach collection="request.tabList" item="tab" open="(" close=")" separator="," >
+                #{tab}
+            </foreach>
+        </if>
         <if test="request.categoryId != null">
            AND A.CATEGORY_ID = #{request.categoryId}
+        </if>
+        <if test="request.categoryId == null">
+            AND A.CATEGORY_ID IS NULL
         </if>
         <if test="request.title != null">
            AND A.TITLE LIKE CONCAT('%', #{request.title}, '%')
         </if>
-        <if test="request.keyword != null">
-           AND A.CONTENT LIKE CONCAT('%', #{request.keyword}, '%')
+        <if test="request.content != null">
+           AND A.CONTENT LIKE CONCAT('%', #{request.content}, '%')
         </if>
-        <if test="request.tags != null">
+        <if test="request.tags != null and !request.tags.isEmpty()">
            AND A.ID IN (
                          SELECT B.POST_ID
                            FROM tbl_post_tag B
@@ -74,7 +85,9 @@
                        )
         </if>
          ORDER BY COALESCE(A.ORIGIN_ID, A.ID) ASC
+        <if test="pageable != null">
          LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
+        </if>
     </select>
 
     <select id="selectTagList" parameterType="_int" resultMap="tagResultMap">
@@ -86,6 +99,51 @@
          WHERE A.POST_ID = #{postId}
     </select>
 
+    <select id="selectPostCount" resultType="int">
+        SELECT
+               Count(A.ID)
+          FROM tbl_post A
+         WHERE ((A.ORIGIN_ID IS NULL AND A.RECENT_ID IS NULL AND A.DELETED_AT IS NULL)
+            OR A.ID IN (
+                         SELECT RECENT_ID
+                           FROM tbl_post
+                          WHERE (ORIGIN_ID IS NULL AND RECENT_ID IS NOT NULL AND DELETED_AT IS NULL)
+                         ))
+        <if test="request.tabRelationId != null">
+            AND A.TAB_RELATION_ID = #{request.tabRelationId}
+        </if>
+        <if test="request.tabRelationId == null">
+            AND A.TAB_RELATION_ID IN
+            <foreach collection="request.tabList" item="tab" open="(" close=")" separator="," >
+                #{tab}
+            </foreach>
+        </if>
+        <if test="request.categoryId != null">
+            AND A.CATEGORY_ID = #{request.categoryId}
+        </if>
+        <if test="request.categoryId == null">
+            AND A.CATEGORY_ID IS NULL
+        </if>
+        <if test="request.title != null">
+            AND A.TITLE LIKE CONCAT('%', #{request.title}, '%')
+        </if>
+        <if test="request.content != null">
+            AND A.CONTENT LIKE CONCAT('%', #{request.content}, '%')
+        </if>
+        <if test="request.tags != null and !request.tags.isEmpty()">
+            AND A.ID IN (
+                          SELECT B.POST_ID
+                            FROM tbl_post_tag B
+                            JOIN tbl_tag C ON B.TAG_ID = C.ID
+                           WHERE C.NAME IN
+            <foreach collection="request.tags" item="tag" open="(" close=")" separator="," >
+                #{tag}
+            </foreach>
+            GROUP BY B.POST_ID
+            HAVING COUNT(DISTINCT C.NAME) = ${request.tags.size}
+            )
+        </if>
+    </select>
 
     <select id="selectPostById" parameterType="_int" resultMap="postResultMap">
         SELECT
@@ -148,19 +206,6 @@
                A.EMPLOYEE_ID
           FROM tbl_like A
          WHERE A.POST_ID = #{postId}
-    </select>
-
-    <select id="countTabPostList" parameterType="_int" resultType="long">
-        SELECT
-               COUNT(*)
-          FROM tbl_post A
-         WHERE ((A.ORIGIN_ID IS NULL AND A.RECENT_ID IS NULL AND A.DELETED_AT IS NULL)
-            OR A.ID IN (
-                         SELECT RECENT_ID
-                           FROM tbl_post
-                          WHERE (ORIGIN_ID IS NULL AND RECENT_ID IS NOT NULL AND DELETED_AT IS NULL)
-                       ))
-           AND TAB_RELATION_ID = #{tabId}
     </select>
 
     <select id="selectIsEditingByPostId" parameterType="_int" resultType="boolean">

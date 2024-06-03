@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.post.query.aggregate.vo.QryRequestPost;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
@@ -24,14 +25,23 @@ public class QryPostController {
         this.qryPostService = qryPostService;
     }
 
-    @GetMapping("/tab")
+    @PostMapping("/tab")
     public ResponseEntity<Page<QryPostAndTagsDTO>> findPostListByTab(@RequestBody QryRequestPost request, Pageable pageable){
+
         Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(request, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(postList);
     }
 
-    @GetMapping("/{id}")
+    @PostMapping("/tab/all")
+    public ResponseEntity<Page<QryPostAndTagsDTO>> findAllPostListByEmployee(@RequestBody QryRequestPost request, Pageable pageable) throws NotLoginException {
+
+        Page<QryPostAndTagsDTO> postList = qryPostService.findAllPostListByEmployee(request, pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(postList);
+    }
+
+    @GetMapping("find/{id}")
     public ResponseEntity<QryPostAndTagsDTO> findPostById(@PathVariable int id){
         QryPostAndTagsDTO post = qryPostService.findPostById(id);
 

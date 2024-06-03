@@ -32,6 +32,13 @@ public class QryAnonymousBoardCommentController {
         return ResponseEntity.ok(anonymousBoardCommentList);
     }
 
+    // 댓글 개수 조회
+    @GetMapping("/count")
+    public ResponseEntity<Long> getAnonymousBoardCommentCount(@PathVariable int anonymousBoardId) {
+        long commentCount = qryAnonymousBoardCommentService.countAnonymousBoardComment(anonymousBoardId);
+        return ResponseEntity.ok(commentCount);
+    }
+
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {

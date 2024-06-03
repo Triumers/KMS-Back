@@ -8,4 +8,6 @@ import java.util.List;
 @Mapper
 public interface GroupMapper {
     List<QryGroupDTO> findGroupByEmployeeId(int employeeId);
+
+    List<Integer> findGroupIdByEmployeeId(int employeeId);
 }

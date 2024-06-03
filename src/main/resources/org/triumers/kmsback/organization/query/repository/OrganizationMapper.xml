@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.triumers.kmsback.organization.query.repository.OrganizationMapper">
+    
+    <resultMap id="centerMap" type="org.triumers.kmsback.organization.query.aggregate.entity.QryCenter">
+        <id property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+    </resultMap>
+
+    <resultMap id="departmentMap" type="org.triumers.kmsback.organization.query.aggregate.entity.QryDepartment">
+        <id property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="centerId" column="CENTER_ID"/>
+    </resultMap>
+
+    <resultMap id="teamMap" type="org.triumers.kmsback.organization.query.aggregate.entity.QryTeam">
+        <id property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="departmentId" column="DEPARTMENT_ID"/>
+    </resultMap>
+
+    <select id="findCenterById" resultMap="centerMap" parameterType="int">
+        SELECT *
+          FROM tbl_center
+         WHERE ID = #{id}
+    </select>
+
+    <select id="findCenterListByName" resultMap="centerMap" parameterType="String">
+        SELECT *
+          FROM tbl_center
+         WHERE NAME LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <select id="findAllCenter" resultMap="centerMap" parameterType="int">
+        SELECT *
+          FROM tbl_center
+    </select>
+
+    <select id="findDepartmentById" resultMap="departmentMap" parameterType="int">
+        SELECT *
+          FROM tbl_department
+         WHERE ID = #{id}
+    </select>
+
+    <select id="findDepartmentListByName" resultMap="departmentMap" parameterType="String">
+        SELECT *
+          FROM tbl_department
+         WHERE NAME LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <select id="findDepartmentListByCenterId" resultMap="departmentMap" parameterType="int">
+        SELECT *
+          FROM tbl_department
+         WHERE CENTER_ID = #{centerId}
+    </select>
+
+    <select id="findTeamById" resultMap="teamMap" parameterType="int">
+        SELECT *
+          FROM tbl_team
+         WHERE ID = #{id}
+    </select>
+
+    <select id="findTeamListByName" resultMap="teamMap" parameterType="String">
+        SELECT *
+          FROM tbl_team
+         WHERE NAME LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <select id="findTeamListByDepartmentId" resultMap="teamMap" parameterType="int">
+        SELECT *
+          FROM tbl_team
+         WHERE DEPARTMENT_ID = #{departmentId}
+    </select>
+
+</mapper>

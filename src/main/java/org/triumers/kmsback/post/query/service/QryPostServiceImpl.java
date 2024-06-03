@@ -4,7 +4,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.group.query.service.QryGroupService;
+import org.triumers.kmsback.tab.command.Application.service.CmdTabService;
 import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
+import org.triumers.kmsback.user.command.Application.service.AuthService;
 import org.triumers.kmsback.user.command.Application.service.CmdEmployeeService;
 import org.triumers.kmsback.post.query.aggregate.entity.QryLike;
 import org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag;
@@ -12,6 +16,7 @@ import org.triumers.kmsback.post.query.aggregate.entity.QryTag;
 import org.triumers.kmsback.post.query.aggregate.vo.QryRequestPost;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
 import org.triumers.kmsback.post.query.repository.QryPostMapper;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +26,14 @@ public class QryPostServiceImpl implements QryPostService {
 
     private final QryPostMapper qryPostMapper;
     private final CmdEmployeeService cmdEmployeeService;
+    private final AuthService authService;
+    private final QryGroupService qryGroupService;
 
-    public QryPostServiceImpl(QryPostMapper qryPostMapper, CmdEmployeeService cmdEmployeeService) {
+    public QryPostServiceImpl(QryPostMapper qryPostMapper, CmdEmployeeService cmdEmployeeService, CmdTabService cmdTabService, AuthService authService, QryGroupService qryGroupService) {
         this.qryPostMapper = qryPostMapper;
         this.cmdEmployeeService = cmdEmployeeService;
+        this.authService = authService;
+        this.qryGroupService = qryGroupService;
     }
 
     @Override
@@ -37,10 +46,23 @@ public class QryPostServiceImpl implements QryPostService {
         }
 
         List<QryPostAndTagsDTO> postDTOList = QryPostAndTagListToDTOList(postList, "origin");
-
-        long total = qryPostMapper.countTabPostList(request.getTabRelationId());
+        
+        long total = qryPostMapper.selectPostCount(request, null);
 
         return new PageImpl<>(postDTOList, pageable, total);
+    }
+
+    @Override
+    public Page<QryPostAndTagsDTO> findAllPostListByEmployee(QryRequestPost request, Pageable pageable) throws NotLoginException {
+
+        Employee employee = authService.whoAmI();
+
+        List<Integer> tabList = qryGroupService.findGroupIdByEmployeeId(employee.getId());
+
+        request.setTabRelationId(null);
+        request.setTabList(tabList);
+
+        return findPostListByTab(request, pageable);
     }
 
     @Override
@@ -56,6 +78,7 @@ public class QryPostServiceImpl implements QryPostService {
         postDTO.setTags(convertTagToString(post.getTags()));
         postDTO.setHistory(findHistoryListByOriginId(postId));
         postDTO.setParticipants(findParticipantsListByOriginId(postId));
+        postDTO.setLikeList(findLikeListByPostId(postId));
 
         return postDTO;
     }
@@ -115,6 +138,11 @@ public class QryPostServiceImpl implements QryPostService {
                     post.getPostImg(), post.getCreatedAt(), employeeDTO, post.getOriginId(),
                     post.getRecentId(), post.getTabRelationId(), post.getCategoryId());
             postDTO.setTags(convertTagToString(post.getTags()));
+
+            if(type.equals("origin")){
+                List<CmdEmployeeDTO> like = findLikeListByPostId((post.getOriginId() != null) ? post.getOriginId() : post.getId());
+                postDTO.setLikeList(like);
+            }
             postDTOList.add(postDTO);
         }
         return postDTOList;
