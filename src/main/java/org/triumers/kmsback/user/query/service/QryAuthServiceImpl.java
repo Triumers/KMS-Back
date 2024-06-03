@@ -43,8 +43,15 @@ public class QryAuthServiceImpl implements QryAuthService {
     }
 
     @Override
-    public QryDocsDTO findMyLike() {
-        return null;
+    public QryDocsDTO findMyLike() throws NotLoginException {
+
+        QryDocsDTO result = new QryDocsDTO();
+        result.setDocsType("Like POST");
+
+        List<QryPostAndTagsDTO> myLikePost = qryPostService.findLikePostByEmployeeId(getLoggedInEmployeeId());
+        List<Map<String, String>> myPostListDTO = new ArrayList<>();
+
+        return getQryDocsDTO(result, myLikePost, myPostListDTO);
     }
 
     @Override
