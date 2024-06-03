@@ -59,7 +59,7 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService 
         int offset = (page - 1) * size;
         int limit = size;
 
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findByType(typeId, requesterId, offset, limit);
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findByType(requesterId, typeId, offset, limit);
         if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
             throw new IllegalArgumentException("No approvals found for requesterId: " + requesterId + ", typeId: " + typeId);
         }
@@ -112,7 +112,7 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService 
         int offset = (page - 1) * size;
         int limit = size;
 
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findReceivedByType(typeId, approverId, offset, limit);
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findReceivedByType(approverId, typeId, offset, limit);
         if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
             throw new IllegalArgumentException("No approvals found for approverId: " + approverId + ", typeId: " + typeId);
         }
