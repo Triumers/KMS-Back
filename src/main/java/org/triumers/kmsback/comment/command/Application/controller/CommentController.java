@@ -1,44 +1,40 @@
 package org.triumers.kmsback.comment.command.Application.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.triumers.kmsback.comment.command.Application.service.CommentServiceImpl;
-import org.triumers.kmsback.comment.command.Domain.aggregate.entity.Comment;
-import org.triumers.kmsback.comment.query.dto.CommentDTO;
-import org.triumers.kmsback.common.translation.entity.Post;
-import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
+import org.triumers.kmsback.comment.command.Application.dto.CmdCommentDTO;
+import org.triumers.kmsback.comment.command.Application.service.CommentService;
+import org.triumers.kmsback.common.exception.NotAuthorizedException;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/comments")
 public class CommentController {
 
     @Autowired
-    private CommentServiceImpl commentService;
-
-    @GetMapping("/post/{postId}")
-    public ResponseEntity<List<CommentDTO>> getCommentsByPostId(@PathVariable Long postId) {
-        List<CommentDTO> comments = commentService.getCommentByPostId(postId);
-        return ResponseEntity.ok(comments);
-    }
+    private CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<Comment> createComment(@RequestParam Integer postId, @RequestParam Long authorId, @RequestParam String content) {
-        Comment comment = commentService.createComment(postId, authorId, content);
-        return ResponseEntity.ok(comment);
+    public ResponseEntity<CmdCommentDTO> addComment(@RequestBody CmdCommentDTO comment) {
+        return ResponseEntity.ok(commentService.addComment(comment));
     }
 
     @PutMapping("/{commentId}")
-    public ResponseEntity<Comment> updateComment(@PathVariable Long commentId, @RequestParam String content) {
-        Comment updatedComment = commentService.updateComment(commentId, content);
-        return ResponseEntity.ok(updatedComment);
+    public ResponseEntity<CmdCommentDTO> updateComment(@PathVariable Integer commentId, @RequestBody CmdCommentDTO comment) throws NotAuthorizedException {
+        return ResponseEntity.ok(commentService.updateComment(commentId, comment));
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
+    public ResponseEntity<Void> deleteComment(@PathVariable Integer commentId, @RequestParam Long userId, @RequestParam boolean isAdmin) throws NotAuthorizedException {
+        commentService.deleteComment(commentId, userId, isAdmin);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(NotAuthorizedException.class)
+    public ResponseEntity<String> handleNotAuthorizedException(NotAuthorizedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 }

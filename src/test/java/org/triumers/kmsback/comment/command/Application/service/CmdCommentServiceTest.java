@@ -1,71 +1,118 @@
-//package org.triumers.kmsback.comment.command.Application.service;
-//
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.transaction.annotation.Transactional;
-//import org.triumers.kmsback.comment.command.Application.dto.CmdCommentDTO;
-//import org.triumers.kmsback.comment.command.Domain.aggregate.entity.CmdComment;
-//import org.triumers.kmsback.comment.command.Domain.repository.CmdCommentRepository;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//
-//@SpringBootTest
-//@Transactional
-//public class CmdCommentServiceTest {
-//
-//    @Autowired
-//    private CmdCommentService cmdCommentService;
-//
-//    @Autowired
-//    private CmdCommentRepository commentRepository;
-//
-//    @Test
-//    public void testAddComment() {
-//        CmdCommentDTO dto = new CmdCommentDTO();
-//        dto.setAuthorId(1L);
-//        dto.setPostId(1L);
-//        dto.setContent("This is a test comment");
-//
-//        cmdCommentService.addComment(dto);
-//
-//        CmdComment comment = commentRepository.findAll().get(0);
-//        assertThat(comment.getAuthorId()).isEqualTo(dto.getAuthorId());
-//        assertThat(comment.getPostId()).isEqualTo(dto.getPostId());
-//        assertThat(comment.getContent()).isEqualTo(dto.getContent());
-//    }
-//
-//    @Test
-//    public void testUpdateComment() {
-//        CmdComment comment = new CmdComment();
-//        comment.setAuthorId(1L);
-//        comment.setPostId(1L);
-//        comment.setContent("Original content");
-//        commentRepository.save(comment);
-//
-//        CmdCommentDTO dto = new CmdCommentDTO();
-//        dto.setAuthorId(1L);
-//        dto.setContent("Update content");
-//
-//        cmdCommentService.updateComment(comment.getId(), dto);
-//
-//        CmdComment updateComment = commentRepository.findById(comment.getId()).orElse(null);
-//        assertThat(updateComment).isNotNull();
-//        assertThat(updateComment.getContent()).isEqualTo("Updated content");
-//    }
-//
-//    @Test
-//    public void testDeleteComment() {
-//        CmdComment comment = new CmdComment();
-//        comment.setAuthorId(1L);
-//        comment.setPostId(1L);
-//        comment.setContent("Content to be deleted");
-//        commentRepository.save(comment);
-//
-//        cmdCommentService.deleteComment(comment.getId(), 1L);
-//
-//        CmdComment deletedComment = commentRepository.findById(comment.getId()).orElse(null);
-//        assertThat(deletedComment).isNotNull();
-//        assertThat(deletedComment.getDeletedAt()).isNotNull();
-//    }
-//}
+package org.triumers.kmsback.comment.command.Application.service;
+
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.triumers.kmsback.comment.command.Application.dto.CmdCommentDTO;
+import org.triumers.kmsback.comment.command.Domain.aggregate.entity.CmdComment;
+import org.triumers.kmsback.comment.command.Domain.repository.CommentRepository;
+import org.triumers.kmsback.common.exception.NotAuthorizedException;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+public class CmdCommentServiceTest {
+    @Mock
+    private CommentRepository commentRepository;
+
+    @InjectMocks
+    private CommentServiceImpl commentService;
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @DisplayName("댓글 추가 테스트")
+    @Test
+    public void testAddComment() {
+        CmdCommentDTO dto = new CmdCommentDTO();
+        dto.setContent("Test Comment");
+        dto.setAuthorId(1L);
+        dto.setPostId(1L);
+
+        CmdComment savedComment = new CmdComment();
+        savedComment.setId(1);
+        savedComment.setContent(dto.getContent());
+        savedComment.setAuthorId(dto.getAuthorId());
+        savedComment.setPostId(dto.getPostId());
+
+        when(commentRepository.save(any(CmdComment.class))).thenReturn(savedComment);
+
+        CmdCommentDTO result = commentService.addComment(dto);
+        assertEquals(dto.getContent(), result.getContent());
+    }
+
+    @DisplayName("댓글 수정 테스트")
+    @Test
+    public void testUpdateCommentSuccess() throws NotAuthorizedException {
+        CmdComment existingComment = new CmdComment();
+        existingComment.setId(1);
+        existingComment.setAuthorId(1L);
+        existingComment.setContent("Old Comment");
+
+        CmdCommentDTO dto = new CmdCommentDTO();
+        dto.setId(1);
+        dto.setAuthorId(1L);
+        dto.setContent("Updated Comment");
+
+        when(commentRepository.findById(1)).thenReturn(Optional.of(existingComment));
+        when(commentRepository.save(any(CmdComment.class))).thenReturn(existingComment);
+
+        CmdCommentDTO result = commentService.updateComment(1, dto);
+        assertEquals(dto.getContent(), result.getContent());
+    }
+
+
+    @DisplayName("댓글 수정 예외처리 테스트")
+    @Test
+    public void testUpdateCommentNotAuthorized() {
+        CmdComment existingComment = new CmdComment();
+        existingComment.setId(1);
+        existingComment.setAuthorId(1L);
+        existingComment.setContent("Old Comment");
+
+        CmdCommentDTO dto = new CmdCommentDTO();
+        dto.setId(1);
+        dto.setAuthorId(2L);  // 다른 사용자 ID
+        dto.setContent("Updated Comment");
+
+        when(commentRepository.findById(1)).thenReturn(Optional.of(existingComment));
+
+        assertThrows(NotAuthorizedException.class, () -> commentService.updateComment(1, dto));
+    }
+
+    @DisplayName("댓글 삭제 테스트")
+    @Test
+    public void testDeleteCommentSuccess() throws NotAuthorizedException {
+        CmdComment existingComment = new CmdComment();
+        existingComment.setId(1);
+        existingComment.setAuthorId(1L);
+
+        when(commentRepository.findById(1)).thenReturn(Optional.of(existingComment));
+
+        assertDoesNotThrow(() -> commentService.deleteComment(1, 1L, false));
+        verify(commentRepository, times(1)).delete(existingComment);
+    }
+
+    @DisplayName("댓글 삭제 예외처리 테스트")
+    @Test
+    public void testDeleteCommentNotAuthorized() {
+        CmdComment existingComment = new CmdComment();
+        existingComment.setId(1);
+        existingComment.setAuthorId(1L);
+
+        when(commentRepository.findById(1)).thenReturn(Optional.of(existingComment));
+
+        assertThrows(NotAuthorizedException.class, () -> commentService.deleteComment(1, 2L, false));
+        verify(commentRepository, never()).delete(existingComment);
+    }
+
+}
