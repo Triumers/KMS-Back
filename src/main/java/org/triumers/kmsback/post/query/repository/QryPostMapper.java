@@ -28,4 +28,6 @@ public interface QryPostMapper {
     Integer originAuthorId(Integer postId);
 
     Integer selectPostCount(QryRequestPost request, Pageable pageable);
+
+    List<QryPostAndTag> selectMyPostList(int employeeId);
 }

@@ -121,6 +121,22 @@ public class QryPostServiceImpl implements QryPostService {
         return qryPostMapper.selectIsEditingByPostId(postId);
     }
 
+    @Override
+    public List<QryPostAndTagsDTO> findPostByEmployeeId(int employeeId) {
+
+        List<QryPostAndTag> myPostList = qryPostMapper.selectMyPostList(employeeId);
+
+        List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
+        for (int i = 0; i < myPostList.size(); i++) {
+            QryPostAndTag myPost = myPostList.get(i);
+            QryPostAndTagsDTO myPostDTO = new QryPostAndTagsDTO(myPost.getId(), myPost.getTitle(), myPost.getOriginId());
+
+            postDTOList.add(myPostDTO);
+        }
+
+        return postDTOList;
+    }
+
     private List<QryPostAndTagsDTO> QryPostAndTagListToDTOList(List<QryPostAndTag> postList, String type){
 
         List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
