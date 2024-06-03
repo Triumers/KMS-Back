@@ -22,7 +22,7 @@
     </select>
 
     <select id="countAnonymousBoardByTitle" resultType="long">
-        SELECT COUNT(*) FROM tbl_anonymous_board WHERE title LIKE '%#{param1}%'
+        SELECT COUNT(*) FROM tbl_anonymous_board WHERE title LIKE CONCAT('%', #{param1}, '%')
     </select>
 
     <select id="searchAnonymousBoardByContent" resultType="org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO">
@@ -34,7 +34,7 @@
     </select>
 
     <select id="countAnonymousBoardByContent" resultType="long">
-        SELECT COUNT(*) FROM tbl_anonymous_board WHERE content LIKE '%#{param1}%'
+        SELECT COUNT(*) FROM tbl_anonymous_board WHERE content LIKE CONCAT('%', #{param1}, '%')
     </select>
 
     <select id="searchAnonymousBoardByTitleAndContent" resultType="org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO">
@@ -46,7 +46,7 @@
     </select>
 
     <select id="countAnonymousBoardByTitleAndContent" resultType="long">
-        SELECT COUNT(*) FROM tbl_anonymous_board WHERE title LIKE '%#{param1}%' OR content LIKE '%#{param1}%'
+        SELECT COUNT(*) FROM tbl_anonymous_board WHERE title LIKE CONCAT('%', #{param1}, '%') OR content LIKE CONCAT('%', #{param1}, '%')
     </select>
 
     <select id="findAnonymousBoardById" resultType="org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO">
