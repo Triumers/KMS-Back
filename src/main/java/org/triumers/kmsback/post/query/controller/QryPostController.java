@@ -62,6 +62,20 @@ public class QryPostController {
         return ResponseEntity.status(HttpStatus.OK).body(likeList);
     }
 
+    @GetMapping("/{id}/like/employee")
+    public ResponseEntity<Boolean> findIsLikedByPostId(@PathVariable int id) throws NotLoginException {
+        Boolean isLiked = qryPostService.findIsLikedByPostId(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(isLiked);
+    }
+
+    @GetMapping("/{id}/favorite/employee")
+    public ResponseEntity<Boolean> findIsFavoriteByPostId(@PathVariable int id) throws NotLoginException {
+        Boolean isFavorite = qryPostService.findIsFavoriteByPostId(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(isFavorite);
+    }
+
     @GetMapping("/{id}/isEditing")
     public ResponseEntity<Boolean> getEditingState(@PathVariable int id){
         Boolean isEditing = qryPostService.getIsEditingById(id);

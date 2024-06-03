@@ -101,9 +101,34 @@ class QryPostServiceTest {
 
         CmdLikeDTO like = new CmdLikeDTO(1, 1);
         cmdPostService.likePost(like);
+
         List<QryPostAndTagsDTO> likedPost = qryPostService.findLikePostByEmployeeId(1);
 
         assertThat(likedPost).isNotNull();
+    }
+
+    @Test
+    @DisplayName("게시글id로 사용자 좋아요 여부 조회")
+    void isLikeByPostId() throws NotLoginException {
+
+        CmdLikeDTO like = new CmdLikeDTO(1, 1);
+        cmdPostService.likePost(like);
+
+        Boolean isLiked = qryPostService.findIsLikedByPostId(1);
+
+        assertThat(isLiked).isTrue();
+    }
+
+    @Test
+    @DisplayName("게시글id로 사용자 즐겨찾기 여부 조회")
+    void isFavoriteByPostId() throws NotLoginException {
+
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, 1);
+        cmdPostService.favoritePost(favorite);
+
+        Boolean isFavorite = qryPostService.findIsFavoriteByPostId(1);
+
+        assertThat(isFavorite).isTrue();
     }
 
     @Test

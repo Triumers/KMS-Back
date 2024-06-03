@@ -168,6 +168,23 @@ public class QryPostServiceImpl implements QryPostService {
         return postDTOList;
     }
 
+    @Override
+    public Boolean findIsLikedByPostId(int postId) throws NotLoginException {
+
+        Employee employee = authService.whoAmI();
+
+        return qryPostMapper.selectIsLikedByPostId(postId, employee.getId());
+    }
+
+    @Override
+    public Boolean findIsFavoriteByPostId(int postId) throws NotLoginException {
+
+        Employee employee = authService.whoAmI();
+
+        return qryPostMapper.selectIsFavoriteByPostId(postId, employee.getId());
+    }
+
+
     private List<QryPostAndTagsDTO> QryPostAndTagListToDTOList(List<QryPostAndTag> postList, String type){
 
         List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();

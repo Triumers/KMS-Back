@@ -274,5 +274,20 @@
         )
     </select>
 
+    <select id="selectIsLikedByPostId" resultType="boolean">
+        SELECT
+               COUNT(*) > 0
+          FROM tbl_like A
+         WHERE A.EMPLOYEE_ID = #{employeeId}
+           AND A.POST_ID = #{postId};
+    </select>
+
+    <select id="selectIsFavoriteByPostId" resultType="boolean">
+        SELECT
+               COUNT(*) > 0
+          FROM tbl_favorites A
+         WHERE A.EMPLOYEE_ID = #{employeeId}
+           AND A.POST_ID = #{postId};
+    </select>
 
 </mapper>

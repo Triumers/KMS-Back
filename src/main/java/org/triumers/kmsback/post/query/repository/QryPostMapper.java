@@ -21,7 +21,7 @@ public interface QryPostMapper {
 
     List<QryTag> selectTagList(int postId);
 
-    boolean selectIsEditingByPostId(int postId);
+    Boolean selectIsEditingByPostId(int postId);
 
     List<Integer> selectParticipantsListByOriginId(int postId);
 
@@ -34,4 +34,8 @@ public interface QryPostMapper {
     List<QryPostAndTag> selectMyLikeList(int employeeId);
 
     List<QryPostAndTag> selectMyFavoriteList(int employeeId);
+
+    Boolean selectIsLikedByPostId(int postId, int employeeId);
+
+    Boolean selectIsFavoriteByPostId(int postId, int employeeId);
 }
