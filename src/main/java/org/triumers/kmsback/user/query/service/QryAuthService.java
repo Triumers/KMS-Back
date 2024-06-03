@@ -7,5 +7,5 @@ public interface QryAuthService {
     QryDocsDTO findMyPost() throws NotLoginException;
     QryDocsDTO findMyComment();
     QryDocsDTO findMyLike();
-    QryDocsDTO findMyBookmark();
+    QryDocsDTO findMyFavoritePost() throws NotLoginException;
 }

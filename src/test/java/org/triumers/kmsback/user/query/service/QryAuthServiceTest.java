@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
 import org.triumers.kmsback.post.command.Application.service.CmdPostService;
 import org.triumers.kmsback.user.command.Application.service.AuthService;
@@ -65,14 +66,18 @@ class QryAuthServiceTest {
 
     @DisplayName("내가 즐겨찾기한 게시글 조회 테스트")
     @Test
-    void findMyFavoritePost() {
+    void findMyFavoritePost() throws NotLoginException {
 
         // given
+        CmdPostAndTagsDTO savedPost = cmdPostService.registPost(createTestPost());
+        cmdPostService.favoritePost(new CmdFavoritesDTO(authService.whoAmI().getId(), savedPost.getId()));
 
         // when
+        QryDocsDTO myFavoritePost = qryAuthService.findMyFavoritePost();
 
         // then
-
+        assertNotNull(myFavoritePost);
+        assertEquals(1, myFavoritePost.getDocsInfoList().size());
     }
 
     private CmdPostAndTagsDTO createTestPost() {
