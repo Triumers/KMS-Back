@@ -16,6 +16,7 @@ import org.triumers.kmsback.approval.query.dto.QryRequestApprovalWithEmployeeDTO
 import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.TestUserInfo;
 import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.user.command.Application.dto.ManageUserDTO;
 import org.triumers.kmsback.user.command.Application.service.AuthService;
 import org.triumers.kmsback.user.command.Application.service.ManagerService;
@@ -63,7 +64,7 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @Test
-    public void findByIdTest() throws NotLoginException {
+    public void findByIdTest() throws NotLoginException, WrongInputValueException {
         // given
         requesterSetUp();
         int requesterId = authService.whoAmI().getId();
@@ -84,7 +85,7 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @Test
-    public void findAllTest() throws NotLoginException {
+    public void findAllTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
         int size = 10; // 한 페이지에 표시할 결과의 최대 개수
@@ -101,7 +102,7 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @Test
-    public void findByTypeTest() throws NotLoginException {
+    public void findByTypeTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
         int size = 10; // 한 페이지에 표시할 결과의 최대 개수
@@ -122,7 +123,7 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @Test
-    public void findByDateRangeTest() throws NotLoginException {
+    public void findByDateRangeTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
         int size = 10; // 한 페이지에 표시할 결과의 최대 개수
@@ -144,7 +145,7 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @Test
-    public void findReceivedByIdTest() throws NotLoginException {
+    public void findReceivedByIdTest() throws NotLoginException, WrongInputValueException {
         // given
         approverSetUp();
         int approverId = authService.whoAmI().getId();
@@ -163,7 +164,7 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @Test
-    public void findAllReceivedTest() throws NotLoginException {
+    public void findAllReceivedTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
         int size = 10; // 한 페이지에 표시할 결과의 최대 개수
@@ -180,7 +181,7 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @Test
-    public void findReceivedByTypeTest() throws NotLoginException {
+    public void findReceivedByTypeTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
         int size = 10; // 한 페이지에 표시할 결과의 최대 개수
@@ -200,7 +201,7 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @Test
-    public void findReceivedByDateRangeTest() throws NotLoginException {
+    public void findReceivedByDateRangeTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
         int size = 10; // 한 페이지에 표시할 결과의 최대 개수
@@ -220,7 +221,7 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @Test
-    public void findByContentTest() throws NotLoginException {
+    public void findByContentTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
         int size = 10; // 한 페이지에 표시할 결과의 최대 개수
@@ -237,7 +238,7 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @Test
-    public void findByStatusTest() throws NotLoginException {
+    public void findByStatusTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
         int size = 10; // 한 페이지에 표시할 결과의 최대 개수
@@ -254,7 +255,7 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @Test
-    public void findReceivedByContentTest() throws NotLoginException {
+    public void findReceivedByContentTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
         int size = 10; // 한 페이지에 표시할 결과의 최대 개수
@@ -271,7 +272,7 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @Test
-    public void findReceivedByStatusTest() throws NotLoginException {
+    public void findReceivedByStatusTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
         int size = 10; // 한 페이지에 표시할 결과의 최대 개수

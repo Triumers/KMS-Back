@@ -9,6 +9,7 @@ import org.triumers.kmsback.approval.query.dto.QryRequestApprovalWithEmployeeDTO
 import org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO;
 import org.triumers.kmsback.approval.query.service.QryRequestApprovalService;
 import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,14 +27,14 @@ public class QryRequestApprovalController {
 
     // 본인이 요청한 결재 단일 조회
     @GetMapping("/{approvalId}")
-    public QryRequestApprovalWithEmployeeDTO findById(@PathVariable("approvalId") int approvalId) throws NotLoginException {
+    public QryRequestApprovalWithEmployeeDTO findById(@PathVariable("approvalId") int approvalId) throws NotLoginException, WrongInputValueException {
         return qryRequestApprovalService.findById(approvalId);
     }
 
     // 본인이 요청한 결재 전체 조회(페이징 처리)
     @GetMapping
     public List<QryRequestApprovalInfoDTO> findAll(@RequestParam(value = "page", defaultValue = "1") int page,
-                                                   @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException {
+                                                   @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException, WrongInputValueException {
         return qryRequestApprovalService.findAll(page, size);
     }
 
@@ -41,7 +42,7 @@ public class QryRequestApprovalController {
     @GetMapping("/type/{typeId}")
     public List<QryRequestApprovalInfoDTO> findByType(@PathVariable("typeId") int typeId,
                                                       @RequestParam(value = "page", defaultValue = "1") int page,
-                                                      @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException {
+                                                      @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException, WrongInputValueException {
         return qryRequestApprovalService.findByType(typeId, page, size);
     }
 
@@ -50,20 +51,20 @@ public class QryRequestApprovalController {
     public List<QryRequestApprovalInfoDTO> findByDateRange(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
                                                            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
                                                            @RequestParam(value = "page", defaultValue = "1") int page,
-                                                           @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException {
+                                                           @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException, WrongInputValueException {
         return qryRequestApprovalService.findByDateRange(startDate, endDate, page, size);
     }
 
     // 본인이 요청받은 결재 단일 조회
     @GetMapping("/received/{requestApprovalId}")
-    public QryRequestApprovalWithEmployeeDTO findReceivedById(@PathVariable("requestApprovalId") int requestApprovalId) throws NotLoginException {
+    public QryRequestApprovalWithEmployeeDTO findReceivedById(@PathVariable("requestApprovalId") int requestApprovalId) throws NotLoginException, WrongInputValueException {
         return qryRequestApprovalService.findReceivedById(requestApprovalId);
     }
 
     // 본인이 요청받은 결재 전체 조회(페이징 처리)
     @GetMapping("/received")
     public List<QryRequestApprovalInfoDTO> findAllReceived(@RequestParam(value = "page", defaultValue = "1") int page,
-                                                           @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException {
+                                                           @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException, WrongInputValueException {
         return qryRequestApprovalService.findAllReceived(page, size);
     }
 
@@ -71,7 +72,7 @@ public class QryRequestApprovalController {
     @GetMapping("/received/type/{typeId}")
     public List<QryRequestApprovalInfoDTO> findReceivedByType(@PathVariable("typeId") int typeId,
                                                               @RequestParam(value = "page", defaultValue = "1") int page,
-                                                              @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException {
+                                                              @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException, WrongInputValueException {
         return qryRequestApprovalService.findReceivedByType(typeId, page, size);
     }
 
@@ -80,7 +81,7 @@ public class QryRequestApprovalController {
     public List<QryRequestApprovalInfoDTO> findReceivedByDateRange(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
                                                                    @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
                                                                    @RequestParam(value = "page", defaultValue = "1") int page,
-                                                                   @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException {
+                                                                   @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException, WrongInputValueException {
         return qryRequestApprovalService.findReceivedByDateRange(startDate, endDate, page, size);
     }
 
@@ -90,7 +91,7 @@ public class QryRequestApprovalController {
             @RequestParam("keyword") String keyword,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
-    ) throws NotLoginException {
+    ) throws NotLoginException, WrongInputValueException {
         return qryRequestApprovalService.findByContent(keyword, page, size);
     }
 
@@ -100,7 +101,7 @@ public class QryRequestApprovalController {
             @PathVariable("status") String status,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
-    ) throws NotLoginException {
+    ) throws NotLoginException, WrongInputValueException {
         return qryRequestApprovalService.findByStatus(status, page, size);
     }
 
@@ -110,7 +111,7 @@ public class QryRequestApprovalController {
             @RequestParam("keyword") String keyword,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
-    ) throws NotLoginException {
+    ) throws NotLoginException, WrongInputValueException {
         return qryRequestApprovalService.findReceivedByContent(keyword, page, size);
     }
 
@@ -120,7 +121,7 @@ public class QryRequestApprovalController {
             @PathVariable("status") String status,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
-    ) throws NotLoginException {
+    ) throws NotLoginException, WrongInputValueException {
         return qryRequestApprovalService.findReceivedByStatus(status, page, size);
     }
 

@@ -59,7 +59,7 @@
                  JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
         WHERE A.EMPLOYEE_ID = #{requesterId}
           AND RA.APPROVAL_ORDER = (SELECT MAX(APPROVAL_ORDER) FROM tbl_request_approval WHERE APPROVAL_ID = RA.APPROVAL_ID)
-          AND T.ID = #{typeId}
+          AND A.TYPE_ID = #{typeId}
             LIMIT #{offset}, #{limit}
     </select>
 
@@ -182,7 +182,7 @@
                  JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
                  JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
         WHERE RA.EMPLOYEE_ID = #{approverId}
-          AND T.ID = #{typeId}
+          AND A.TYPE_ID = #{typeId}
             LIMIT #{offset}, #{limit}
     </select>
 
