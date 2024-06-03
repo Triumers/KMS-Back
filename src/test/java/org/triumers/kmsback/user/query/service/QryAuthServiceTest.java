@@ -45,8 +45,7 @@ class QryAuthServiceTest {
     void findMyPost() throws NotLoginException {
 
         // given
-        CmdPostAndTagsDTO post = createTestPost("new");
-        cmdPostService.registPost(post);
+        cmdPostService.registPost(createTestPost());
 
         // when
         QryDocsDTO myPost = qryAuthService.findMyPost();
@@ -64,11 +63,19 @@ class QryAuthServiceTest {
     void findMyLike() {
     }
 
+    @DisplayName("내가 즐겨찾기한 게시글 조회 테스트")
     @Test
-    void findMyBookmark() {
+    void findMyFavoritePost() {
+
+        // given
+
+        // when
+
+        // then
+
     }
 
-    private CmdPostAndTagsDTO createTestPost(String type){
+    private CmdPostAndTagsDTO createTestPost() {
         List<String> tags = new ArrayList<>();
         tags.add("개발");
         tags.add("tag1");
@@ -76,6 +83,6 @@ class QryAuthServiceTest {
         tags.add("tag3");
         tags.add("tag4");
 
-        return new CmdPostAndTagsDTO(type + "Title",  type + "Content", null, LocalDateTime.now(), 1, 1, tags);
+        return new CmdPostAndTagsDTO("new Title", "new Content", null, LocalDateTime.now(), 1, 1, tags);
     }
 }
