@@ -64,7 +64,7 @@ class QryRequestApprovalServiceImplTests {
         approvalRepository.deleteAll();
     }
 
-    @DisplayName("본인이 요청한 결재 ID로 결재 단일 조회")
+    @DisplayName("본인이 요청한 결재 ID로 단일 조회")
     @Test
     public void findByIdTest() throws NotLoginException, WrongInputValueException {
         // given
@@ -190,8 +190,7 @@ class QryRequestApprovalServiceImplTests {
         assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getIsApproved().equals(status)));
     }
 
-
-
+    @DisplayName("본인이 요청받은 결재 ID로 단일 조회")
     @Test
     public void findReceivedByIdTest() throws NotLoginException, WrongInputValueException {
         // given
@@ -211,6 +210,7 @@ class QryRequestApprovalServiceImplTests {
         assertEquals("스터디 생성 요청", result.getApprovalInfo().getType());
     }
 
+    @DisplayName("본인이 요청받은 결재 전체 조회")
     @Test
     public void findAllReceivedTest() throws NotLoginException, WrongInputValueException {
         // given
@@ -220,7 +220,8 @@ class QryRequestApprovalServiceImplTests {
         int approverId = authService.whoAmI().getId();
 
         // when
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findAllReceived(page, size);
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
+                null, null, null, null, null, page, size);
 
         // then
         int expectedTotalCount = 4; // 예상되는 총 결과 개수
@@ -228,6 +229,7 @@ class QryRequestApprovalServiceImplTests {
         assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getApproverId() == approverId));
     }
 
+    @DisplayName("본인이 요청받은 결재 유형별 조회")
     @Test
     public void findReceivedByTypeTest() throws NotLoginException, WrongInputValueException {
         // given
@@ -237,7 +239,8 @@ class QryRequestApprovalServiceImplTests {
         approverSetUp();
 
         // when
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedByType(typeId, page, size);
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
+                typeId, null, null, null, null, page, size);
 
         // then
         int expectedTotalCount = 3; // 예상되는 총 결과 개수
@@ -248,6 +251,7 @@ class QryRequestApprovalServiceImplTests {
         assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getContent().equals("Test Content")));
     }
 
+    @DisplayName("본인이 요청받은 결재 기간별 조회")
     @Test
     public void findReceivedByDateRangeTest() throws NotLoginException, WrongInputValueException {
         // given
@@ -258,7 +262,8 @@ class QryRequestApprovalServiceImplTests {
         approverSetUp();
 
         // when
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedByDateRange(startDate, endDate, page, size);
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
+                null, startDate, endDate, null, null, page, size);
 
         // then
         int expectedTotalCount = 4; // 예상되는 총 결과 개수
@@ -268,6 +273,7 @@ class QryRequestApprovalServiceImplTests {
         ));
     }
 
+    @DisplayName("본인이 요청받은 결재 키워드로 검색")
     @Test
     public void findReceivedByContentTest() throws NotLoginException, WrongInputValueException {
         // given
@@ -277,7 +283,8 @@ class QryRequestApprovalServiceImplTests {
         approverSetUp();
 
         // when
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedByContent(keyword, page, size);
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
+                null, null, null, keyword, null, page, size);
 
         // then
         int expectedTotalCount = 3; // 예상되는 총 결과 개수
@@ -285,6 +292,7 @@ class QryRequestApprovalServiceImplTests {
         assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getContent().contains(keyword)));
     }
 
+    @DisplayName("본인이 요청받은 결재 승인 상태별 조회")
     @Test
     public void findReceivedByStatusTest() throws NotLoginException, WrongInputValueException {
         // given
@@ -294,14 +302,14 @@ class QryRequestApprovalServiceImplTests {
         approverSetUp();
 
         // when
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedByStatus(status, page, size);
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
+                null, null, null, null, status, page, size);
 
         // then
         int expectedTotalCount = 4; // 예상되는 총 결과 개수
         assertEquals(expectedTotalCount, approvalInfoDTOS.size());
         assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getIsApproved().equals(status)));
     }
-
 
     private void addHrManagerForTest() {
         ManageUserDTO userDTO = new ManageUserDTO(TestUserInfo.HR_MANAGER_EMAIL, TestUserInfo.PASSWORD, TestUserInfo.NAME, null,
