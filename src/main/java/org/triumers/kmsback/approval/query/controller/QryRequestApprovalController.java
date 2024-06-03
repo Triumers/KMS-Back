@@ -31,29 +31,29 @@ public class QryRequestApprovalController {
         return qryRequestApprovalService.findById(approvalId);
     }
 
-    // 본인이 요청한 결재 전체 조회(페이징 처리)
-    @GetMapping
-    public List<QryRequestApprovalInfoDTO> findAll(@RequestParam(value = "page", defaultValue = "1") int page,
-                                                   @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException, WrongInputValueException {
-        return qryRequestApprovalService.findAll(page, size);
+    // 본인이 요청한 결재 전체/유형별/기간별/상태별/검색 조회
+    @GetMapping("/search")
+    public List<QryRequestApprovalInfoDTO> findQryRequestApprovalInfo(
+            @RequestParam(value = "typeId", required = false) Integer typeId,
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) throws NotLoginException, WrongInputValueException {
+        return qryRequestApprovalService.findQryRequestApprovalInfo(
+                typeId,
+                startDate,
+                endDate,
+                keyword,
+                status,
+                page,
+                size
+        );
     }
 
-    // 본인이 요청한 결재 유형별 조회(페이징 처리)
-    @GetMapping("/type/{typeId}")
-    public List<QryRequestApprovalInfoDTO> findByType(@PathVariable("typeId") int typeId,
-                                                      @RequestParam(value = "page", defaultValue = "1") int page,
-                                                      @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException, WrongInputValueException {
-        return qryRequestApprovalService.findByType(typeId, page, size);
-    }
 
-    // 본인이 요청한 결재 기간별 조회(페이징 처리)
-    @GetMapping("/date-range")
-    public List<QryRequestApprovalInfoDTO> findByDateRange(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                                           @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-                                                           @RequestParam(value = "page", defaultValue = "1") int page,
-                                                           @RequestParam(value = "size", defaultValue = "10") int size) throws NotLoginException, WrongInputValueException {
-        return qryRequestApprovalService.findByDateRange(startDate, endDate, page, size);
-    }
 
     // 본인이 요청받은 결재 단일 조회
     @GetMapping("/received/{requestApprovalId}")
@@ -85,25 +85,7 @@ public class QryRequestApprovalController {
         return qryRequestApprovalService.findReceivedByDateRange(startDate, endDate, page, size);
     }
 
-    // 본인이 요청한 결재 내용 검색
-    @GetMapping("/search")
-    public List<QryRequestApprovalInfoDTO> findByContent(
-            @RequestParam("keyword") String keyword,
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size
-    ) throws NotLoginException, WrongInputValueException {
-        return qryRequestApprovalService.findByContent(keyword, page, size);
-    }
 
-    // 본인이 요청한 결재 승인 상태별 조회
-    @GetMapping("/status/{status}")
-    public List<QryRequestApprovalInfoDTO> findByStatus(
-            @PathVariable("status") String status,
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size
-    ) throws NotLoginException, WrongInputValueException {
-        return qryRequestApprovalService.findByStatus(status, page, size);
-    }
 
     // 본인이 요청받은 결재 내용 검색
     @GetMapping("/received/search")

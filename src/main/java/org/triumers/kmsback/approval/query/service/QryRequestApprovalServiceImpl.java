@@ -1,5 +1,6 @@
 package org.triumers.kmsback.approval.query.service;
 
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO;
@@ -39,47 +40,41 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService 
         return getQryRequestApprovalWithEmployeeDTO(approvalInfo);
     }
 
-    // 본인이 요청한 결재 전체 조회(페이징 처리)
-    public List<QryRequestApprovalInfoDTO> findAll(int page, int size) throws NotLoginException, WrongInputValueException {
+    // 본인이 요청한 결재 전체/유형별/기간별/상태별/검색 조회
+    public List<QryRequestApprovalInfoDTO> findQryRequestApprovalInfo(
+            @Nullable Integer typeId,
+            @Nullable LocalDateTime startDate,
+            @Nullable LocalDateTime endDate,
+            @Nullable String keyword,
+            @Nullable String status,
+            int page,
+            int size
+    ) throws NotLoginException, WrongInputValueException {
         int requesterId = authService.whoAmI().getId();
         int offset = (page - 1) * size;
         int limit = size;
 
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findAll(requesterId, offset, limit);
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findQryRequestApprovalInfo(
+                requesterId,
+                typeId,
+                startDate,
+                endDate,
+                keyword,
+                status,
+                offset,
+                limit
+        );
+
         if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
-            throw new IllegalArgumentException("No approvals found for requesterId: " + requesterId);
+            throw new IllegalArgumentException("No approvals found for the given criteria.");
         }
 
         return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
     }
 
-    // 본인이 요청한 결재 유형별 조회(페이징 처리)
-    public List<QryRequestApprovalInfoDTO> findByType(int typeId, int page, int size) throws NotLoginException, WrongInputValueException {
-        int requesterId = authService.whoAmI().getId();
-        int offset = (page - 1) * size;
-        int limit = size;
 
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findByType(requesterId, typeId, offset, limit);
-        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
-            throw new IllegalArgumentException("No approvals found for requesterId: " + requesterId + ", typeId: " + typeId);
-        }
 
-        return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
-    }
 
-    // 본인이 요청한 결재 기간별 조회(페이징 처리)
-    public List<QryRequestApprovalInfoDTO> findByDateRange(LocalDateTime startDate, LocalDateTime endDate, int page, int size) throws NotLoginException, WrongInputValueException {
-        int requesterId = authService.whoAmI().getId();
-        int offset = (page - 1) * size;
-        int limit = size;
-
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findByDateRange(requesterId, startDate, endDate, offset, limit);
-        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
-            throw new IllegalArgumentException("No approvals found for requesterId: " + requesterId + " between " + startDate + " and " + endDate);
-        }
-
-        return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
-    }
 
     // 본인이 요청받은 결재 단일 조회
     public QryRequestApprovalWithEmployeeDTO findReceivedById(int requestApprovalId) throws NotLoginException, WrongInputValueException {
@@ -134,33 +129,8 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService 
         return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
     }
 
-    // 본인이 요청한 결재 내용 검색
-    public List<QryRequestApprovalInfoDTO> findByContent(String keyword, int page, int size) throws NotLoginException, WrongInputValueException {
-        int requesterId = authService.whoAmI().getId();
-        int offset = (page - 1) * size;
-        int limit = size;
 
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findByContent(requesterId, keyword, offset, limit);
-        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
-            throw new IllegalArgumentException("No approvals found for requesterId: " + requesterId + ", keyword: " + keyword);
-        }
 
-        return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
-    }
-
-    // 본인이 요청한 결재 승인 상태별 조회
-    public List<QryRequestApprovalInfoDTO> findByStatus(String status, int page, int size) throws NotLoginException, WrongInputValueException {
-        int requesterId = authService.whoAmI().getId();
-        int offset = (page - 1) * size;
-        int limit = size;
-
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalMapper.findByStatus(requesterId, status, offset, limit);
-        if (approvalInfoDTOS == null || approvalInfoDTOS.isEmpty()) {
-            throw new IllegalArgumentException("No approvals found for requesterId: " + requesterId + ", status: " + status);
-        }
-
-        return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
-    }
 
     // 본인이 요청받은 결재 내용 검색
     public List<QryRequestApprovalInfoDTO> findReceivedByContent(String keyword, int page, int size) throws NotLoginException, WrongInputValueException {
