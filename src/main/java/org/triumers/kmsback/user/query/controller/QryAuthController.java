@@ -37,6 +37,21 @@ public class QryAuthController {
         }
     }
 
+    @GetMapping("/my-comment")
+    public ResponseEntity<QryResponseDocsVO> findMyComment() {
+
+        try {
+            QryDocsDTO myComment = qryAuthService.findMyComment();
+            return ResponseEntity.status(HttpStatus.OK).body(new QryResponseDocsVO(
+                    "조회성공", myComment.getDocsType(), myComment.getDocsInfoList()));
+        } catch (NotLoginException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
+                    body(new QryResponseDocsVO(e.getMessage(), null, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
     @GetMapping("/like-post")
     public ResponseEntity<QryResponseDocsVO> findLikePost() {
 
