@@ -222,4 +222,22 @@
          WHERE A.ID = #{postId}
     </select>
 
+    <select id="selectMyPostList" parameterType="_int" resultMap="postResultMap">
+        SELECT
+               A.ID,
+               A.ORIGIN_ID,
+               A.TITLE
+          FROM tbl_post A
+         WHERE A.ID IN (
+        SELECT DISTINCT
+          CASE
+          WHEN B.RECENT_ID IS NOT NULL AND B.AUTHOR_ID = #{employeeId} THEN B.RECENT_ID
+          WHEN B.ORIGIN_ID IS NULL AND B.RECENT_ID IS NULL AND B.AUTHOR_ID = #{employeeId} THEN B.ID
+          WHEN B.ORIGIN_ID IS NOT NULL AND B.AUTHOR_ID = #{employeeId} THEN
+               (SELECT C.RECENT_ID FROM tbl_post C WHERE C.id = B.ORIGIN_ID)
+           END AS post_id
+          FROM tbl_post B
+        )
+    </select>
+
 </mapper>
