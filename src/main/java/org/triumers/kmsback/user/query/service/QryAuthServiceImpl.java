@@ -2,6 +2,8 @@ package org.triumers.kmsback.user.query.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.triumers.kmsback.comment.query.aggregate.entity.QryComment;
+import org.triumers.kmsback.comment.query.domain.service.QryCommentService;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
 import org.triumers.kmsback.post.query.service.QryPostService;
@@ -18,11 +20,13 @@ public class QryAuthServiceImpl implements QryAuthService {
 
     private final AuthService authService;
     private final QryPostService qryPostService;
+    private final QryCommentService qryCommentService;
 
     @Autowired
-    public QryAuthServiceImpl(AuthService authService, QryPostService qryPostService) {
+    public QryAuthServiceImpl(AuthService authService, QryPostService qryPostService, QryCommentService qryCommentService) {
         this.authService = authService;
         this.qryPostService = qryPostService;
+        this.qryCommentService = qryCommentService;
     }
 
     @Override
@@ -38,8 +42,23 @@ public class QryAuthServiceImpl implements QryAuthService {
     }
 
     @Override
-    public QryDocsDTO findMyComment() {
-        return null;
+    public QryDocsDTO findMyComment() throws NotLoginException {
+
+        QryDocsDTO result = new QryDocsDTO();
+        result.setDocsType("Comment");
+        List<Map<String, String>> myCommentListDTO = new ArrayList<>();
+        List<QryComment> myComment = qryCommentService.getCommentsByUserId((long) getLoggedInEmployeeId());
+
+        for (QryComment comment : myComment) {
+            Map<String, String> myCommentMap = new HashMap<>();
+            myCommentMap.put("id", String.valueOf(comment.getId()));
+            myCommentMap.put("content", comment.getContent());
+            myCommentMap.put("postId", String.valueOf(comment.getPostId()));
+            myCommentListDTO.add(myCommentMap);
+        }
+        result.setDocsInfoList(myCommentListDTO);
+
+        return result;
     }
 
     @Override
