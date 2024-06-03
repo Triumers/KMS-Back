@@ -36,4 +36,19 @@ public class QryController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
+    @GetMapping("/favorite-post")
+    public ResponseEntity<QryResponseDocsVO> findFavoritePost() {
+
+        try {
+            QryDocsDTO favoritePost = qryAuthService.findMyFavoritePost();
+            return ResponseEntity.status(HttpStatus.OK).body(new QryResponseDocsVO(
+                    "조회성공", favoritePost.getDocsType(), favoritePost.getDocsInfoList()));
+        } catch (NotLoginException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
+                    body(new QryResponseDocsVO(e.getMessage(), null, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
 }
