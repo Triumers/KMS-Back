@@ -137,6 +137,37 @@ public class QryPostServiceImpl implements QryPostService {
         return postDTOList;
     }
 
+    @Override
+    public List<QryPostAndTagsDTO> findLikePostByEmployeeId(int employeeId) {
+
+        List<QryPostAndTag> myLikeList = qryPostMapper.selectMyLikeList(employeeId);
+
+        List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
+        for (int i = 0; i < myLikeList.size(); i++) {
+            QryPostAndTag myPost = myLikeList.get(i);
+            QryPostAndTagsDTO myPostDTO = new QryPostAndTagsDTO(myPost.getId(), myPost.getTitle(), myPost.getOriginId());
+
+            postDTOList.add(myPostDTO);
+        }
+
+        return postDTOList;
+    }
+
+    @Override
+    public List<QryPostAndTagsDTO> findFavoritePostByEmployeeId(int employeeId) {
+        List<QryPostAndTag> myLikeList = qryPostMapper.selectMyFavoriteList(employeeId);
+
+        List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
+        for (int i = 0; i < myLikeList.size(); i++) {
+            QryPostAndTag myPost = myLikeList.get(i);
+            QryPostAndTagsDTO myPostDTO = new QryPostAndTagsDTO(myPost.getId(), myPost.getTitle(), myPost.getOriginId());
+
+            postDTOList.add(myPostDTO);
+        }
+
+        return postDTOList;
+    }
+
     private List<QryPostAndTagsDTO> QryPostAndTagListToDTOList(List<QryPostAndTag> postList, String type){
 
         List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();

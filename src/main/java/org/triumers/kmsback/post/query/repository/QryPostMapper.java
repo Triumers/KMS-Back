@@ -30,4 +30,8 @@ public interface QryPostMapper {
     Integer selectPostCount(QryRequestPost request, Pageable pageable);
 
     List<QryPostAndTag> selectMyPostList(int employeeId);
+
+    List<QryPostAndTag> selectMyLikeList(int employeeId);
+
+    List<QryPostAndTag> selectMyFavoriteList(int employeeId);
 }

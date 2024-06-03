@@ -95,6 +95,24 @@ class QryPostServiceTest {
     }
 
     @Test
+    @DisplayName("사용자가 좋아요한 게시글 조회")
+    void findLikePostByEmployeeId() throws NotLoginException {
+
+        List<QryPostAndTagsDTO> likedPost = qryPostService.findLikePostByEmployeeId(1);
+
+        assertThat(likedPost).isNotNull();
+    }
+
+    @Test
+    @DisplayName("사용자가 즐겨찾기한 게시글 조회")
+    void findFavoritePostByEmployeeId() throws NotLoginException {
+
+        List<QryPostAndTagsDTO> favoritePost = qryPostService.findFavoritePostByEmployeeId(1);
+
+        assertThat(favoritePost).isNotNull();
+    }
+
+    @Test
     @DisplayName("게시글 히스토리 조회")
     void findHistoryListByOriginId() throws NotLoginException {
 

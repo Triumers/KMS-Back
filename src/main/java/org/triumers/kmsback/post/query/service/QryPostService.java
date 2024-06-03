@@ -24,4 +24,8 @@ public interface QryPostService {
     Boolean getIsEditingById(int postId);
 
     List<QryPostAndTagsDTO> findPostByEmployeeId(int employeeId);
+
+    List<QryPostAndTagsDTO> findLikePostByEmployeeId(int employeeId);
+
+    List<QryPostAndTagsDTO> findFavoritePostByEmployeeId(int employeeId);
 }
