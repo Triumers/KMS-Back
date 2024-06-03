@@ -13,12 +13,12 @@ import org.triumers.kmsback.user.query.service.QryAuthService;
 
 @RestController
 @RequestMapping("/my-page")
-public class QryController {
+public class QryAuthController {
 
     private final QryAuthService qryAuthService;
 
     @Autowired
-    public QryController(QryAuthService qryAuthService) {
+    public QryAuthController(QryAuthService qryAuthService) {
         this.qryAuthService = qryAuthService;
     }
 
