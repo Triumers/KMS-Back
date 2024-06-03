@@ -23,11 +23,15 @@ public interface QryRequestApprovalMapper {
             @Param("limit") int limit
     );
 
-
     QryRequestApprovalInfoDTO findReceivedById(@Param("approverId") int employeeId, @Param("requestApprovalId") int requestApprovalId);
-    List<QryRequestApprovalInfoDTO> findAllReceived(@Param("approverId") int employeeId, @Param("offset") int offset, @Param("limit") int limit);
-    List<QryRequestApprovalInfoDTO> findReceivedByType(@Param("approverId") int employeeId, @Param("typeId") int typeId, @Param("offset") int offset, @Param("limit") int limit);
-    List<QryRequestApprovalInfoDTO> findReceivedByDateRange(@Param("approverId") int employeeId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("offset") int offset, @Param("limit") int limit);
-    List<QryRequestApprovalInfoDTO> findReceivedByContent(@Param("approverId") int approverId, @Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
-    List<QryRequestApprovalInfoDTO> findReceivedByStatus(@Param("approverId") int approverId, @Param("status") String status, @Param("offset") int offset, @Param("limit") int limit);
+    List<QryRequestApprovalInfoDTO> findReceivedQryRequestApprovalInfo(
+            @Param("approverId") int approverId,
+            @Param("typeId") @Nullable Integer typeId,
+            @Param("startDate") @Nullable LocalDateTime startDate,
+            @Param("endDate") @Nullable LocalDateTime endDate,
+            @Param("keyword") @Nullable String keyword,
+            @Param("status") @Nullable String status,
+            @Param("offset") int offset,
+            @Param("limit") int limit
+    );
 }
