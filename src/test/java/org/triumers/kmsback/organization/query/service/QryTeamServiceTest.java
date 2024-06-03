@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.organization.command.Application.dto.CmdCenterDTO;
 import org.triumers.kmsback.organization.command.Application.dto.CmdDepartmentDTO;
 import org.triumers.kmsback.organization.command.Application.dto.CmdTeamDTO;
@@ -41,7 +42,7 @@ class QryTeamServiceTest {
 
     @DisplayName("팀 검색 by Id")
     @Test
-    void findQryTeamById() {
+    void findQryTeamById() throws WrongInputValueException {
 
         // given
         int teamId = addTeamForTest();
@@ -57,7 +58,7 @@ class QryTeamServiceTest {
 
     @DisplayName("팀 검색 by 팀명")
     @Test
-    void findTeamListByName() {
+    void findTeamListByName() throws WrongInputValueException {
 
         // given
         int departmentId = addDepartmentForTest();
@@ -85,8 +86,33 @@ class QryTeamServiceTest {
         assertTrue(resultList.size() >= names.size());  // 테스트용으로 추가한 값 이상으로 검색되는지
     }
 
+    @DisplayName("팀 검색 by 부서")
     @Test
-    void findTeamListByDepartment() {
+    void findTeamListByDepartmentId() throws WrongInputValueException {
+
+        // given
+        int departmentId = addDepartmentForTest();
+
+        List<String> names = new ArrayList<>();
+
+        names.add(TEST_TEAM_NAME);
+        names.add(TEST_TEAM_NAME + "테스트");
+        names.add("테스트" + TEST_TEAM_NAME);
+        names.add("테스트" + TEST_TEAM_NAME + "테스트");
+
+        for (String name : names) {
+            addTeamForTest(departmentId, name);
+        }
+
+        // when
+        List<QryTeamDTO> resultList = qryTeamService.findTeamListByDepartmentId(departmentId);
+
+        // then
+        for (QryTeamDTO result : resultList) {  // 결과가 검색어를 포함하는지 여부
+            assertTrue(result.getName().contains(TEST_TEAM_NAME));
+        }
+
+        assertTrue(resultList.size() >= names.size());  // 테스트용으로 추가한 값 이상으로 검색되는지
     }
 
     private int addCenterForTest() {

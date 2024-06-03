@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.TestUserInfo;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
 
 import java.util.List;
@@ -26,7 +27,7 @@ class QryEmployeeServiceTest {
 
     @DisplayName("직원 조회 by Id")
     @Test
-    void findEmployeeById() {
+    void findEmployeeById() throws WrongInputValueException {
 
         // given
         int employeeId = userSetting();
@@ -41,7 +42,7 @@ class QryEmployeeServiceTest {
 
     @DisplayName("전체 직원 조회")
     @Test
-    void findAllEmployee() {
+    void findAllEmployee() throws WrongInputValueException {
 
         // given
         loggedInUser.setting();
@@ -55,7 +56,7 @@ class QryEmployeeServiceTest {
 
     @DisplayName("직원 조회 by Email")
     @Test
-    void findEmployeeByEmail() {
+    void findEmployeeByEmail() throws WrongInputValueException {
 
         // given
         loggedInUser.setting();
@@ -70,7 +71,7 @@ class QryEmployeeServiceTest {
 
     @DisplayName("직원 조회 by name")
     @Test
-    void findEmployeeByName() {
+    void findEmployeeByName() throws WrongInputValueException {
 
         // given
         loggedInUser.setting();
@@ -87,7 +88,7 @@ class QryEmployeeServiceTest {
 
     @DisplayName("직원 조회 by TeamId")
     @Test
-    void findEmployeeByTeamId() {
+    void findEmployeeByTeamId() throws WrongInputValueException {
 
         // given
         loggedInUser.setting();
@@ -103,7 +104,7 @@ class QryEmployeeServiceTest {
         assertFalse(result.isEmpty());
     }
 
-    private int userSetting() {
+    private int userSetting() throws WrongInputValueException {
         loggedInUser.setting();
         return qryEmployeeService.findEmployeeByEmail(TestUserInfo.EMAIL).getId();
     }

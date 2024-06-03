@@ -14,6 +14,8 @@ public interface OrganizationMapper {
 
     List<QryCenter> findCenterListByName(String name);
 
+    List<QryCenter> findAllCenter();
+
     QryDepartment findDepartmentById(int id);
 
     List<QryDepartment> findDepartmentListByName(String name);

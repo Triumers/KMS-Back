@@ -33,6 +33,11 @@
          WHERE NAME LIKE CONCAT('%', #{name}, '%')
     </select>
 
+    <select id="findAllCenter" resultMap="centerMap" parameterType="int">
+        SELECT *
+          FROM tbl_center
+    </select>
+
     <select id="findDepartmentById" resultMap="departmentMap" parameterType="int">
         SELECT *
           FROM tbl_department

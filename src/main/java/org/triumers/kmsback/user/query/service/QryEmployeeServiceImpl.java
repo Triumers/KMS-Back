@@ -1,7 +1,9 @@
 package org.triumers.kmsback.user.query.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.organization.query.service.QryTeamService;
 import org.triumers.kmsback.user.query.aggregate.entity.QryEmployee;
 import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
@@ -20,22 +22,23 @@ public class QryEmployeeServiceImpl implements QryEmployeeService {
     private final QryDutyService qryDutyService;
 
     @Autowired
-    public QryEmployeeServiceImpl(EmployeeMapper employeeMapper, QryTeamService qryTeamService, QryDutyService qryDutyService) {
+    public QryEmployeeServiceImpl(EmployeeMapper employeeMapper,
+                                  @Lazy QryTeamService qryTeamService,
+                                  QryDutyService qryDutyService) {
         this.employeeMapper = employeeMapper;
         this.qryTeamService = qryTeamService;
         this.qryDutyService = qryDutyService;
     }
 
-
     @Override
-    public QryEmployeeDTO findEmployeeById(int id) {
+    public QryEmployeeDTO findEmployeeById(int id) throws WrongInputValueException {
         QryEmployee employee = employeeMapper.findById(id);
 
         return employeeToDTO(employee);
     }
 
     @Override
-    public List<QryEmployeeDTO> findAllEmployee() {
+    public List<QryEmployeeDTO> findAllEmployee() throws WrongInputValueException {
 
         List<QryEmployee> employeeList = employeeMapper.findAllEmployee();
         List<QryEmployeeDTO> employeeDTOList = new ArrayList<>();
@@ -48,12 +51,12 @@ public class QryEmployeeServiceImpl implements QryEmployeeService {
     }
 
     @Override
-    public QryEmployeeDTO findEmployeeByEmail(String email) {
+    public QryEmployeeDTO findEmployeeByEmail(String email) throws WrongInputValueException {
         return employeeToDTO(employeeMapper.findByEmail(email));
     }
 
     @Override
-    public List<QryEmployeeDTO> findEmployeeByName(String name) {
+    public List<QryEmployeeDTO> findEmployeeByName(String name) throws WrongInputValueException {
 
         List<QryEmployee> employeeList = employeeMapper.findByName(name);
         List<QryEmployeeDTO> employeeDTOList = new ArrayList<>();
@@ -66,7 +69,7 @@ public class QryEmployeeServiceImpl implements QryEmployeeService {
     }
 
     @Override
-    public List<QryEmployeeDTO> findEmployeeByTeamId(int teamId) {
+    public List<QryEmployeeDTO> findEmployeeByTeamId(int teamId) throws WrongInputValueException {
 
         List<QryEmployee> employeeList = employeeMapper.findByTeamId(teamId);
         List<QryEmployeeDTO> employeeDTOList = new ArrayList<>();
@@ -78,7 +81,25 @@ public class QryEmployeeServiceImpl implements QryEmployeeService {
         return employeeDTOList;
     }
 
-    private QryEmployeeDTO employeeToDTO(QryEmployee employee) {
+    @Override
+    public List<QryEmployeeDTO> findSimpleInfoByTeamId(int teamId) {
+
+        List<QryEmployee> employeeList = employeeMapper.findSimpleInfoByTeamId(teamId);
+        List<QryEmployeeDTO> employeeDTOList = new ArrayList<>();
+
+        for (QryEmployee employee : employeeList) {
+            QryEmployeeDTO employeeDTO = new QryEmployeeDTO();
+            employeeDTO.setId(employee.getId());
+            employeeDTO.setName(employee.getName());
+            employeeDTO.setProfileImg(employee.getProfileImg());
+
+            employeeDTOList.add(employeeDTO);
+        }
+
+        return employeeDTOList;
+    }
+
+    private QryEmployeeDTO employeeToDTO(QryEmployee employee) throws WrongInputValueException {
 
         Map<String, String> team = new HashMap<>();
         team.put("id", String.valueOf(employee.getTeamId()));
