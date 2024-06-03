@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
+import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
 import org.triumers.kmsback.post.command.Application.service.CmdPostService;
 import org.triumers.kmsback.user.command.Application.service.AuthService;
@@ -60,8 +61,20 @@ class QryAuthServiceTest {
     void findMyComment() {
     }
 
+    @DisplayName("좋아요한 게시글 조회 테스트")
     @Test
-    void findMyLike() {
+    void findMyLike() throws NotLoginException {
+
+        // given
+        CmdPostAndTagsDTO savedPost = cmdPostService.registPost(createTestPost());
+        cmdPostService.likePost(new CmdLikeDTO(authService.whoAmI().getId(), savedPost.getId()));
+
+        // when
+        QryDocsDTO myLikePost = qryAuthService.findMyLike();
+
+        // then
+        assertNotNull(myLikePost);
+        assertEquals(1, myLikePost.getDocsInfoList().size());
     }
 
     @DisplayName("내가 즐겨찾기한 게시글 조회 테스트")
