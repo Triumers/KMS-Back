@@ -1,6 +1,7 @@
 package org.triumers.kmsback.approval.query.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -63,6 +64,7 @@ class QryRequestApprovalServiceImplTests {
         approvalRepository.deleteAll();
     }
 
+    @DisplayName("본인이 요청한 결재 ID로 결재 단일 조회")
     @Test
     public void findByIdTest() throws NotLoginException, WrongInputValueException {
         // given
@@ -84,16 +86,18 @@ class QryRequestApprovalServiceImplTests {
         assertEquals("워크스페이스 생성 요청", result.getApprovalInfo().getType());
     }
 
+    @DisplayName("본인이 요청한 결재 전체 조회")
     @Test
-    public void findAllTest() throws NotLoginException, WrongInputValueException {
+    public void findQryRequestApprovalInfoTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
-        int size = 10; // 한 페이지에 표시할 결과의 최대 개수
+        int size = 10;
         requesterSetUp();
         int requesterId = authService.whoAmI().getId();
 
         // when
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findAll(page, size);
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findQryRequestApprovalInfo(
+                null, null, null, null, null, page, size);
 
         // then
         int expectedTotalCount = 4; // 예상되는 총 결과 개수
@@ -101,17 +105,19 @@ class QryRequestApprovalServiceImplTests {
         assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getRequesterId() == requesterId));
     }
 
+    @DisplayName("본인이 요청한 결재 유형별 조회")
     @Test
-    public void findByTypeTest() throws NotLoginException, WrongInputValueException {
+    public void findQryRequestApprovalInfoByTypeTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
-        int size = 10; // 한 페이지에 표시할 결과의 최대 개수
+        int size = 10;
         int typeId = 1;
         requesterSetUp();
         int requesterId = authService.whoAmI().getId();
 
         // when
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findByType(typeId, page, size);
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findQryRequestApprovalInfo(
+                typeId, null, null, null, null, page, size);
 
         // then
         int expectedTotalCount = 3; // 예상되는 총 결과 개수
@@ -122,18 +128,20 @@ class QryRequestApprovalServiceImplTests {
         assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getType().equals(expectedType)));
     }
 
+    @DisplayName("본인이 요청한 결재 기간별 조회")
     @Test
-    public void findByDateRangeTest() throws NotLoginException, WrongInputValueException {
+    public void findQryRequestApprovalInfoByDateRangeTest() throws NotLoginException, WrongInputValueException {
         // given
         int page = 1;
-        int size = 10; // 한 페이지에 표시할 결과의 최대 개수
+        int size = 10;
         LocalDateTime startDate = LocalDateTime.of(2024, 4, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2024, 6, 30, 23, 59);
         requesterSetUp();
         int requesterId = authService.whoAmI().getId();
 
         // when
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findByDateRange(startDate, endDate, page, size);
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findQryRequestApprovalInfo(
+                null, startDate, endDate, null, null, page, size);
 
         // then
         int expectedTotalCount = 4; // 예상되는 총 결과 개수
@@ -143,6 +151,46 @@ class QryRequestApprovalServiceImplTests {
                 dto.getCreatedAt().isAfter(startDate) && dto.getCreatedAt().isBefore(endDate)
         ));
     }
+
+    @DisplayName("본인이 요청한 결재 키워드로 검색")
+    @Test
+    public void findQryRequestApprovalInfoByKeywordTest() throws NotLoginException, WrongInputValueException {
+        // given
+        int page = 1;
+        int size = 10;
+        String keyword = "Content";
+        requesterSetUp();
+
+        // when
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findQryRequestApprovalInfo(
+                null, null, null, keyword, null, page, size);
+
+        // then
+        int expectedTotalCount = 3; // 예상되는 총 결과 개수
+        assertEquals(expectedTotalCount, approvalInfoDTOS.size());
+        assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getContent().contains(keyword)));
+    }
+
+    @DisplayName("본인이 요청한 결재 승인 상태별 조회")
+    @Test
+    public void findQryRequestApprovalInfoByStatusTest() throws NotLoginException, WrongInputValueException {
+        // given
+        int page = 1;
+        int size = 10;
+        String status = "WAITING";
+        requesterSetUp();
+
+        // when
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findQryRequestApprovalInfo(
+                null, null, null, null, status, page, size);
+
+        // then
+        int expectedTotalCount = 4; // 예상되는 총 결과 개수
+        assertEquals(expectedTotalCount, approvalInfoDTOS.size());
+        assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getIsApproved().equals(status)));
+    }
+
+
 
     @Test
     public void findReceivedByIdTest() throws NotLoginException, WrongInputValueException {
@@ -218,40 +266,6 @@ class QryRequestApprovalServiceImplTests {
         assertTrue(approvalInfoDTOS.stream().allMatch(dto ->
                 dto.getCreatedAt().isAfter(startDate) && dto.getCreatedAt().isBefore(endDate)
         ));
-    }
-
-    @Test
-    public void findByContentTest() throws NotLoginException, WrongInputValueException {
-        // given
-        int page = 1;
-        int size = 10; // 한 페이지에 표시할 결과의 최대 개수
-        String keyword = "Content";
-        requesterSetUp();
-
-        // when
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findByContent(keyword, page, size);
-
-        // then
-        int expectedTotalCount = 3; // 예상되는 총 결과 개수
-        assertEquals(expectedTotalCount, approvalInfoDTOS.size());
-        assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getContent().contains(keyword)));
-    }
-
-    @Test
-    public void findByStatusTest() throws NotLoginException, WrongInputValueException {
-        // given
-        int page = 1;
-        int size = 10; // 한 페이지에 표시할 결과의 최대 개수
-        String status = "WAITING";
-        requesterSetUp();
-
-        // when
-        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findByStatus(status, page, size);
-
-        // then
-        int expectedTotalCount = 4; // 예상되는 총 결과 개수
-        assertEquals(expectedTotalCount, approvalInfoDTOS.size());
-        assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getIsApproved().equals(status)));
     }
 
     @Test
