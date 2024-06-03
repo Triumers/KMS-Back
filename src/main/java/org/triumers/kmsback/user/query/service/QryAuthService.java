@@ -5,7 +5,7 @@ import org.triumers.kmsback.user.query.dto.QryDocsDTO;
 
 public interface QryAuthService {
     QryDocsDTO findMyPost() throws NotLoginException;
-    QryDocsDTO findMyComment();
+    QryDocsDTO findMyComment() throws NotLoginException;
     QryDocsDTO findMyLike() throws NotLoginException;
     QryDocsDTO findMyFavoritePost() throws NotLoginException;
 }
