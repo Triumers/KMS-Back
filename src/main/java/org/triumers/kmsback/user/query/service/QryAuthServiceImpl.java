@@ -34,15 +34,7 @@ public class QryAuthServiceImpl implements QryAuthService {
 
         List<QryPostAndTagsDTO> myPostList = qryPostService.findPostByEmployeeId(getLoggedInEmployeeId());
 
-        for (QryPostAndTagsDTO post : myPostList) {
-            Map<String, String> postMap = new HashMap<>();
-            postMap.put("id", String.valueOf(post.getId()));
-            postMap.put("title", post.getTitle());
-            myPostListDTO.add(postMap);
-        }
-        result.setDocsInfoList(myPostListDTO);
-
-        return result;
+        return getQryDocsDTO(result, myPostList, myPostListDTO);
     }
 
     @Override
@@ -56,8 +48,27 @@ public class QryAuthServiceImpl implements QryAuthService {
     }
 
     @Override
-    public QryDocsDTO findMyBookmark() {
-        return null;
+    public QryDocsDTO findMyFavoritePost() throws NotLoginException {
+
+        QryDocsDTO result = new QryDocsDTO();
+        result.setDocsType("Favorite POST");
+
+        List<QryPostAndTagsDTO> myFavoritePost = qryPostService.findFavoritePostByEmployeeId(getLoggedInEmployeeId());
+        List<Map<String, String>> myPostListDTO = new ArrayList<>();
+
+        return getQryDocsDTO(result, myFavoritePost, myPostListDTO);
+    }
+
+    private QryDocsDTO getQryDocsDTO(QryDocsDTO result, List<QryPostAndTagsDTO> myFavoritePost, List<Map<String, String>> myPostListDTO) {
+        for (QryPostAndTagsDTO post : myFavoritePost) {
+            Map<String, String> postMap = new HashMap<>();
+            postMap.put("id", String.valueOf(post.getId()));
+            postMap.put("title", post.getTitle());
+            myPostListDTO.add(postMap);
+        }
+        result.setDocsInfoList(myPostListDTO);
+
+        return result;
     }
 
     private int getLoggedInEmployeeId() throws NotLoginException {
