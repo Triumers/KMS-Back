@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
+import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
 import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
@@ -98,6 +99,8 @@ class QryPostServiceTest {
     @DisplayName("사용자가 좋아요한 게시글 조회")
     void findLikePostByEmployeeId() throws NotLoginException {
 
+        CmdLikeDTO like = new CmdLikeDTO(1, 1);
+        cmdPostService.likePost(like);
         List<QryPostAndTagsDTO> likedPost = qryPostService.findLikePostByEmployeeId(1);
 
         assertThat(likedPost).isNotNull();
@@ -107,6 +110,8 @@ class QryPostServiceTest {
     @DisplayName("사용자가 즐겨찾기한 게시글 조회")
     void findFavoritePostByEmployeeId() throws NotLoginException {
 
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, 1);
+        cmdPostService.favoritePost(favorite);
         List<QryPostAndTagsDTO> favoritePost = qryPostService.findFavoritePostByEmployeeId(1);
 
         assertThat(favoritePost).isNotNull();
