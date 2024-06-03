@@ -45,7 +45,6 @@ class QryAuthServiceTest {
     void findMyPost() throws NotLoginException {
 
         // given
-        System.out.println("authService = " + authService.whoAmI());
         CmdPostAndTagsDTO post = createTestPost("new");
         cmdPostService.registPost(post);
 
