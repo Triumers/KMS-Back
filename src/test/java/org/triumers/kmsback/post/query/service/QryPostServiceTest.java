@@ -86,6 +86,15 @@ class QryPostServiceTest {
     }
 
     @Test
+    @DisplayName("사용자가 참여한 게시글 조회")
+    void findPostByEmployeeId() throws NotLoginException {
+
+        List<QryPostAndTagsDTO> selectedPost = qryPostService.findPostByEmployeeId(1);
+
+        assertThat(selectedPost).isNotNull();
+    }
+
+    @Test
     @DisplayName("게시글 히스토리 조회")
     void findHistoryListByOriginId() throws NotLoginException {
 
