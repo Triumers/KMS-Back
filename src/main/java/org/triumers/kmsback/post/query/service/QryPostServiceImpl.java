@@ -121,6 +121,70 @@ public class QryPostServiceImpl implements QryPostService {
         return qryPostMapper.selectIsEditingByPostId(postId);
     }
 
+    @Override
+    public List<QryPostAndTagsDTO> findPostByEmployeeId(int employeeId) {
+
+        List<QryPostAndTag> myPostList = qryPostMapper.selectMyPostList(employeeId);
+
+        List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
+        for (int i = 0; i < myPostList.size(); i++) {
+            QryPostAndTag myPost = myPostList.get(i);
+            QryPostAndTagsDTO myPostDTO = new QryPostAndTagsDTO(myPost.getId(), myPost.getTitle(), myPost.getOriginId());
+
+            postDTOList.add(myPostDTO);
+        }
+
+        return postDTOList;
+    }
+
+    @Override
+    public List<QryPostAndTagsDTO> findLikePostByEmployeeId(int employeeId) {
+
+        List<QryPostAndTag> myLikeList = qryPostMapper.selectMyLikeList(employeeId);
+
+        List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
+        for (int i = 0; i < myLikeList.size(); i++) {
+            QryPostAndTag myPost = myLikeList.get(i);
+            QryPostAndTagsDTO myPostDTO = new QryPostAndTagsDTO(myPost.getId(), myPost.getTitle(), myPost.getOriginId());
+
+            postDTOList.add(myPostDTO);
+        }
+
+        return postDTOList;
+    }
+
+    @Override
+    public List<QryPostAndTagsDTO> findFavoritePostByEmployeeId(int employeeId) {
+        List<QryPostAndTag> myLikeList = qryPostMapper.selectMyFavoriteList(employeeId);
+
+        List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
+        for (int i = 0; i < myLikeList.size(); i++) {
+            QryPostAndTag myPost = myLikeList.get(i);
+            QryPostAndTagsDTO myPostDTO = new QryPostAndTagsDTO(myPost.getId(), myPost.getTitle(), myPost.getOriginId());
+
+            postDTOList.add(myPostDTO);
+        }
+
+        return postDTOList;
+    }
+
+    @Override
+    public Boolean findIsLikedByPostId(int postId) throws NotLoginException {
+
+        Employee employee = authService.whoAmI();
+
+        return qryPostMapper.selectIsLikedByPostId(postId, employee.getId());
+    }
+
+    @Override
+    public Boolean findIsFavoriteByPostId(int postId) throws NotLoginException {
+
+        Employee employee = authService.whoAmI();
+
+        return qryPostMapper.selectIsFavoriteByPostId(postId, employee.getId());
+    }
+
+
     private List<QryPostAndTagsDTO> QryPostAndTagListToDTOList(List<QryPostAndTag> postList, String type){
 
         List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();

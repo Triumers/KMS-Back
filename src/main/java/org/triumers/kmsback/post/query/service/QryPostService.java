@@ -22,4 +22,14 @@ public interface QryPostService {
     List<CmdEmployeeDTO> findLikeListByPostId(int postId);
 
     Boolean getIsEditingById(int postId);
+
+    List<QryPostAndTagsDTO> findPostByEmployeeId(int employeeId);
+
+    List<QryPostAndTagsDTO> findLikePostByEmployeeId(int employeeId);
+
+    List<QryPostAndTagsDTO> findFavoritePostByEmployeeId(int employeeId);
+
+    Boolean findIsLikedByPostId(int postId) throws NotLoginException;
+
+    Boolean findIsFavoriteByPostId(int postId) throws NotLoginException;
 }

@@ -41,4 +41,10 @@ public class QryPostAndTagsDTO {
         this.tabRelationId = tabRelationId;
         this.categoryId = categoryId;
     }
+
+    public QryPostAndTagsDTO(Integer id, String title, Integer originId) {
+        this.id = id;
+        this.title = title;
+        this.originId = originId;
+    }
 }
