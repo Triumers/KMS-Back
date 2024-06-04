@@ -26,7 +26,7 @@ public class QryPostController {
     }
 
     @PostMapping("/tab")
-    public ResponseEntity<Page<QryPostAndTagsDTO>> findPostListByTab(@RequestBody QryRequestPost request, Pageable pageable){
+    public ResponseEntity<Page<QryPostAndTagsDTO>> findPostListByTab(@RequestBody QryRequestPost request, Pageable pageable) throws NotLoginException {
 
         Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(request, pageable);
 
@@ -42,14 +42,14 @@ public class QryPostController {
     }
 
     @GetMapping("find/{id}")
-    public ResponseEntity<QryPostAndTagsDTO> findPostById(@PathVariable int id){
+    public ResponseEntity<QryPostAndTagsDTO> findPostById(@PathVariable int id) throws NotLoginException {
         QryPostAndTagsDTO post = qryPostService.findPostById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
     @GetMapping("/{id}/history")
-    public ResponseEntity<List<QryPostAndTagsDTO>> findHistoryListByOriginId(@PathVariable int id){
+    public ResponseEntity<List<QryPostAndTagsDTO>> findHistoryListByOriginId(@PathVariable int id) throws NotLoginException {
         List<QryPostAndTagsDTO> history = qryPostService.findHistoryListByOriginId(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(history);

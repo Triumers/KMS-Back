@@ -35,7 +35,7 @@ public interface QryPostMapper {
 
     List<QryPostAndTag> selectMyFavoriteList(int employeeId);
 
-    Boolean selectIsLikedByPostId(int postId, int employeeId);
+    Integer selectIsLikedByPostId(int postId, int employeeId);
 
-    Boolean selectIsFavoriteByPostId(int postId, int employeeId);
+    Integer selectIsFavoriteByPostId(int postId, int employeeId);
 }

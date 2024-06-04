@@ -160,7 +160,6 @@ public class CmdPostServiceImpl implements CmdPostService {
         Employee employee = authService.whoAmI();
         try {
             CmdLike likePost = cmdLikeRepository.findByEmployeeIdAndPostId(employee.getId(), like.getPostId());
-            System.out.println("likePost = " + likePost);
 
             if (likePost != null) { //unlike
                 cmdLikeRepository.deleteById(likePost.getId());
