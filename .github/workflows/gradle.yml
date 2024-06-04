@@ -57,5 +57,9 @@ jobs:
           distribution: 'corretto'
           cache: gradle
 
+      - name: Make gradle.properties
+        run: |
+          echo "${{ secrets.GRADLE_PROPERTIES }}" | base64 --decode > gradle.properties
+
       - name: dependency graph 생성 및 제출
         uses: gradle/actions/dependency-submission@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
