@@ -52,6 +52,9 @@ public class Employee {
     @Column(name = "PHONE")
     private String phoneNumber;
 
+    @Column(name = "GOOGLE_AUTH_KEY")
+    private String googleAuthKey;
+
     @Column(name = "TEAM_ID")
     private int teamId;
 
