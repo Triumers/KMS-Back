@@ -34,14 +34,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean checkEmailPassword(AuthDTO authDTO) throws WrongInputValueException {
+    public boolean isHaveAuthenticator(AuthDTO authDTO) throws WrongInputValueException {
 
         Employee employee = employeeRepository.findByEmail(authDTO.getEmail());
 
-        if (employee != null) {
-            return bCryptPasswordEncoder.matches(authDTO.getPassword(), employee.getPassword());
+        // 이메일, 비밀번호가 일치하는 경우
+        if (employee != null && bCryptPasswordEncoder.matches(authDTO.getPassword(), employee.getPassword())) {
+
+            // 2차인증 여부 반환
+            return employee.getGoogleAuthKey() != null && !employee.getGoogleAuthKey().isEmpty();
         }
-        return false;
+        throw new WrongInputValueException();
     }
 
     @Override
