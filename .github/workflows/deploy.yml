@@ -26,6 +26,10 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
+      - name: Make gradle.properties
+        run: |
+          echo "${{ secrets.GRADLE_PROPERTIES }}" | base64 --decode > gradle.properties
+
       - name: Build Number
         id: build-number
         run: echo "::set-output name=BUILD_NUMBER::$(date '+%-d.%-m.%Y.%-H.%-M.%-S')"
