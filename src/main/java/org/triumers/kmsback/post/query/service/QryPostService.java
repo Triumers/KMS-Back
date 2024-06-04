@@ -11,13 +11,13 @@ import java.util.List;
 
 public interface QryPostService {
 
-    Page<QryPostAndTagsDTO> findPostListByTab(QryRequestPost request, Pageable pageable);
+    Page<QryPostAndTagsDTO> findPostListByTab(QryRequestPost request, Pageable pageable) throws NotLoginException;
 
     Page<QryPostAndTagsDTO> findAllPostListByEmployee(QryRequestPost request, Pageable pageable) throws NotLoginException;
 
-    QryPostAndTagsDTO findPostById(int postId);
+    QryPostAndTagsDTO findPostById(int postId) throws NotLoginException;
 
-    List<QryPostAndTagsDTO> findHistoryListByOriginId(int originId);
+    List<QryPostAndTagsDTO> findHistoryListByOriginId(int originId) throws NotLoginException;
 
     List<CmdEmployeeDTO> findLikeListByPostId(int postId);
 
