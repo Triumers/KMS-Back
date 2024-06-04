@@ -79,8 +79,8 @@ jib {
     to {
         image = 'giyeonlee/triumers-back:latest'
         auth {
-            username = ${{ secrets.DOCKER_USERNAME }}
-            password = ${{ secrets.DOCKER_PASSWORD }}
+            username = findProperty("docker.username") ?: System.getenv("DOCKER_USERNAME")
+            password = findProperty("docker.password") ?: System.getenv("DOCKER_PASSWORD")
         }
     }
     container {
