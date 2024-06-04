@@ -67,8 +67,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String name = customUserDetails.getName();
         String secret = customUserDetails.getSecretCode();
 
-        System.out.println("secret = " + secret);
-
+        // Authenticator 등록된 계정 2차 인증
         if (secret != null && !secret.isEmpty()) {
             if (!otpValidator.validateOTP(secret, otpCode)) {
                 throw new BadCredentialsException("Invalid OTP");
