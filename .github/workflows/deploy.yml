@@ -11,8 +11,8 @@ env:
   DOCKER_USERNAME: giyeonlee
   # AWS & Elastic Bean Stalk
   AWS_REGION: ap-northeast-2
-  EB_ENVIRONMENT_NAME: Triumers-Final-Back-env
-  EB_APPLICATION_NAME: Triumers-Final-Back
+  EB_ENVIRONMENT_NAME: Triumers-Back-env
+  EB_APPLICATION_NAME: Triumers-Back
   EB_DEPLOYMENT_PACKAGE: elasticbeanstalk/docker-compose.yml
 
 jobs:
