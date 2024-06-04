@@ -69,7 +69,7 @@ public class CmdPostServiceImpl implements CmdPostService {
 
         Employee employee = authService.whoAmI();
         CmdPost registPost = new CmdPost(post.getId(), post.getTitle(), post.getContent(), post.getPostImg(),
-                post.getCreatedAt(), employee.getId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
+                LocalDateTime.now(), employee.getId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
 
         if (post.getId() != null) {
             cmdPostTagRepository.deleteByPostId(post.getId());
