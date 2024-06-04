@@ -34,6 +34,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public boolean checkEmailPassword(AuthDTO authDTO) throws WrongInputValueException {
+
+        Employee employee = employeeRepository.findByEmail(authDTO.getEmail());
+
+        if (employee != null) {
+            return bCryptPasswordEncoder.matches(authDTO.getPassword(), employee.getPassword());
+        }
+        return false;
+    }
+
+    @Override
     public void editPassword(PasswordDTO passwordDTO) throws WrongInputValueException, NotLoginException {
 
         Employee employee = whoAmI();
