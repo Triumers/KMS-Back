@@ -6,10 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.triumers.kmsback.common.auth.authenticator.service.OTPUserService;
 import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.user.command.Application.service.AuthService;
 
 import java.io.IOException;
 
@@ -18,17 +18,20 @@ import java.io.IOException;
 public class OTPUserController {
 
     private final OTPUserService otpUserService;
+    private final AuthService authService;
 
     @Autowired
-    public OTPUserController(OTPUserService otpUserService) {
+    public OTPUserController(OTPUserService otpUserService, AuthService authService) {
         this.otpUserService = otpUserService;
+        this.authService = authService;
     }
 
     @GetMapping("/regist")
-    public ResponseEntity<String> registOtp(@RequestParam String email) {
+    public ResponseEntity<String> registOtp() {
 
         try {
             otpUserService.createUser();
+            String email = authService.whoAmI().getEmail();
             String qrCodeBase64 = otpUserService.generateQRCode(email);
             String qrCodeHtml = "<img src=\"data:image/png;base64," + qrCodeBase64 + "\" />";
             return ResponseEntity.status(HttpStatus.OK).body(qrCodeHtml);
