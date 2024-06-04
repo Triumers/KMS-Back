@@ -41,9 +41,9 @@ class CmdAuthServiceTest {
     @Autowired
     private LoggedInUser loggedInUser;
 
-    @DisplayName("이메일, 비밀번호 입력 맞는지 테스트")
+    @DisplayName("2차 인증이 필요없는 경우 테스트")
     @Test
-    void checkEmailPasswordTest() throws WrongInputValueException {
+    void isNotNeedAuthenticatorTest() throws WrongInputValueException {
 
         // given
         loggedInUser.setting();
@@ -54,7 +54,26 @@ class CmdAuthServiceTest {
         authDTO.setPassword(RIGHT_FORMAT_PASSWORD);
 
         // then
-        assertTrue(authService.checkEmailPassword(authDTO));
+        assertFalse(authService.isHaveAuthenticator(authDTO));
+    }
+
+    @DisplayName("2차 인증이 필요한 경우 테스트")
+    @Test
+    void isNeedAuthenticatorTest() throws WrongInputValueException {
+
+        // given
+        loggedInUser.setting();
+
+        // when
+        AuthDTO authDTO = new AuthDTO();
+        authDTO.setEmail(RIGHT_FORMAT_EMAIL);
+        authDTO.setPassword(RIGHT_FORMAT_PASSWORD);
+        Employee employee = employeeRepository.findByEmail(RIGHT_FORMAT_EMAIL);
+        employee.setGoogleAuthKey("SecurityCode");
+        employeeRepository.save(employee);
+
+        // then
+        assertTrue(authService.isHaveAuthenticator(authDTO));
     }
 
     @DisplayName("비밀번호 변경 테스트")

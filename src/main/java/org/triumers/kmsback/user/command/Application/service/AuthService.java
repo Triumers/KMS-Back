@@ -11,7 +11,7 @@ public interface AuthService {
 
     void addGoogleOTP(String secretKey) throws NotLoginException;
 
-    boolean checkEmailPassword(AuthDTO authDTO) throws WrongInputValueException;
+    boolean isHaveAuthenticator(AuthDTO authDTO) throws WrongInputValueException;
 
     void editPassword(PasswordDTO passwordDTO) throws WrongInputTypeException, WrongInputValueException, NotLoginException;
 
