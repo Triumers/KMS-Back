@@ -17,16 +17,16 @@
 
     <select id="findQuizByStatus" resultMap="quizResultMap" parameterType="org.triumers.kmsback.quiz.query.aggregate.entity.QryQuiz">
         SELECT
-        ID
-        , CONTENT
-        , ANSWER
-        , COMMENTARY
-        , STATUS
-        , QUESTIONER_ID
-        , POST_ID
-        , TAB_ID
-        FROM tbl_quiz
-        WHERE STATUS = #{status}
+               ID
+             , CONTENT
+             , ANSWER
+             , COMMENTARY
+             , STATUS
+             , QUESTIONER_ID
+             , POST_ID
+             , TAB_ID
+          FROM tbl_quiz
+         WHERE STATUS = #{status}
     </select>
 
     <select id="findQuizById" resultMap="quizResultMap" parameterType="org.triumers.kmsback.quiz.query.aggregate.entity.QryQuiz">
@@ -41,6 +41,20 @@
              , TAB_ID
           FROM tbl_quiz
          WHERE ID = #{id}
+    </select>
+
+    <select id="findQuizByPostId" resultMap="quizResultMap" parameterType="org.triumers.kmsback.quiz.query.aggregate.entity.QryQuiz">
+        SELECT
+               ID
+             , CONTENT
+             , ANSWER
+             , COMMENTARY
+             , STATUS
+             , QUESTIONER_ID
+             , POST_ID
+             , TAB_ID
+          FROM tbl_quiz
+         WHERE POST_ID = #{postId}
     </select>
 
 </mapper>

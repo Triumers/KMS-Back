@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
+import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
 import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
@@ -61,6 +62,21 @@ class QryPostServiceTest {
     }
 
     @Test
+    @DisplayName("회원이 속한 전체 게시글 리스트 조회")
+    void findAllPostListByTab() throws NotLoginException {
+
+        registPost();
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        QryRequestPost request = new QryRequestPost(1, null);
+
+        Page<QryPostAndTagsDTO> postList = qryPostService.findAllPostListByEmployee(request, pageRequest);
+
+        assertFalse(postList.isEmpty());
+    }
+
+    @Test
     @DisplayName("단일 게시글 조회")
     void findPostById() throws NotLoginException {
 
@@ -68,6 +84,62 @@ class QryPostServiceTest {
         QryPostAndTagsDTO selectedPost = qryPostService.findPostById(post.getId());
 
         assertThat(selectedPost.getId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("사용자가 참여한 게시글 조회")
+    void findPostByEmployeeId() throws NotLoginException {
+
+        List<QryPostAndTagsDTO> selectedPost = qryPostService.findPostByEmployeeId(1);
+
+        assertThat(selectedPost).isNotNull();
+    }
+
+    @Test
+    @DisplayName("사용자가 좋아요한 게시글 조회")
+    void findLikePostByEmployeeId() throws NotLoginException {
+
+        CmdLikeDTO like = new CmdLikeDTO(1, 1);
+        cmdPostService.likePost(like);
+
+        List<QryPostAndTagsDTO> likedPost = qryPostService.findLikePostByEmployeeId(1);
+
+        assertThat(likedPost).isNotNull();
+    }
+
+    @Test
+    @DisplayName("게시글id로 사용자 좋아요 여부 조회")
+    void isLikeByPostId() throws NotLoginException {
+
+        CmdLikeDTO like = new CmdLikeDTO(1, 1);
+        cmdPostService.likePost(like);
+
+        Boolean isLiked = qryPostService.findIsLikedByPostId(1);
+
+        assertThat(isLiked).isTrue();
+    }
+
+    @Test
+    @DisplayName("게시글id로 사용자 즐겨찾기 여부 조회")
+    void isFavoriteByPostId() throws NotLoginException {
+
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, 1);
+        cmdPostService.favoritePost(favorite);
+
+        Boolean isFavorite = qryPostService.findIsFavoriteByPostId(1);
+
+        assertThat(isFavorite).isTrue();
+    }
+
+    @Test
+    @DisplayName("사용자가 즐겨찾기한 게시글 조회")
+    void findFavoritePostByEmployeeId() throws NotLoginException {
+
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, 1);
+        cmdPostService.favoritePost(favorite);
+        List<QryPostAndTagsDTO> favoritePost = qryPostService.findFavoritePostByEmployeeId(1);
+
+        assertThat(favoritePost).isNotNull();
     }
 
     @Test

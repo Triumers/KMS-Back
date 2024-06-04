@@ -11,4 +11,6 @@ public interface QuizMapper {
     List<QryQuiz> findQuizByStatus(boolean status);
 
     QryQuiz findQuizById(int id);
+
+    QryQuiz findQuizByPostId(int postId);
 }

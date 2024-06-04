@@ -56,9 +56,9 @@ public class CmdPostController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<CmdLikeDTO> deletePost(@RequestBody CmdLikeDTO cmdLikeDTO) throws NotLoginException {
+    public ResponseEntity<CmdLikeDTO> likePost(@RequestBody CmdLikeDTO cmdLikeDTO) throws NotLoginException {
 
-        if(cmdLikeDTO.getPostId() == null || cmdLikeDTO.getEmployeeId() == null){
+        if(cmdLikeDTO.getPostId() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
@@ -67,9 +67,9 @@ public class CmdPostController {
     }
 
     @PostMapping("/favorite")
-    public ResponseEntity<CmdFavoritesDTO> deletePost(@RequestBody CmdFavoritesDTO cmdFavoritesDTO) throws NotLoginException {
+    public ResponseEntity<CmdFavoritesDTO> favoritePost(@RequestBody CmdFavoritesDTO cmdFavoritesDTO) throws NotLoginException {
 
-        if(cmdFavoritesDTO.getPostId() == null || cmdFavoritesDTO.getEmployeeId() == null){
+        if(cmdFavoritesDTO.getPostId() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
@@ -77,7 +77,7 @@ public class CmdPostController {
         return ResponseEntity.status(HttpStatus.OK).body(favorite);
     }
 
-    @GetMapping("/ai")
+    @PostMapping("/ai")
     public ResponseEntity<String> requestToAI(@RequestBody CmdRequestPostAI request){
         return ResponseEntity.status(HttpStatus.OK).body(cmdPostService.requestToGPT(request));
     }

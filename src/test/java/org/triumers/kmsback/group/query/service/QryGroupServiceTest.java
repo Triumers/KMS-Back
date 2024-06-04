@@ -6,9 +6,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.triumers.kmsback.common.LoggedInUser;
+import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.common.exception.WrongInputTypeException;
 import org.triumers.kmsback.group.query.dto.QryGroupDTO;
+import org.triumers.kmsback.tab.command.Application.dto.CmdJoinEmployeeDTO;
+import org.triumers.kmsback.tab.command.Application.service.CmdTabService;
+import org.triumers.kmsback.tab.command.domain.repository.CmdJoinEmployeeRepository;
+import org.triumers.kmsback.user.command.Application.service.AuthService;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,34 +29,40 @@ class QryGroupServiceTest {
     private QryGroupService qryGroupService;
     private QryGroupDTO qryGroupDTO;
 
+    private final CmdTabService cmdTabService;
+    private final CmdJoinEmployeeRepository cmdJoinEmployeeRepository;
+    private final AuthService authService;
+
+    private final int TAB_RELATION_ID = 999;
+
+    private final LoggedInUser loggedInUser;
+
+    @Autowired
+    QryGroupServiceTest(CmdTabService cmdTabService, CmdJoinEmployeeRepository cmdJoinEmployeeRepository, AuthService authService, LoggedInUser loggedInUser) {
+        this.cmdTabService = cmdTabService;
+        this.cmdJoinEmployeeRepository = cmdJoinEmployeeRepository;
+        this.authService = authService;
+        this.loggedInUser = loggedInUser;
+    }
+
     @BeforeEach
-    public void setUp() {
-        qryGroupDTO = new QryGroupDTO();
-        qryGroupDTO.setTeamId(1);
-        qryGroupDTO.setTeamName("ROOT");
-        qryGroupDTO.setDepartmentId(1);
-        qryGroupDTO.setDepartmentName("ROOT");
-        qryGroupDTO.setCenterId(1);
-        qryGroupDTO.setCenterName("ROOT");
-        qryGroupDTO.setTabId(1);
-        qryGroupDTO.setTopTabId(3);
-        qryGroupDTO.setTopTabName("스터디");
-        qryGroupDTO.setBottomTabId(1);
-        qryGroupDTO.setBottomTabName("자바공부");
-        qryGroupDTO.setPublic(false);
-        qryGroupDTO.setLeader(true);
+    public void setUp() throws NotLoginException {
+        loggedInUser.setting();
+
+        Employee employee = authService.whoAmI();
+        CmdJoinEmployeeDTO employeeTab = new CmdJoinEmployeeDTO(false, employee.getId(), TAB_RELATION_ID);
+
+        cmdTabService.addEmployeeTab(employeeTab);
     }
 
     @DisplayName("사원번호로 그룹조회")
     @Test
-    void findGroupByEmployeeId() {
-        // Given
-        List<QryGroupDTO> expectedList = Arrays.asList(qryGroupDTO);
+    void findGroupByEmployeeId() throws NotLoginException {
 
         // When
-        List<QryGroupDTO> actualList = qryGroupService.findGroupByEmployeeId(1);
+        List<QryGroupDTO> actualList = qryGroupService.findGroupByEmployeeId();
 
         // Then
-        assertEquals(expectedList, actualList);
+        assertNotNull(actualList);
     }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.triumers.kmsback.comment.query.repository.CommentMapper">
+
+    <select id="selectCommentsByPostId" parameterType="long" resultType="org.triumers.kmsback.comment.query.aggregate.entity.QryComment">
+        SELECT c.ID, c.CONTENT, e.NAME AS AUTHOR, c.CREATED_AT
+        FROM tbl_comment c
+                 JOIN tbl_employee e ON c.AUTHOR_ID = e.ID
+        WHERE c.POST_ID = #{postId}
+        ORDER BY c.CREATED_AT ASC
+    </select>
+
+    <select id="selectCommentsByUserId" parameterType="long" resultType="org.triumers.kmsback.comment.query.aggregate.entity.QryComment">
+        SELECT c.ID, c.POST_ID, c.CONTENT, c.CREATED_AT
+        FROM tbl_comment c
+        WHERE c.AUTHOR_ID = #{userId}
+        ORDER BY c.CREATED_AT ASC
+    </select>
+
+
+
+</mapper>

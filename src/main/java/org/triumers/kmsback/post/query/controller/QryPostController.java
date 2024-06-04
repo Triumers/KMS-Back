@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.post.query.aggregate.vo.QryRequestPost;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
@@ -24,22 +25,31 @@ public class QryPostController {
         this.qryPostService = qryPostService;
     }
 
-    @GetMapping("/tab")
-    public ResponseEntity<Page<QryPostAndTagsDTO>> findPostListByTab(@RequestBody QryRequestPost request, Pageable pageable){
+    @PostMapping("/tab")
+    public ResponseEntity<Page<QryPostAndTagsDTO>> findPostListByTab(@RequestBody QryRequestPost request, Pageable pageable) throws NotLoginException {
+
         Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(request, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(postList);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<QryPostAndTagsDTO> findPostById(@PathVariable int id){
+    @PostMapping("/tab/all")
+    public ResponseEntity<Page<QryPostAndTagsDTO>> findAllPostListByEmployee(@RequestBody QryRequestPost request, Pageable pageable) throws NotLoginException {
+
+        Page<QryPostAndTagsDTO> postList = qryPostService.findAllPostListByEmployee(request, pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(postList);
+    }
+
+    @GetMapping("find/{id}")
+    public ResponseEntity<QryPostAndTagsDTO> findPostById(@PathVariable int id) throws NotLoginException {
         QryPostAndTagsDTO post = qryPostService.findPostById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
     @GetMapping("/{id}/history")
-    public ResponseEntity<List<QryPostAndTagsDTO>> findHistoryListByOriginId(@PathVariable int id){
+    public ResponseEntity<List<QryPostAndTagsDTO>> findHistoryListByOriginId(@PathVariable int id) throws NotLoginException {
         List<QryPostAndTagsDTO> history = qryPostService.findHistoryListByOriginId(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(history);
@@ -50,6 +60,20 @@ public class QryPostController {
         List<CmdEmployeeDTO> likeList = qryPostService.findLikeListByPostId(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(likeList);
+    }
+
+    @GetMapping("/{id}/like/employee")
+    public ResponseEntity<Boolean> findIsLikedByPostId(@PathVariable int id) throws NotLoginException {
+        Boolean isLiked = qryPostService.findIsLikedByPostId(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(isLiked);
+    }
+
+    @GetMapping("/{id}/favorite/employee")
+    public ResponseEntity<Boolean> findIsFavoriteByPostId(@PathVariable int id) throws NotLoginException {
+        Boolean isFavorite = qryPostService.findIsFavoriteByPostId(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(isFavorite);
     }
 
     @GetMapping("/{id}/isEditing")

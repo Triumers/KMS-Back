@@ -26,31 +26,4 @@ public class QryGroupDTO {
     private boolean isPublic;       // 공개 여부
     private boolean isLeader;       // 리더 여부
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        QryGroupDTO that = (QryGroupDTO) o;
-        return employeeId == that.employeeId &&
-                teamId == that.teamId &&
-                departmentId == that.departmentId &&
-                centerId == that.centerId &&
-                tabId == that.tabId &&
-                topTabId == that.topTabId &&
-                bottomTabId == that.bottomTabId &&
-                isPublic == that.isPublic &&
-                isLeader == that.isLeader &&
-                Objects.equals(employeeName, that.employeeName) &&
-                Objects.equals(teamName, that.teamName) &&
-                Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(centerName, that.centerName) &&
-                Objects.equals(topTabName, that.topTabName) &&
-                Objects.equals(bottomTabName, that.bottomTabName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(employeeId, employeeName, teamId, teamName, departmentId, departmentName, centerId, centerName, tabId, topTabId, topTabName, bottomTabId, bottomTabName, isPublic, isLeader);
-    }
 }

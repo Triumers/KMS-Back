@@ -58,4 +58,20 @@ public class QryQuizServiceImpl implements QryQuizService {
         return qryQuizDTO;
     }
 
+    @Override
+    public QryQuizDTO findQuizByPostId(int postId) {
+        QryQuiz qryQuiz = quizMapper.findQuizByPostId(postId);
+        QryQuizDTO qryQuizDTO = new QryQuizDTO();
+        qryQuizDTO.setId(qryQuiz.getId());
+        qryQuizDTO.setContent(qryQuiz.getContent());
+        qryQuizDTO.setAnswer(qryQuiz.getAnswer());
+        qryQuizDTO.setCommentary(qryQuiz.getCommentary());
+        qryQuizDTO.setStatus(qryQuiz.isStatus());
+        qryQuizDTO.setQuestionerId(qryQuiz.getQuestionerId());
+        qryQuizDTO.setPostId(qryQuiz.getPostId());
+        qryQuizDTO.setTapId(qryQuiz.getTapId());
+
+        return qryQuizDTO;
+    }
+
 }

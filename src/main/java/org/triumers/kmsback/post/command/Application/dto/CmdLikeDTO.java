@@ -10,6 +10,9 @@ public class CmdLikeDTO {
     private Integer employeeId;
     private Integer postId;
 
+    public CmdLikeDTO() {
+    }
+
     public CmdLikeDTO(Integer id, Integer employeeId, Integer postId) {
         this.id = id;
         this.employeeId = employeeId;
@@ -18,6 +21,10 @@ public class CmdLikeDTO {
 
     public CmdLikeDTO(Integer employeeId, Integer postId) {
         this.employeeId = employeeId;
+        this.postId = postId;
+    }
+
+    public CmdLikeDTO(Integer postId) {
         this.postId = postId;
     }
 }
