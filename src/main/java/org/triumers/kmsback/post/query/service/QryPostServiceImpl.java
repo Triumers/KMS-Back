@@ -37,7 +37,7 @@ public class QryPostServiceImpl implements QryPostService {
     }
 
     @Override
-    public Page<QryPostAndTagsDTO> findPostListByTab(QryRequestPost request, Pageable pageable) {
+    public Page<QryPostAndTagsDTO> findPostListByTab(QryRequestPost request, Pageable pageable) throws NotLoginException {
 
         List<QryPostAndTag> postList = qryPostMapper.selectTabPostList(request, pageable);
         for (int i = 0; i < postList.size(); i++) {
@@ -66,7 +66,7 @@ public class QryPostServiceImpl implements QryPostService {
     }
 
     @Override
-    public QryPostAndTagsDTO findPostById(int postId) {
+    public QryPostAndTagsDTO findPostById(int postId) throws NotLoginException {
         QryPostAndTag post = qryPostMapper.selectPostById(postId);
 
         CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(post.getAuthorId());
@@ -79,6 +79,8 @@ public class QryPostServiceImpl implements QryPostService {
         postDTO.setHistory(findHistoryListByOriginId(postId));
         postDTO.setParticipants(findParticipantsListByOriginId(postId));
         postDTO.setLikeList(findLikeListByPostId(postId));
+        postDTO.setIsLike(findIsLikedByPostId(postId));
+        postDTO.setIsFavorite(findIsFavoriteByPostId(postId));
 
         return postDTO;
     }
@@ -95,7 +97,7 @@ public class QryPostServiceImpl implements QryPostService {
     }
 
     @Override
-    public List<QryPostAndTagsDTO> findHistoryListByOriginId(int originId) {
+    public List<QryPostAndTagsDTO> findHistoryListByOriginId(int originId) throws NotLoginException {
         List<QryPostAndTag> historyList = qryPostMapper.selectHistoryListByOriginId(originId);
 
         return QryPostAndTagListToDTOList(historyList, "history");
@@ -121,26 +123,94 @@ public class QryPostServiceImpl implements QryPostService {
         return qryPostMapper.selectIsEditingByPostId(postId);
     }
 
-    private List<QryPostAndTagsDTO> QryPostAndTagListToDTOList(List<QryPostAndTag> postList, String type){
+    @Override
+    public List<QryPostAndTagsDTO> findPostByEmployeeId(int employeeId) {
+
+        List<QryPostAndTag> myPostList = qryPostMapper.selectMyPostList(employeeId);
+
+        List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
+        for (int i = 0; i < myPostList.size(); i++) {
+            QryPostAndTag myPost = myPostList.get(i);
+            QryPostAndTagsDTO myPostDTO = new QryPostAndTagsDTO(myPost.getId(), myPost.getTitle(), myPost.getOriginId());
+
+            postDTOList.add(myPostDTO);
+        }
+
+        return postDTOList;
+    }
+
+    @Override
+    public List<QryPostAndTagsDTO> findLikePostByEmployeeId(int employeeId) {
+
+        List<QryPostAndTag> myLikeList = qryPostMapper.selectMyLikeList(employeeId);
+
+        List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
+        for (int i = 0; i < myLikeList.size(); i++) {
+            QryPostAndTag myPost = myLikeList.get(i);
+            QryPostAndTagsDTO myPostDTO = new QryPostAndTagsDTO(myPost.getId(), myPost.getTitle(), myPost.getOriginId());
+
+            postDTOList.add(myPostDTO);
+        }
+
+        return postDTOList;
+    }
+
+    @Override
+    public List<QryPostAndTagsDTO> findFavoritePostByEmployeeId(int employeeId) {
+        List<QryPostAndTag> myLikeList = qryPostMapper.selectMyFavoriteList(employeeId);
+
+        List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
+        for (int i = 0; i < myLikeList.size(); i++) {
+            QryPostAndTag myPost = myLikeList.get(i);
+            QryPostAndTagsDTO myPostDTO = new QryPostAndTagsDTO(myPost.getId(), myPost.getTitle(), myPost.getOriginId());
+
+            postDTOList.add(myPostDTO);
+        }
+
+        return postDTOList;
+    }
+
+    @Override
+    public Boolean findIsLikedByPostId(int postId) throws NotLoginException {
+
+        Employee employee = authService.whoAmI();
+
+        return qryPostMapper.selectIsLikedByPostId(postId, employee.getId()) > 0;
+    }
+
+    @Override
+    public Boolean findIsFavoriteByPostId(int postId) throws NotLoginException {
+
+        Employee employee = authService.whoAmI();
+
+        return qryPostMapper.selectIsFavoriteByPostId(postId, employee.getId()) > 0;
+    }
+
+
+    private List<QryPostAndTagsDTO> QryPostAndTagListToDTOList(List<QryPostAndTag> postList, String type) throws NotLoginException {
 
         List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
         for (int i = 0; i < postList.size(); i++) {
             QryPostAndTag post = postList.get(i);
 
             int authorId = post.getAuthorId();
+            int originId = (post.getOriginId() != null) ? post.getOriginId() : post.getId();
             if(type.equals("origin")){
-                int originId = (post.getOriginId() != null) ? post.getOriginId() : post.getId();
                 authorId = qryPostMapper.originAuthorId(originId);
             }
 
             CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(authorId);
+
             QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
                     post.getPostImg(), post.getCreatedAt(), employeeDTO, post.getOriginId(),
                     post.getRecentId(), post.getTabRelationId(), post.getCategoryId());
             postDTO.setTags(convertTagToString(post.getTags()));
 
+            postDTO.setIsLike(findIsLikedByPostId(originId));
+            postDTO.setIsFavorite(findIsFavoriteByPostId(originId));
+
             if(type.equals("origin")){
-                List<CmdEmployeeDTO> like = findLikeListByPostId((post.getOriginId() != null) ? post.getOriginId() : post.getId());
+                List<CmdEmployeeDTO> like = findLikeListByPostId(originId);
                 postDTO.setLikeList(like);
             }
             postDTOList.add(postDTO);

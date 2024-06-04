@@ -222,4 +222,72 @@
          WHERE A.ID = #{postId}
     </select>
 
+    <select id="selectMyPostList" parameterType="_int" resultMap="postResultMap">
+        SELECT
+               A.ID AS POST_ID,
+               A.ORIGIN_ID,
+               A.TITLE
+          FROM tbl_post A
+         WHERE A.ID IN (
+        SELECT DISTINCT
+          CASE
+          WHEN B.RECENT_ID IS NOT NULL AND B.AUTHOR_ID = #{employeeId} THEN B.RECENT_ID
+          WHEN B.ORIGIN_ID IS NULL AND B.RECENT_ID IS NULL AND B.AUTHOR_ID = #{employeeId} THEN B.ID
+          WHEN B.ORIGIN_ID IS NOT NULL AND B.AUTHOR_ID = #{employeeId} THEN
+               (SELECT C.RECENT_ID FROM tbl_post C WHERE C.id = B.ORIGIN_ID)
+           END AS my_post_id
+          FROM tbl_post B
+        )
+    </select>
+
+    <select id="selectMyLikeList" parameterType="_int" resultMap="postResultMap">
+        SELECT
+               A.ID AS POST_ID,
+               A.ORIGIN_ID,
+               A.TITLE
+          FROM tbl_post A
+         WHERE A.ID IN (
+        SELECT DISTINCT
+          CASE
+          WHEN B.EMPLOYEE_ID = #{employeeId} AND C.RECENT_ID IS NULL THEN B.POST_ID
+          WHEN B.EMPLOYEE_ID = #{employeeId} AND C.RECENT_ID IS NOT NULL THEN C.RECENT_ID
+           END AS my_post_id
+          FROM tbl_like B
+          LEFT JOIN tbl_post C ON B.POST_ID = C.ID
+        )
+    </select>
+
+    <select id="selectMyFavoriteList" parameterType="_int" resultMap="postResultMap">
+        SELECT
+               A.ID AS POST_ID,
+               A.ORIGIN_ID,
+               A.TITLE
+          FROM tbl_post A
+         WHERE A.ID IN (
+        SELECT DISTINCT
+          CASE
+          WHEN B.EMPLOYEE_ID = #{employeeId} AND C.RECENT_ID IS NULL THEN B.POST_ID
+          WHEN B.EMPLOYEE_ID = #{employeeId} AND C.RECENT_ID IS NOT NULL THEN C.RECENT_ID
+           END AS my_post_id
+          FROM tbl_favorites B
+          LEFT JOIN tbl_post C ON B.POST_ID = C.ID
+        )
+    </select>
+
+    <select id="selectIsLikedByPostId" resultType="int">
+        SELECT
+               COUNT(*)
+          FROM tbl_like A
+         WHERE A.EMPLOYEE_ID = #{employeeId}
+           AND A.POST_ID = #{postId};
+    </select>
+
+    <select id="selectIsFavoriteByPostId" resultType="int">
+        SELECT
+               COUNT(*)
+          FROM tbl_favorites A
+         WHERE A.EMPLOYEE_ID = #{employeeId}
+           AND A.POST_ID = #{postId};
+    </select>
+
 </mapper>

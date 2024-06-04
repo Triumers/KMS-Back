@@ -24,7 +24,27 @@ public class QryPostAndTagsDTO {
     private List<CmdEmployeeDTO> participants;
     private List<CmdEmployeeDTO> likeList;
 
+    private Boolean isLike;
+    private Boolean isFavorite;
+
     public QryPostAndTagsDTO() {
+    }
+
+    public QryPostAndTagsDTO(Integer id, String title, String content, String postImg, LocalDateTime createdAt,
+                             CmdEmployeeDTO author, Integer originId, Integer recentId, Integer tabRelationId,
+                             Integer categoryId, Boolean isLike, Boolean isFavorite) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.postImg = postImg;
+        this.createdAt = createdAt;
+        this.author = author;
+        this.originId = originId;
+        this.recentId = recentId;
+        this.tabRelationId = tabRelationId;
+        this.categoryId = categoryId;
+        this.isLike = isLike;
+        this.isFavorite = isFavorite;
     }
 
     public QryPostAndTagsDTO(Integer id, String title, String content, String postImg, LocalDateTime createdAt,
@@ -40,5 +60,11 @@ public class QryPostAndTagsDTO {
         this.recentId = recentId;
         this.tabRelationId = tabRelationId;
         this.categoryId = categoryId;
+    }
+
+    public QryPostAndTagsDTO(Integer id, String title, Integer originId) {
+        this.id = id;
+        this.title = title;
+        this.originId = originId;
     }
 }
