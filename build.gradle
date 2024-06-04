@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.google.cloud.tools.jib' version '3.3.1'
 }
 
 group = 'org.triumers'
@@ -22,7 +23,6 @@ repositories {
 }
 
 dependencies {
-
     // SpringBoot
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -70,4 +70,22 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+jib {
+    from {
+        image = 'amazoncorretto:17'
+    }
+    to {
+        image = 'giyeonlee/triumers-back:latest'
+        auth {
+            username = findProperty("docker.username") ?: System.getenv("DOCKER_USERNAME")
+            password = findProperty("docker.password") ?: System.getenv("DOCKER_PASSWORD")
+        }
+    }
+    container {
+        jvmFlags = ['-Xms512m', '-Xmx512m']
+        ports = ['5000']
+        environment = [ 'SPRING_PROFILES_ACTIVE': 'prod' ]
+    }
 }
