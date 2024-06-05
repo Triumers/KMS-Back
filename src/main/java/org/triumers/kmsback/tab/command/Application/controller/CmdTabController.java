@@ -36,8 +36,8 @@ public class CmdTabController {
         return ResponseEntity.status(HttpStatus.CREATED).body(deletedEmployee);
     }
 
-    @PostMapping("/regist")
-    public ResponseEntity<CmdTabRelationDTO> registTab(@RequestBody CmdTabRelationDTO tabRelationDTO, Integer userId){
+    @PostMapping("/regist/new/{userId}")
+    public ResponseEntity<CmdTabRelationDTO> registTab(@RequestBody CmdTabRelationDTO tabRelationDTO, @PathVariable Integer userId){
 
         if(tabRelationDTO.getTopTab() == null || userId == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
