@@ -12,12 +12,12 @@ import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
 import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
-import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
 import org.triumers.kmsback.post.command.Application.service.CmdPostService;
 import org.triumers.kmsback.post.query.aggregate.vo.QryRequestPost;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
+import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -160,7 +160,7 @@ class QryPostServiceTest {
         CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, post.getId());
         cmdPostService.favoritePost(favorite);
 
-        List<CmdEmployeeDTO> likeList = qryPostService.findLikeListByPostId(post.getId());
+        List<QryEmployeeDTO> likeList = qryPostService.findLikeListByPostId(post.getId());
 
         assertThat(likeList).isNotNull();
     }
