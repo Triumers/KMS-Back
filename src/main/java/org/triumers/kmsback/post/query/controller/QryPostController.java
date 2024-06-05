@@ -2,7 +2,9 @@ package org.triumers.kmsback.post.query.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,16 +28,18 @@ public class QryPostController {
     }
 
     @PostMapping("/tab")
-    public ResponseEntity<Page<QryPostAndTagsDTO>> findPostListByTab(@RequestBody QryRequestPost request, Pageable pageable) throws NotLoginException {
+    public ResponseEntity<Page<QryPostAndTagsDTO>> findPostListByTab(@RequestBody QryRequestPost request) throws NotLoginException {
 
+        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize());
         Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(request, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(postList);
     }
 
     @PostMapping("/tab/all")
-    public ResponseEntity<Page<QryPostAndTagsDTO>> findAllPostListByEmployee(@RequestBody QryRequestPost request, Pageable pageable) throws NotLoginException {
+    public ResponseEntity<Page<QryPostAndTagsDTO>> findAllPostListByEmployee(@RequestBody QryRequestPost request) throws NotLoginException {
 
+        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize());
         Page<QryPostAndTagsDTO> postList = qryPostService.findAllPostListByEmployee(request, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(postList);

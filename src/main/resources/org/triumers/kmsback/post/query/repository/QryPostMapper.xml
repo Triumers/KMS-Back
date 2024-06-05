@@ -84,7 +84,7 @@
                          HAVING COUNT(DISTINCT C.NAME) = ${request.tags.size}
                        )
         </if>
-         ORDER BY COALESCE(A.ORIGIN_ID, A.ID) ASC
+         ORDER BY COALESCE(A.ORIGIN_ID, A.ID) DESC
         <if test="pageable != null">
          LIMIT #{pageable.pageSize} OFFSET #{pageable.offset}
         </if>
