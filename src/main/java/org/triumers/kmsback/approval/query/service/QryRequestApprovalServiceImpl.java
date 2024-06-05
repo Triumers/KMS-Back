@@ -47,6 +47,7 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService 
             @Nullable LocalDateTime endDate,
             @Nullable String keyword,
             @Nullable String status,
+            @Nullable Boolean isCanceled,
             int page,
             int size
     ) throws NotLoginException, WrongInputValueException {
@@ -61,6 +62,7 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService 
                 endDate,
                 keyword,
                 status,
+                isCanceled,
                 offset,
                 limit
         );
@@ -91,6 +93,7 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService 
             @Nullable LocalDateTime endDate,
             @Nullable String keyword,
             @Nullable String status,
+            @Nullable Boolean isCanceled,
             int page,
             int size
     ) throws NotLoginException, WrongInputValueException {
@@ -105,6 +108,7 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService 
                 endDate,
                 keyword,
                 status,
+                isCanceled,
                 offset,
                 limit
         );

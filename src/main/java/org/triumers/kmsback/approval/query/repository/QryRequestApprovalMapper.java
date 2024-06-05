@@ -19,6 +19,7 @@ public interface QryRequestApprovalMapper {
             @Param("endDate") @Nullable LocalDateTime endDate,
             @Param("keyword") @Nullable String keyword,
             @Param("status") @Nullable String status,
+            @Param("isCanceled") @Nullable Boolean isCanceled,
             @Param("offset") int offset,
             @Param("limit") int limit
     );
@@ -31,6 +32,7 @@ public interface QryRequestApprovalMapper {
             @Param("endDate") @Nullable LocalDateTime endDate,
             @Param("keyword") @Nullable String keyword,
             @Param("status") @Nullable String status,
+            @Param("isCanceled") @Nullable Boolean isCanceled,
             @Param("offset") int offset,
             @Param("limit") int limit
     );

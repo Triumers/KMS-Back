@@ -20,6 +20,7 @@ public interface QryRequestApprovalService {
             @Nullable LocalDateTime endDate,
             @Nullable String keyword,
             @Nullable String status,
+            @Nullable Boolean isCanceled,
             int page,
             int size
     ) throws NotLoginException, WrongInputValueException;
@@ -36,6 +37,7 @@ public interface QryRequestApprovalService {
             @Nullable LocalDateTime endDate,
             @Nullable String keyword,
             @Nullable String status,
+            @Nullable Boolean isCanceled,
             int page,
             int size
     ) throws NotLoginException, WrongInputValueException;

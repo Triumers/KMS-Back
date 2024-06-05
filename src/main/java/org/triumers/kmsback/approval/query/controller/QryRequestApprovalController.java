@@ -39,6 +39,7 @@ public class QryRequestApprovalController {
             @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "isCanceled", required = false) Boolean isCanceled,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) throws NotLoginException, WrongInputValueException {
@@ -48,6 +49,7 @@ public class QryRequestApprovalController {
                 endDate,
                 keyword,
                 status,
+                isCanceled,
                 page,
                 size
         );
@@ -67,6 +69,7 @@ public class QryRequestApprovalController {
             @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "isCanceled", required = false) Boolean isCanceled,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) throws NotLoginException, WrongInputValueException {
@@ -76,6 +79,7 @@ public class QryRequestApprovalController {
                 endDate,
                 keyword,
                 status,
+                isCanceled,
                 page,
                 size
         );

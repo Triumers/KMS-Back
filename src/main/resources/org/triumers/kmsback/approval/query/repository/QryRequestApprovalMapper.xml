@@ -48,6 +48,9 @@
         <if test="keyword != null">
             AND A.CONTENT LIKE CONCAT('%', #{keyword}, '%')
         </if>
+        <if test="isCanceled != null">
+            AND RA.IS_CANCELED = #{isCanceled}
+        </if>
         <if test="status != null">
             AND RA.IS_APPROVED = #{status}
         </if>
@@ -97,6 +100,9 @@
         </if>
         <if test="keyword != null">
             AND A.CONTENT LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="isCanceled != null">
+            AND RA.IS_CANCELED = #{isCanceled}
         </if>
         <if test="status != null">
             AND RA.IS_APPROVED = #{status}
