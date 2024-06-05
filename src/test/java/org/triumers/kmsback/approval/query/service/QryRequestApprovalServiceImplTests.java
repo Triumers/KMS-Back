@@ -97,7 +97,7 @@ class QryRequestApprovalServiceImplTests {
 
         // when
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findQryRequestApprovalInfo(
-                null, null, null, null, null, page, size);
+                null, null, null, null, null, false, page, size);
 
         // then
         int expectedTotalCount = 4; // 예상되는 총 결과 개수
@@ -117,7 +117,7 @@ class QryRequestApprovalServiceImplTests {
 
         // when
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findQryRequestApprovalInfo(
-                typeId, null, null, null, null, page, size);
+                typeId, null, null, null, null, false, page, size);
 
         // then
         int expectedTotalCount = 3; // 예상되는 총 결과 개수
@@ -141,7 +141,7 @@ class QryRequestApprovalServiceImplTests {
 
         // when
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findQryRequestApprovalInfo(
-                null, startDate, endDate, null, null, page, size);
+                null, startDate, endDate, null, null, false, page, size);
 
         // then
         int expectedTotalCount = 4; // 예상되는 총 결과 개수
@@ -163,7 +163,7 @@ class QryRequestApprovalServiceImplTests {
 
         // when
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findQryRequestApprovalInfo(
-                null, null, null, keyword, null, page, size);
+                null, null, null, keyword, null, false, page, size);
 
         // then
         int expectedTotalCount = 3; // 예상되는 총 결과 개수
@@ -172,6 +172,25 @@ class QryRequestApprovalServiceImplTests {
     }
 
     @DisplayName("본인이 요청한 결재 승인 상태별 조회")
+    @Test
+    public void findQryRequestApprovalInfoByIsCanceledTest() throws NotLoginException, WrongInputValueException {
+        // given
+        int page = 1;
+        int size = 10;
+        boolean isCanceled = false;
+        requesterSetUp();
+
+        // when
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findQryRequestApprovalInfo(
+                null, null, null, null, null, isCanceled, page, size);
+
+        // then
+        int expectedTotalCount = 4; // 예상되는 총 결과 개수
+        assertEquals(expectedTotalCount, approvalInfoDTOS.size());
+        assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.isCanceled() == isCanceled));
+    }
+
+    @DisplayName("본인이 요청한 결재 취소 상태별 조회")
     @Test
     public void findQryRequestApprovalInfoByStatusTest() throws NotLoginException, WrongInputValueException {
         // given
@@ -182,13 +201,14 @@ class QryRequestApprovalServiceImplTests {
 
         // when
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findQryRequestApprovalInfo(
-                null, null, null, null, status, page, size);
+                null, null, null, null, status, false, page, size);
 
         // then
         int expectedTotalCount = 4; // 예상되는 총 결과 개수
         assertEquals(expectedTotalCount, approvalInfoDTOS.size());
         assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getIsApproved().equals(status)));
     }
+
 
     @DisplayName("본인이 요청받은 결재 ID로 단일 조회")
     @Test
@@ -221,7 +241,7 @@ class QryRequestApprovalServiceImplTests {
 
         // when
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
-                null, null, null, null, null, page, size);
+                null, null, null, null, null, false, page, size);
 
         // then
         int expectedTotalCount = 4; // 예상되는 총 결과 개수
@@ -240,7 +260,7 @@ class QryRequestApprovalServiceImplTests {
 
         // when
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
-                typeId, null, null, null, null, page, size);
+                typeId, null, null, null, null, false, page, size);
 
         // then
         int expectedTotalCount = 3; // 예상되는 총 결과 개수
@@ -263,7 +283,7 @@ class QryRequestApprovalServiceImplTests {
 
         // when
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
-                null, startDate, endDate, null, null, page, size);
+                null, startDate, endDate, null, null, false, page, size);
 
         // then
         int expectedTotalCount = 4; // 예상되는 총 결과 개수
@@ -284,7 +304,7 @@ class QryRequestApprovalServiceImplTests {
 
         // when
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
-                null, null, null, keyword, null, page, size);
+                null, null, null, keyword, null, false, page, size);
 
         // then
         int expectedTotalCount = 3; // 예상되는 총 결과 개수
@@ -303,12 +323,31 @@ class QryRequestApprovalServiceImplTests {
 
         // when
         List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
-                null, null, null, null, status, page, size);
+                null, null, null, null, status, false, page, size);
 
         // then
         int expectedTotalCount = 4; // 예상되는 총 결과 개수
         assertEquals(expectedTotalCount, approvalInfoDTOS.size());
         assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.getIsApproved().equals(status)));
+    }
+
+    @DisplayName("본인이 요청받은 결재 취소 상태별 조회")
+    @Test
+    public void findReceivedByIsCanceledTest() throws NotLoginException, WrongInputValueException {
+        // given
+        int page = 1;
+        int size = 10; // 한 페이지에 표시할 결과의 최대 개수
+        boolean isCanceled = false;
+        approverSetUp();
+
+        // when
+        List<QryRequestApprovalInfoDTO> approvalInfoDTOS = qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
+                null, null, null, null, null, isCanceled, page, size);
+
+        // then
+        int expectedTotalCount = 4; // 예상되는 총 결과 개수
+        assertEquals(expectedTotalCount, approvalInfoDTOS.size());
+        assertTrue(approvalInfoDTOS.stream().allMatch(dto -> dto.isCanceled() == isCanceled));
     }
 
     private void addHrManagerForTest() {
