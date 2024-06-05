@@ -104,6 +104,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/**").permitAll()
                 .requestMatchers("/auth/check-authenticator").permitAll()
+                .requestMatchers("/health-check").permitAll()
                 .requestMatchers("/manager/*").hasAnyRole("HR_MANAGER")
                 .anyRequest().authenticated());
 
