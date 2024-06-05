@@ -72,6 +72,7 @@ public class QryRequestApprovalServiceImpl implements QryRequestApprovalService 
         return getQryRequestApprovalInfoDTOSWithEmployeeIdAndName(approvalInfoDTOS);
     }
 
+
     // 본인이 요청받은 결재 단일 조회
     public QryRequestApprovalWithEmployeeDTO findReceivedById(int requestApprovalId) throws NotLoginException, WrongInputValueException {
         int approverId = authService.whoAmI().getId();

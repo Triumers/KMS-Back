@@ -32,7 +32,8 @@
         T.ID AS typeId,
         T.TYPE AS type,
         A.EMPLOYEE_ID AS requesterId,
-        RA.EMPLOYEE_ID AS approverId
+        RA.EMPLOYEE_ID AS approverId,
+        COUNT(*) OVER() AS totalCount
         FROM tbl_request_approval RA
         JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
         JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
@@ -82,7 +83,8 @@
         T.ID AS typeId,
         T.TYPE AS type,
         A.EMPLOYEE_ID AS requesterId,
-        RA.EMPLOYEE_ID AS approverId
+        RA.EMPLOYEE_ID AS approverId,
+        COUNT(*) OVER() AS totalCount
         FROM tbl_request_approval RA
         JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
         JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
