@@ -49,7 +49,11 @@ jobs:
           fi
 
       - name: Remove Docker image
-        run: docker rmi giyeonlee/triumers-back:latest
+        run: |
+          IMAGE_ID=$(docker images -q giyeonlee/triumers-back:latest)
+          if [ ! -z "$IMAGE_ID" ]; then
+            docker rmi $IMAGE_ID
+          fi
 
       - name: Push to Dockerhub
         run: ./gradlew jib
