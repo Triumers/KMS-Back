@@ -29,4 +29,7 @@ public class QryRequestApprovalInfoDTO {
     private int requesterId;
     private int typeId;
     private String type;
+
+    // 전체 결과 개수
+    private int totalCount;
 }

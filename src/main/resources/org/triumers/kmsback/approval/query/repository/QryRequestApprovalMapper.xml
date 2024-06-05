@@ -20,113 +20,41 @@
           AND RA.APPROVAL_ORDER = (SELECT MAX(APPROVAL_ORDER) FROM tbl_request_approval WHERE APPROVAL_ID = RA.APPROVAL_ID);
     </select>
 
-    <select id="findAll" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
+    <select id="findQryRequestApprovalInfo" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
         SELECT
-            RA.ID AS requestApprovalId,
-            RA.APPROVAL_ORDER AS approvalOrder,
-            RA.IS_CANCELED AS isCanceled,
-            RA.IS_APPROVED AS isApproved,
-            A.ID AS approvalId,
-            A.CONTENT AS content,
-            A.CREATED_AT AS createdAt,
-            T.ID AS typeId,
-            T.TYPE AS type,
-            A.EMPLOYEE_ID AS requesterId,
-            RA.EMPLOYEE_ID AS approverId
+        RA.ID AS requestApprovalId,
+        RA.APPROVAL_ORDER AS approvalOrder,
+        RA.IS_CANCELED AS isCanceled,
+        RA.IS_APPROVED AS isApproved,
+        A.ID AS approvalId,
+        A.CONTENT AS content,
+        A.CREATED_AT AS createdAt,
+        T.ID AS typeId,
+        T.TYPE AS type,
+        A.EMPLOYEE_ID AS requesterId,
+        RA.EMPLOYEE_ID AS approverId,
+        COUNT(*) OVER() AS totalCount
         FROM tbl_request_approval RA
-                 JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
-                 JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
+        JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
+        JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
         WHERE A.EMPLOYEE_ID = #{requesterId}
-          AND RA.APPROVAL_ORDER = (SELECT MAX(APPROVAL_ORDER) FROM tbl_request_approval WHERE APPROVAL_ID = RA.APPROVAL_ID)
-            LIMIT #{offset}, #{limit}
-    </select>
-
-    <select id="findByType" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
-        SELECT
-            RA.ID AS requestApprovalId,
-            RA.APPROVAL_ORDER AS approvalOrder,
-            RA.IS_CANCELED AS isCanceled,
-            RA.IS_APPROVED AS isApproved,
-            A.ID AS approvalId,
-            A.CONTENT AS content,
-            A.CREATED_AT AS createdAt,
-            T.ID AS typeId,
-            T.TYPE AS type,
-            A.EMPLOYEE_ID AS requesterId,
-            RA.EMPLOYEE_ID AS approverId
-        FROM tbl_request_approval RA
-                 JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
-                 JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
-        WHERE A.EMPLOYEE_ID = #{requesterId}
-          AND RA.APPROVAL_ORDER = (SELECT MAX(APPROVAL_ORDER) FROM tbl_request_approval WHERE APPROVAL_ID = RA.APPROVAL_ID)
-          AND T.ID = #{typeId}
-            LIMIT #{offset}, #{limit}
-    </select>
-
-    <select id="findByDateRange" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
-        SELECT
-            RA.ID AS requestApprovalId,
-            RA.APPROVAL_ORDER AS approvalOrder,
-            RA.IS_CANCELED AS isCanceled,
-            RA.IS_APPROVED AS isApproved,
-            A.ID AS approvalId,
-            A.CONTENT AS content,
-            A.CREATED_AT AS createdAt,
-            T.ID AS typeId,
-            T.TYPE AS type,
-            A.EMPLOYEE_ID AS requesterId,
-            RA.EMPLOYEE_ID AS approverId
-        FROM tbl_request_approval RA
-                 JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
-                 JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
-        WHERE A.EMPLOYEE_ID = #{requesterId}
-          AND RA.APPROVAL_ORDER = (SELECT MAX(APPROVAL_ORDER) FROM tbl_request_approval WHERE APPROVAL_ID = RA.APPROVAL_ID)
-          AND A.CREATED_AT BETWEEN #{startDate} AND #{endDate}
-            LIMIT #{offset}, #{limit}
-    </select>
-
-    <select id="findByContent" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
-        SELECT
-            RA.ID AS requestApprovalId,
-            RA.APPROVAL_ORDER AS approvalOrder,
-            RA.IS_CANCELED AS isCanceled,
-            RA.IS_APPROVED AS isApproved,
-            A.ID AS approvalId,
-            A.CONTENT AS content,
-            A.CREATED_AT AS createdAt,
-            T.ID AS typeId,
-            T.TYPE AS type,
-            A.EMPLOYEE_ID AS requesterId,
-            RA.EMPLOYEE_ID AS approverId
-        FROM tbl_request_approval RA
-                 JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
-                 JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
-        WHERE A.EMPLOYEE_ID = #{requesterId}
-          AND RA.APPROVAL_ORDER = (SELECT MAX(APPROVAL_ORDER) FROM tbl_request_approval WHERE APPROVAL_ID = RA.APPROVAL_ID)
-          AND A.CONTENT LIKE CONCAT('%', #{keyword}, '%')
-            LIMIT #{offset}, #{limit}
-    </select>
-
-    <select id="findByStatus" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
-        SELECT
-            RA.ID AS requestApprovalId,
-            RA.APPROVAL_ORDER AS approvalOrder,
-            RA.IS_CANCELED AS isCanceled,
-            RA.IS_APPROVED AS isApproved,
-            A.ID AS approvalId,
-            A.CONTENT AS content,
-            A.CREATED_AT AS createdAt,
-            T.ID AS typeId,
-            T.TYPE AS type,
-            A.EMPLOYEE_ID AS requesterId,
-            RA.EMPLOYEE_ID AS approverId
-        FROM tbl_request_approval RA
-                 JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
-                 JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
-        WHERE A.EMPLOYEE_ID = #{requesterId}
-          AND RA.APPROVAL_ORDER = (SELECT MAX(APPROVAL_ORDER) FROM tbl_request_approval WHERE APPROVAL_ID = RA.APPROVAL_ID)
-          AND RA.IS_APPROVED = #{status}
-            LIMIT #{offset}, #{limit}
+        AND RA.APPROVAL_ORDER = (SELECT MAX(APPROVAL_ORDER) FROM tbl_request_approval WHERE APPROVAL_ID = RA.APPROVAL_ID)
+        <if test="typeId != null">
+            AND A.TYPE_ID = #{typeId}
+        </if>
+        <if test="startDate != null and endDate != null">
+            AND A.CREATED_AT BETWEEN #{startDate} AND #{endDate}
+        </if>
+        <if test="keyword != null">
+            AND A.CONTENT LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="isCanceled != null">
+            AND RA.IS_CANCELED = #{isCanceled}
+        </if>
+        <if test="status != null">
+            AND RA.IS_APPROVED = #{status}
+        </if>
+        LIMIT #{offset}, #{limit}
     </select>
 
     <select id="findReceivedById" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
@@ -147,102 +75,38 @@
           AND RA.ID = #{requestApprovalId}
     </select>
 
-    <select id="findAllReceived" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
+    <select id="findReceivedQryRequestApprovalInfo" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
         SELECT
-            RA.ID AS requestApprovalId,
-            RA.IS_CANCELED AS isCanceled,
-            RA.IS_APPROVED AS isApproved,
-            A.ID AS approvalId,
-            A.CONTENT AS content,
-            A.CREATED_AT AS createdAt,
-            T.ID AS typeId,
-            T.TYPE AS type,
-            A.EMPLOYEE_ID AS requesterId,
-            RA.EMPLOYEE_ID AS approverId
+        RA.ID AS requestApprovalId,
+        RA.IS_CANCELED AS isCanceled,
+        RA.IS_APPROVED AS isApproved,
+        A.ID AS approvalId,
+        A.CONTENT AS content,
+        A.CREATED_AT AS createdAt,
+        T.ID AS typeId,
+        T.TYPE AS type,
+        A.EMPLOYEE_ID AS requesterId,
+        RA.EMPLOYEE_ID AS approverId,
+        COUNT(*) OVER() AS totalCount
         FROM tbl_request_approval RA
-                 JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
-                 JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
+        JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
+        JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
         WHERE RA.EMPLOYEE_ID = #{approverId}
-            LIMIT #{offset}, #{limit}
-    </select>
-
-    <select id="findReceivedByType" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
-        SELECT
-            RA.ID AS requestApprovalId,
-            RA.IS_CANCELED AS isCanceled,
-            RA.IS_APPROVED AS isApproved,
-            A.ID AS approvalId,
-            A.CONTENT AS content,
-            A.CREATED_AT AS createdAt,
-            T.ID AS typeId,
-            T.TYPE AS type,
-            A.EMPLOYEE_ID AS requesterId,
-            RA.EMPLOYEE_ID AS approverId
-        FROM tbl_request_approval RA
-                 JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
-                 JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
-        WHERE RA.EMPLOYEE_ID = #{approverId}
-          AND T.ID = #{typeId}
-            LIMIT #{offset}, #{limit}
-    </select>
-
-    <select id="findReceivedByDateRange" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
-        SELECT
-            RA.ID AS requestApprovalId,
-            RA.IS_CANCELED AS isCanceled,
-            RA.IS_APPROVED AS isApproved,
-            A.ID AS approvalId,
-            A.CONTENT AS content,
-            A.CREATED_AT AS createdAt,
-            T.ID AS typeId,
-            T.TYPE AS type,
-            A.EMPLOYEE_ID AS requesterId,
-            RA.EMPLOYEE_ID AS approverId
-        FROM tbl_request_approval RA
-                 JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
-                 JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
-        WHERE RA.EMPLOYEE_ID = #{approverId}
-          AND A.CREATED_AT BETWEEN #{startDate} AND #{endDate}
-            LIMIT #{offset}, #{limit}
-    </select>
-
-    <select id="findReceivedByContent" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
-        SELECT
-            RA.ID AS requestApprovalId,
-            RA.IS_CANCELED AS isCanceled,
-            RA.IS_APPROVED AS isApproved,
-            A.ID AS approvalId,
-            A.CONTENT AS content,
-            A.CREATED_AT AS createdAt,
-            T.ID AS typeId,
-            T.TYPE AS type,
-            A.EMPLOYEE_ID AS requesterId,
-            RA.EMPLOYEE_ID AS approverId
-        FROM tbl_request_approval RA
-                 JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
-                 JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
-        WHERE RA.EMPLOYEE_ID = #{approverId}
-          AND A.CONTENT LIKE CONCAT('%', #{keyword}, '%')
-            LIMIT #{offset}, #{limit}
-    </select>
-
-    <select id="findReceivedByStatus" resultType="org.triumers.kmsback.approval.query.dto.QryRequestApprovalInfoDTO">
-        SELECT
-            RA.ID AS requestApprovalId,
-            RA.IS_CANCELED AS isCanceled,
-            RA.IS_APPROVED AS isApproved,
-            A.ID AS approvalId,
-            A.CONTENT AS content,
-            A.CREATED_AT AS createdAt,
-            T.ID AS typeId,
-            T.TYPE AS type,
-            A.EMPLOYEE_ID AS requesterId,
-            RA.EMPLOYEE_ID AS approverId
-        FROM tbl_request_approval RA
-                 JOIN tbl_approval A ON A.ID = RA.APPROVAL_ID
-                 JOIN tbl_approval_type T ON A.TYPE_ID = T.ID
-        WHERE RA.EMPLOYEE_ID = #{approverId}
-          AND RA.IS_APPROVED = #{status}
-            LIMIT #{offset}, #{limit}
+        <if test="typeId != null">
+            AND A.TYPE_ID = #{typeId}
+        </if>
+        <if test="startDate != null and endDate != null">
+            AND A.CREATED_AT BETWEEN #{startDate} AND #{endDate}
+        </if>
+        <if test="keyword != null">
+            AND A.CONTENT LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="isCanceled != null">
+            AND RA.IS_CANCELED = #{isCanceled}
+        </if>
+        <if test="status != null">
+            AND RA.IS_APPROVED = #{status}
+        </if>
+        LIMIT #{offset}, #{limit}
     </select>
 </mapper>

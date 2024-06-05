@@ -1,7 +1,7 @@
 package org.triumers.kmsback.approval.query.dto;
 
 import lombok.*;
-import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
+import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -10,6 +10,6 @@ import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 @ToString
 public class QryRequestApprovalWithEmployeeDTO {
     private QryRequestApprovalInfoDTO approvalInfo;
-    private CmdEmployeeDTO requester;
-    private CmdEmployeeDTO approver;
+    private QryEmployeeDTO requester;
+    private QryEmployeeDTO approver;
 }

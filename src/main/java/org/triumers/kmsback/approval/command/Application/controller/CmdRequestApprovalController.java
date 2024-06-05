@@ -9,6 +9,8 @@ import org.triumers.kmsback.approval.command.Application.service.CmdApprovalType
 import org.triumers.kmsback.approval.command.Application.service.CmdRequestApprovalService;
 import org.triumers.kmsback.common.exception.NotLoginException;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/approval")
 public class CmdRequestApprovalController {
@@ -65,8 +67,9 @@ public class CmdRequestApprovalController {
     }
 
     @PostMapping("/received/{requestApprovalId}/addApprover")
-    public ResponseEntity<String> addApproverToRequestApproval(@PathVariable int requestApprovalId, @RequestParam int newApproverId) {
+    public ResponseEntity<String> addApproverToRequestApproval(@PathVariable int requestApprovalId, @RequestBody Map<String, Integer> requestBody) {
         try {
+            int newApproverId = requestBody.get("newApproverId");
             cmdRequestApprovalService.addApproverToRequestApproval(requestApprovalId, newApproverId);
             return ResponseEntity.ok("Approver added successfully");
         } catch (Exception e) {
