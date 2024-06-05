@@ -11,7 +11,9 @@ import org.triumers.kmsback.comment.command.Application.dto.CmdCommentDTO;
 import org.triumers.kmsback.comment.command.Application.service.CommentService;
 import org.triumers.kmsback.comment.command.Domain.aggregate.entity.CmdComment;
 import org.triumers.kmsback.common.LoggedInUser;
+import org.triumers.kmsback.common.TestUserInfo;
 import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
@@ -19,6 +21,7 @@ import org.triumers.kmsback.post.command.Application.service.CmdPostService;
 import org.triumers.kmsback.post.query.service.QryPostService;
 import org.triumers.kmsback.user.command.Application.service.AuthService;
 import org.triumers.kmsback.user.query.dto.QryDocsDTO;
+import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,6 +54,20 @@ class QryAuthServiceTest {
     @BeforeEach
     void setUp() {
         loggedInUser.setting();
+    }
+
+    @DisplayName("내 정보 조회")
+    @Test
+    void myPageTest() throws NotLoginException, WrongInputValueException {
+
+        // when
+        QryEmployeeDTO employee = qryAuthService.myInfo();
+
+        // then
+        assertNotNull(employee);
+        assertEquals(TestUserInfo.EMAIL, employee.getEmail());
+        assertEquals(TestUserInfo.NAME, employee.getName());
+        assertEquals(TestUserInfo.PHONE_NUMBER, employee.getPhoneNumber());
     }
 
     @DisplayName("내가 작성한 게시글 조회 테스트")

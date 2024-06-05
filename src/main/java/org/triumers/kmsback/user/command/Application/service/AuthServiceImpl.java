@@ -25,6 +25,28 @@ public class AuthServiceImpl implements AuthService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+    // Google Authenticator secret key 등록
+    @Override
+    public void addGoogleOTP(String secretKey) throws NotLoginException {
+        Employee employee = whoAmI();
+        employee.setGoogleAuthKey(secretKey);
+        employeeRepository.save(employee);
+    }
+
+    @Override
+    public boolean isHaveAuthenticator(AuthDTO authDTO) throws WrongInputValueException {
+
+        Employee employee = employeeRepository.findByEmail(authDTO.getEmail());
+
+        // 이메일, 비밀번호가 일치하는 경우
+        if (employee != null && bCryptPasswordEncoder.matches(authDTO.getPassword(), employee.getPassword())) {
+
+            // 2차인증 여부 반환
+            return employee.getGoogleAuthKey() != null && !employee.getGoogleAuthKey().isEmpty();
+        }
+        throw new WrongInputValueException();
+    }
+
     @Override
     public void editPassword(PasswordDTO passwordDTO) throws WrongInputValueException, NotLoginException {
 

@@ -9,6 +9,10 @@ import org.triumers.kmsback.common.exception.WrongInputValueException;
 
 public interface AuthService {
 
+    void addGoogleOTP(String secretKey) throws NotLoginException;
+
+    boolean isHaveAuthenticator(AuthDTO authDTO) throws WrongInputValueException;
+
     void editPassword(PasswordDTO passwordDTO) throws WrongInputTypeException, WrongInputValueException, NotLoginException;
 
     void editMyInfo(AuthDTO authDTO) throws WrongInputTypeException, NotLoginException;
