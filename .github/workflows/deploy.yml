@@ -40,6 +40,17 @@ jobs:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Stop and remove container
+        run: |
+          CONTAINER_ID=$(docker ps -q --filter ancestor=giyeonlee/triumers-back:latest)
+          if [ ! -z "$CONTAINER_ID" ]; then
+            docker stop $CONTAINER_ID
+            docker rm $CONTAINER_ID
+          fi
+
+      - name: Remove Docker image
+        run: docker rmi giyeonlee/triumers-back:latest
+
       - name: Push to Dockerhub
         run: ./gradlew jib
 
