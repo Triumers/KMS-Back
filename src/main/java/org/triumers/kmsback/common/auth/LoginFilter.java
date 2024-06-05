@@ -7,12 +7,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.triumers.kmsback.common.auth.authenticator.service.OTPValidator;
 import org.triumers.kmsback.user.command.Application.dto.CustomUserDetails;
 import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 
@@ -27,11 +29,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final String defaultPassword;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, String defaultPassword, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    private final OTPValidator otpValidator;
+    private int otpCode = 0;
+
+    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, String defaultPassword,
+                       BCryptPasswordEncoder bCryptPasswordEncoder, OTPValidator otpValidator) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.defaultPassword = defaultPassword;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.otpValidator = otpValidator;
     }
 
     @Override
@@ -40,6 +47,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             LoginVO loginVO = new ObjectMapper().readValue(request.getInputStream(), LoginVO.class);
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(loginVO.getEmail(), loginVO.getPassword(), null);
+
+            if (loginVO.getOtpCode() != null) {
+                otpCode = Integer.parseInt(loginVO.getOtpCode());
+            }
 
             return authenticationManager.authenticate(authToken);
 
@@ -54,6 +65,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String username = customUserDetails.getUsername();
         String name = customUserDetails.getName();
+        String secret = customUserDetails.getSecretCode();
+
+        // Authenticator 등록된 계정 2차 인증
+        if (secret != null && !secret.isEmpty()) {
+            if (!otpValidator.validateOTP(secret, otpCode)) {
+                throw new BadCredentialsException("Invalid OTP");
+            }
+        }
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -84,5 +103,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public static class LoginVO {
         private String email;
         private String password;
+        private String otpCode;
     }
 }

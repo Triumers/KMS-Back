@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.triumers.kmsback.common.auth.JwtFilter;
 import org.triumers.kmsback.common.auth.JwtUtil;
 import org.triumers.kmsback.common.auth.LoginFilter;
+import org.triumers.kmsback.common.auth.authenticator.service.OTPValidator;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,6 +49,11 @@ public class SecurityConfig {
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public OTPValidator otpValidator() {
+        return new OTPValidator();
     }
 
     @Bean
@@ -97,6 +103,8 @@ public class SecurityConfig {
         // 경로별 인가 작업
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/**").permitAll()
+                .requestMatchers("/auth/check-authenticator").permitAll()
+                .requestMatchers("/health-check").permitAll()
                 .requestMatchers("/manager/*").hasAnyRole("HR_MANAGER")
                 .anyRequest().authenticated());
 
@@ -104,7 +112,8 @@ public class SecurityConfig {
         http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
 
         // 로그인 필터
-        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, defaultPassword, bCryptPasswordEncoder()),
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, defaultPassword,
+                        bCryptPasswordEncoder(), otpValidator()),
                 UsernamePasswordAuthenticationFilter.class);
 
         //세션 설정
