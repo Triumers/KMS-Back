@@ -1,14 +1,17 @@
 package org.triumers.kmsback.user.query.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.comment.query.aggregate.entity.QryComment;
 import org.triumers.kmsback.comment.query.domain.service.QryCommentService;
 import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
 import org.triumers.kmsback.post.query.service.QryPostService;
 import org.triumers.kmsback.user.command.Application.service.AuthService;
 import org.triumers.kmsback.user.query.dto.QryDocsDTO;
+import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,12 +24,23 @@ public class QryAuthServiceImpl implements QryAuthService {
     private final AuthService authService;
     private final QryPostService qryPostService;
     private final QryCommentService qryCommentService;
+    private final QryEmployeeService qryEmployeeService;
 
     @Autowired
-    public QryAuthServiceImpl(AuthService authService, QryPostService qryPostService, QryCommentService qryCommentService) {
+    public QryAuthServiceImpl(AuthService authService,
+                              QryPostService qryPostService,
+                              QryCommentService qryCommentService,
+                              @Lazy QryEmployeeService qryEmployeeService) {
         this.authService = authService;
         this.qryPostService = qryPostService;
         this.qryCommentService = qryCommentService;
+        this.qryEmployeeService = qryEmployeeService;
+    }
+
+    @Override
+    public QryEmployeeDTO myInfo() throws NotLoginException, WrongInputValueException {
+
+        return qryEmployeeService.findEmployeeById(getLoggedInEmployeeId());
     }
 
     @Override

@@ -7,9 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.user.query.aggregate.vo.QryResponseDocsVO;
+import org.triumers.kmsback.user.query.aggregate.vo.QryResponseEmployeeVO;
 import org.triumers.kmsback.user.query.dto.QryDocsDTO;
+import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
 import org.triumers.kmsback.user.query.service.QryAuthService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/my-page")
@@ -20,6 +25,21 @@ public class QryAuthController {
     @Autowired
     public QryAuthController(QryAuthService qryAuthService) {
         this.qryAuthService = qryAuthService;
+    }
+
+    @GetMapping
+    public ResponseEntity<QryResponseEmployeeVO> myInfo() {
+
+        try {
+            QryEmployeeDTO myInfo = qryAuthService.myInfo();
+            return ResponseEntity.status(HttpStatus.OK).body(new QryResponseEmployeeVO("조회 성공", List.of(myInfo)));
+        } catch (NotLoginException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new QryResponseEmployeeVO(e.getMessage(), null));
+        } catch (WrongInputValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new QryResponseEmployeeVO(e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/my-post")

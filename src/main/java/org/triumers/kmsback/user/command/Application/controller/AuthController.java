@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.triumers.kmsback.user.command.Application.dto.AuthDTO;
 import org.triumers.kmsback.user.command.Application.dto.PasswordDTO;
 import org.triumers.kmsback.user.command.Application.service.AuthService;
+import org.triumers.kmsback.user.command.domain.aggregate.vo.CmdRequestAccountVO;
 import org.triumers.kmsback.user.command.domain.aggregate.vo.CmdRequestEditMyInfoVO;
 import org.triumers.kmsback.user.command.domain.aggregate.vo.CmdRequestEditPasswordVO;
 import org.triumers.kmsback.user.command.domain.aggregate.vo.CmdResponseMessageVO;
@@ -29,6 +30,24 @@ public class AuthController {
     @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
+    }
+
+    @PostMapping("/check-authenticator")
+    public ResponseEntity<CmdResponseMessageVO> isHaveAuthenticator(@RequestBody CmdRequestAccountVO accountVO) {
+
+        AuthDTO account = new AuthDTO();
+        account.setEmail(accountVO.getEmail());
+        account.setPassword(accountVO.getPassword());
+
+        try {
+
+            if (authService.isHaveAuthenticator(account)) {
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body(new CmdResponseMessageVO("2차 인증 필요"));
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(new CmdResponseMessageVO("2차 인증 등록을 권장합니다."));
+        } catch (WrongInputValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CmdResponseMessageVO(e.getMessage()));
+        }
     }
 
     @PostMapping("/edit/password")
