@@ -43,6 +43,8 @@ public class CustomUserDetails implements UserDetails {
         return user.getName();
     }
 
+    public String getSecretCode() { return user.getGoogleAuthKey(); }
+
     @Override
     public boolean isAccountNonExpired() {
 
