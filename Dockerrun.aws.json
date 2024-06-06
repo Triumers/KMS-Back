@@ -6,7 +6,7 @@
       "image": "giyeonlee/triumers-back",
       "portMappings": [
         {
-          "hostPort": 5000,
+          "hostPort": 80,
           "containerPort": 5000
         }
       ],
