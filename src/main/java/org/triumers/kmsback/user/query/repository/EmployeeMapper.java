@@ -19,4 +19,6 @@ public interface EmployeeMapper {
     List<QryEmployee> findByTeamId(int teamId);
 
     List<QryEmployee> findSimpleInfoByTeamId(int teamId);
+
+    QryEmployee findByIdIncludeEnd(int id);
 }

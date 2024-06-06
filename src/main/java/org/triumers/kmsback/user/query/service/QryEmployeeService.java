@@ -18,4 +18,6 @@ public interface QryEmployeeService {
     List<QryEmployeeDTO> findEmployeeByTeamId(int teamId) throws WrongInputValueException;
 
     List<QryEmployeeDTO> findSimpleInfoByTeamId(int teamId);
+
+    QryEmployeeDTO findByIdIncludeEnd(int id) throws WrongInputValueException;
 }
