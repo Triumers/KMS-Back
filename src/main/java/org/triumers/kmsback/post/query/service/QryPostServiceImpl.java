@@ -70,7 +70,7 @@ public class QryPostServiceImpl implements QryPostService {
     public QryPostAndTagsDTO findPostById(int postId) throws NotLoginException, WrongInputValueException {
         QryPostAndTag post = qryPostMapper.selectPostById(postId);
 
-        QryEmployeeDTO employeeDTO = qryEmployeeService.findEmployeeById(post.getAuthorId());
+        QryEmployeeDTO employeeDTO = qryEmployeeService.findByIdIncludeEnd(post.getAuthorId());
 
         QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
                 post.getPostImg(), post.getCreatedAt(), employeeDTO, post.getOriginId(),
@@ -91,7 +91,7 @@ public class QryPostServiceImpl implements QryPostService {
         List<QryEmployeeDTO> participantList = new ArrayList<>();
         List<Integer> employeeList = qryPostMapper.selectParticipantsListByOriginId(postId);
         for (int i = 0; i < employeeList.size(); i++) {
-            QryEmployeeDTO employee = qryEmployeeService.findEmployeeById(employeeList.get(i));
+            QryEmployeeDTO employee = qryEmployeeService.findByIdIncludeEnd(employeeList.get(i));
             participantList.add(employee);
         }
         return participantList;
@@ -114,7 +114,7 @@ public class QryPostServiceImpl implements QryPostService {
             for (int i = 0; i < likeList.size(); i++) {
                 int memberId = likeList.get(i).getEmployeeId();
 
-                QryEmployeeDTO employeeDTO = qryEmployeeService.findEmployeeById(memberId);
+                QryEmployeeDTO employeeDTO = qryEmployeeService.findByIdIncludeEnd(memberId);
                 likeMemberList.add(employeeDTO);
             }
         }
@@ -204,7 +204,7 @@ public class QryPostServiceImpl implements QryPostService {
                 authorId = qryPostMapper.originAuthorId(originId);
             }
 
-            QryEmployeeDTO employeeDTO = qryEmployeeService.findEmployeeById(authorId);
+            QryEmployeeDTO employeeDTO = qryEmployeeService.findByIdIncludeEnd(authorId);
 
             QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
                     post.getPostImg(), post.getCreatedAt(), employeeDTO, post.getOriginId(),
