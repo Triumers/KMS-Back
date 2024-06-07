@@ -104,6 +104,7 @@ public class QryAuthServiceImpl implements QryAuthService {
             Map<String, String> postMap = new HashMap<>();
             postMap.put("id", String.valueOf(post.getId()));
             postMap.put("title", post.getTitle());
+            postMap.put("originId", String.valueOf(post.getOriginId()));
             myPostListDTO.add(postMap);
         }
         result.setDocsInfoList(myPostListDTO);

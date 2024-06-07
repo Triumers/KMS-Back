@@ -11,13 +11,14 @@ import org.springframework.data.domain.PageRequest;
 import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.post.command.Application.dto.CmdLikeDTO;
-import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdFavoritesDTO;
 import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
 import org.triumers.kmsback.post.command.Application.service.CmdPostService;
 import org.triumers.kmsback.post.query.aggregate.vo.QryRequestPost;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
+import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ class QryPostServiceTest {
     }
     @Test
     @DisplayName("tab 게시글 리스트 조회")
-    void findPostListByTab() throws NotLoginException {
+    void findPostListByTab() throws NotLoginException, WrongInputValueException {
 
         registPost();
 
@@ -63,7 +64,7 @@ class QryPostServiceTest {
 
     @Test
     @DisplayName("회원이 속한 전체 게시글 리스트 조회")
-    void findAllPostListByTab() throws NotLoginException {
+    void findAllPostListByTab() throws NotLoginException, WrongInputValueException {
 
         registPost();
 
@@ -78,7 +79,7 @@ class QryPostServiceTest {
 
     @Test
     @DisplayName("단일 게시글 조회")
-    void findPostById() throws NotLoginException {
+    void findPostById() throws NotLoginException, WrongInputValueException {
 
         CmdPostAndTagsDTO post = registPost();
         QryPostAndTagsDTO selectedPost = qryPostService.findPostById(post.getId());
@@ -144,7 +145,7 @@ class QryPostServiceTest {
 
     @Test
     @DisplayName("게시글 히스토리 조회")
-    void findHistoryListByOriginId() throws NotLoginException {
+    void findHistoryListByOriginId() throws NotLoginException, WrongInputValueException {
 
         int originId = modifyPost();
         List<QryPostAndTagsDTO> history = qryPostService.findHistoryListByOriginId(originId);
@@ -154,13 +155,13 @@ class QryPostServiceTest {
 
     @Test
     @DisplayName("게시글 좋아요 리스트 조회")
-    void findLikeListByPostId() throws NotLoginException {
+    void findLikeListByPostId() throws NotLoginException, WrongInputValueException {
 
         CmdPostAndTagsDTO post = registPost();
         CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, post.getId());
         cmdPostService.favoritePost(favorite);
 
-        List<CmdEmployeeDTO> likeList = qryPostService.findLikeListByPostId(post.getId());
+        List<QryEmployeeDTO> likeList = qryPostService.findLikeListByPostId(post.getId());
 
         assertThat(likeList).isNotNull();
     }
