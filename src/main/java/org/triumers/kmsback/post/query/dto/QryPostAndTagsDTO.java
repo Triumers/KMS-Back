@@ -1,7 +1,7 @@
 package org.triumers.kmsback.post.query.dto;
 
 import lombok.Data;
-import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
+import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,7 +13,7 @@ public class QryPostAndTagsDTO {
     private String content;
     private String postImg;
     private LocalDateTime createdAt;
-    private CmdEmployeeDTO author;
+    private QryEmployeeDTO author;
     private Integer originId;
     private Integer recentId;
     private Integer tabRelationId;
@@ -21,8 +21,8 @@ public class QryPostAndTagsDTO {
     private List<String> tags;
 
     private List<QryPostAndTagsDTO> history;
-    private List<CmdEmployeeDTO> participants;
-    private List<CmdEmployeeDTO> likeList;
+    private List<QryEmployeeDTO> participants;
+    private List<QryEmployeeDTO> likeList;
 
     private Boolean isLike;
     private Boolean isFavorite;
@@ -31,7 +31,7 @@ public class QryPostAndTagsDTO {
     }
 
     public QryPostAndTagsDTO(Integer id, String title, String content, String postImg, LocalDateTime createdAt,
-                             CmdEmployeeDTO author, Integer originId, Integer recentId, Integer tabRelationId,
+                             QryEmployeeDTO author, Integer originId, Integer recentId, Integer tabRelationId,
                              Integer categoryId, Boolean isLike, Boolean isFavorite) {
         this.id = id;
         this.title = title;
@@ -48,7 +48,7 @@ public class QryPostAndTagsDTO {
     }
 
     public QryPostAndTagsDTO(Integer id, String title, String content, String postImg, LocalDateTime createdAt,
-                             CmdEmployeeDTO author, Integer originId, Integer recentId, Integer tabRelationId,
+                             QryEmployeeDTO author, Integer originId, Integer recentId, Integer tabRelationId,
                              Integer categoryId) {
         this.id = id;
         this.title = title;

@@ -5,11 +5,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.group.query.service.QryGroupService;
 import org.triumers.kmsback.tab.command.Application.service.CmdTabService;
-import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
 import org.triumers.kmsback.user.command.Application.service.AuthService;
-import org.triumers.kmsback.user.command.Application.service.CmdEmployeeService;
 import org.triumers.kmsback.post.query.aggregate.entity.QryLike;
 import org.triumers.kmsback.post.query.aggregate.entity.QryPostAndTag;
 import org.triumers.kmsback.post.query.aggregate.entity.QryTag;
@@ -17,6 +16,8 @@ import org.triumers.kmsback.post.query.aggregate.vo.QryRequestPost;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
 import org.triumers.kmsback.post.query.repository.QryPostMapper;
 import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
+import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
+import org.triumers.kmsback.user.query.service.QryEmployeeService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,19 +26,19 @@ import java.util.List;
 public class QryPostServiceImpl implements QryPostService {
 
     private final QryPostMapper qryPostMapper;
-    private final CmdEmployeeService cmdEmployeeService;
+    private final QryEmployeeService qryEmployeeService;
     private final AuthService authService;
     private final QryGroupService qryGroupService;
 
-    public QryPostServiceImpl(QryPostMapper qryPostMapper, CmdEmployeeService cmdEmployeeService, CmdTabService cmdTabService, AuthService authService, QryGroupService qryGroupService) {
+    public QryPostServiceImpl(QryPostMapper qryPostMapper, QryEmployeeService qryEmployeeService, CmdTabService cmdTabService, AuthService authService, QryGroupService qryGroupService) {
         this.qryPostMapper = qryPostMapper;
-        this.cmdEmployeeService = cmdEmployeeService;
+        this.qryEmployeeService = qryEmployeeService;
         this.authService = authService;
         this.qryGroupService = qryGroupService;
     }
 
     @Override
-    public Page<QryPostAndTagsDTO> findPostListByTab(QryRequestPost request, Pageable pageable) throws NotLoginException {
+    public Page<QryPostAndTagsDTO> findPostListByTab(QryRequestPost request, Pageable pageable) throws NotLoginException, WrongInputValueException {
 
         List<QryPostAndTag> postList = qryPostMapper.selectTabPostList(request, pageable);
         for (int i = 0; i < postList.size(); i++) {
@@ -53,7 +54,7 @@ public class QryPostServiceImpl implements QryPostService {
     }
 
     @Override
-    public Page<QryPostAndTagsDTO> findAllPostListByEmployee(QryRequestPost request, Pageable pageable) throws NotLoginException {
+    public Page<QryPostAndTagsDTO> findAllPostListByEmployee(QryRequestPost request, Pageable pageable) throws NotLoginException, WrongInputValueException {
 
         Employee employee = authService.whoAmI();
 
@@ -66,10 +67,10 @@ public class QryPostServiceImpl implements QryPostService {
     }
 
     @Override
-    public QryPostAndTagsDTO findPostById(int postId) throws NotLoginException {
+    public QryPostAndTagsDTO findPostById(int postId) throws NotLoginException, WrongInputValueException {
         QryPostAndTag post = qryPostMapper.selectPostById(postId);
 
-        CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(post.getAuthorId());
+        QryEmployeeDTO employeeDTO = qryEmployeeService.findByIdIncludeEnd(post.getAuthorId());
 
         QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
                 post.getPostImg(), post.getCreatedAt(), employeeDTO, post.getOriginId(),
@@ -85,35 +86,39 @@ public class QryPostServiceImpl implements QryPostService {
         return postDTO;
     }
 
-    private List<CmdEmployeeDTO> findParticipantsListByOriginId(int postId) {
+    private List<QryEmployeeDTO> findParticipantsListByOriginId(int postId) throws WrongInputValueException {
 
-        List<CmdEmployeeDTO> participantList = new ArrayList<>();
+        List<QryEmployeeDTO> participantList = new ArrayList<>();
         List<Integer> employeeList = qryPostMapper.selectParticipantsListByOriginId(postId);
         for (int i = 0; i < employeeList.size(); i++) {
-            CmdEmployeeDTO employee = cmdEmployeeService.findEmployeeById(employeeList.get(i));
+            QryEmployeeDTO employee = qryEmployeeService.findByIdIncludeEnd(employeeList.get(i));
             participantList.add(employee);
         }
         return participantList;
     }
 
     @Override
-    public List<QryPostAndTagsDTO> findHistoryListByOriginId(int originId) throws NotLoginException {
+    public List<QryPostAndTagsDTO> findHistoryListByOriginId(int originId) throws NotLoginException, WrongInputValueException {
         List<QryPostAndTag> historyList = qryPostMapper.selectHistoryListByOriginId(originId);
 
         return QryPostAndTagListToDTOList(historyList, "history");
     }
 
     @Override
-    public List<CmdEmployeeDTO> findLikeListByPostId(int postId) {
+    public List<QryEmployeeDTO> findLikeListByPostId(int postId) throws WrongInputValueException {
 
         List<QryLike> likeList = qryPostMapper.selectLikeListByPostId(postId);
+        List<QryEmployeeDTO> likeMemberList = new ArrayList<>();
 
-        List<CmdEmployeeDTO> likeMemberList = new ArrayList<>();
-        for (int i = 0; i < likeList.size(); i++) {
-            int memberId = likeList.get(i).getEmployeeId();
-            CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(memberId);
-            likeMemberList.add(employeeDTO);
+        if (likeList != null) {
+            for (int i = 0; i < likeList.size(); i++) {
+                int memberId = likeList.get(i).getEmployeeId();
+
+                QryEmployeeDTO employeeDTO = qryEmployeeService.findByIdIncludeEnd(memberId);
+                likeMemberList.add(employeeDTO);
+            }
         }
+
         return likeMemberList;
     }
 
@@ -187,7 +192,7 @@ public class QryPostServiceImpl implements QryPostService {
     }
 
 
-    private List<QryPostAndTagsDTO> QryPostAndTagListToDTOList(List<QryPostAndTag> postList, String type) throws NotLoginException {
+    private List<QryPostAndTagsDTO> QryPostAndTagListToDTOList(List<QryPostAndTag> postList, String type) throws NotLoginException, WrongInputValueException {
 
         List<QryPostAndTagsDTO> postDTOList = new ArrayList<>();
         for (int i = 0; i < postList.size(); i++) {
@@ -199,7 +204,7 @@ public class QryPostServiceImpl implements QryPostService {
                 authorId = qryPostMapper.originAuthorId(originId);
             }
 
-            CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(authorId);
+            QryEmployeeDTO employeeDTO = qryEmployeeService.findByIdIncludeEnd(authorId);
 
             QryPostAndTagsDTO postDTO = new QryPostAndTagsDTO(post.getId(), post.getTitle(), post.getContent(),
                     post.getPostImg(), post.getCreatedAt(), employeeDTO, post.getOriginId(),
@@ -210,7 +215,7 @@ public class QryPostServiceImpl implements QryPostService {
             postDTO.setIsFavorite(findIsFavoriteByPostId(originId));
 
             if(type.equals("origin")){
-                List<CmdEmployeeDTO> like = findLikeListByPostId(originId);
+                List<QryEmployeeDTO> like = findLikeListByPostId(originId);
                 postDTO.setLikeList(like);
             }
             postDTOList.add(postDTO);

@@ -3,23 +3,24 @@ package org.triumers.kmsback.post.query.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.triumers.kmsback.common.exception.NotLoginException;
-import org.triumers.kmsback.user.command.Application.dto.CmdEmployeeDTO;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
 import org.triumers.kmsback.post.query.aggregate.vo.QryRequestPost;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
+import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
 
 import java.util.List;
 
 public interface QryPostService {
 
-    Page<QryPostAndTagsDTO> findPostListByTab(QryRequestPost request, Pageable pageable) throws NotLoginException;
+    Page<QryPostAndTagsDTO> findPostListByTab(QryRequestPost request, Pageable pageable) throws NotLoginException, WrongInputValueException;
 
-    Page<QryPostAndTagsDTO> findAllPostListByEmployee(QryRequestPost request, Pageable pageable) throws NotLoginException;
+    Page<QryPostAndTagsDTO> findAllPostListByEmployee(QryRequestPost request, Pageable pageable) throws NotLoginException, WrongInputValueException;
 
-    QryPostAndTagsDTO findPostById(int postId) throws NotLoginException;
+    QryPostAndTagsDTO findPostById(int postId) throws NotLoginException, WrongInputValueException;
 
-    List<QryPostAndTagsDTO> findHistoryListByOriginId(int originId) throws NotLoginException;
+    List<QryPostAndTagsDTO> findHistoryListByOriginId(int originId) throws NotLoginException, WrongInputValueException;
 
-    List<CmdEmployeeDTO> findLikeListByPostId(int postId);
+    List<QryEmployeeDTO> findLikeListByPostId(int postId) throws WrongInputValueException;
 
     Boolean getIsEditingById(int postId);
 

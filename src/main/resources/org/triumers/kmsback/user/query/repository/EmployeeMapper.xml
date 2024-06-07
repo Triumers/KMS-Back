@@ -25,6 +25,12 @@
            AND END_DATE IS NULL
     </select>
 
+    <select id="findByIdIncludeEnd" resultMap="employeeMap" parameterType="int">
+        SELECT *
+          FROM tbl_employee
+         WHERE ID = #{id}
+    </select>
+
     <select id="findAllEmployee" resultMap="employeeMap">
         SELECT *
           FROM tbl_employee

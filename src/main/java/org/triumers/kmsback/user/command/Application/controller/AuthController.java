@@ -2,6 +2,7 @@ package org.triumers.kmsback.user.command.Application.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +27,9 @@ import org.triumers.kmsback.common.exception.WrongInputValueException;
 public class AuthController {
 
     private final AuthService authService;
+
+    @Value("${password}")
+    private String defaultPassword;
 
     @Autowired
     public AuthController(AuthService authService) {
@@ -56,6 +60,10 @@ public class AuthController {
 
         try {
             authService.editPassword(passwordDTO);
+
+            if (passwordDTO.getOldPassword().equals(defaultPassword)) {
+                return ResponseEntity.status(210).body(null);
+            }
 
             return ResponseEntity.status(HttpStatus.OK).body(
                     new CmdResponseMessageVO("비밀번호 변경 성공"));

@@ -99,6 +99,13 @@ public class QryEmployeeServiceImpl implements QryEmployeeService {
         return employeeDTOList;
     }
 
+    @Override
+    public QryEmployeeDTO findByIdIncludeEnd(int id) throws WrongInputValueException {
+        QryEmployee employee = employeeMapper.findByIdIncludeEnd(id);
+
+        return employeeToDTO(employee);
+    }
+
     private QryEmployeeDTO employeeToDTO(QryEmployee employee) throws WrongInputValueException {
 
         Map<String, String> team = new HashMap<>();
