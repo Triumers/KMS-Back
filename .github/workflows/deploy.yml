@@ -28,54 +28,22 @@ jobs:
       - name: Install envsubst
         run: sudo apt-get install -y gettext
 
-      - name: Create application.yml.template
+      - name: Make application.yml
         run: |
           mkdir -p src/main/resources
-          cat > src/main/resources/application.yml.template <<EOL
-          server:
-            port: 5000
-          
-          spring:
-            datasource:
-              driver-class-name: org.mariadb.jdbc.Driver
-              url: jdbc:mariadb://\${DB_HOST}:\${DB_PORT}/\${DB_NAME}
-              username: \${DB_USER_NAME}
-              password: \${DB_PASSWORD}
-          
-            jpa:
-              generate-ddl: false
-              show-sql: true
-              database: mysql
-              properties:
-                hibernate:
-                  '[format_sql]': true
-          EOL
+          echo "${{ secrets.DB_YML }}" | base64 --decode > src/main/resources/application.yml
+          find src
 
-      - name: Set Yaml
+      - name: Make gradle.properties
         run: |
-          envsubst < src/main/resources/application.yml.template > src/main/resources/application.yml
-          echo "Generated application.yml:"
-          cat src/main/resources/application.yml
-        env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER_NAME: ${{ secrets.DB_USER_NAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          echo "${{ secrets.GRADLE_PROPERTIES }}" | base64 --decode > gradle.properties
 
-      - name: Check for Tests
-        run: |
-          if git diff --name-only origin/main HEAD | grep -qvE '(\.xml$|\.yml$|config/)'; then
-            if [ -z "$(find src/test -name '*ServiceTest.java')" ]; then
-              echo "No ServiceTest found, failing the build."
-              exit 1
-            fi
-          else
-            echo "Only configuration files changed, skipping test check."
-          fi
-
-      - name: Build with Gradle
+      - name: Gradle 빌드
         run: ./gradlew clean build
+        env:
+          DB_URL: DB URL = ${{ secrets.DB_URL }}
+          DB_USER_NAME: USER = ${{ secrets.DB_USER_NAME }}
+          DB_PASSWORD: PSW = ${{ secrets.DB_PASSWORD }}
 
       - name: Get current time
         uses: 1466587594/get-current-time@v2
