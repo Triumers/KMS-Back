@@ -60,7 +60,7 @@ jobs:
           RDS_HOSTNAME: ${{ secrets.DB_HOST }}
           RDS_PORT: ${{ secrets.DB_PORT }}
           RDS_DB_NAME: ${{ secrets.DB_NAME }}
-          RDS_USERNAME: ${{ secrets.DB_USERNAME }}
+          RDS_USERNAME: ${{ secrets.DB_USER_NAME }}
           RDS_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       - name: Check for Tests
