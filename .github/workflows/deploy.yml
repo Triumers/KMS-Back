@@ -38,9 +38,9 @@ jobs:
           spring:
             datasource:
               driver-class-name: org.mariadb.jdbc.Driver
-              url: jdbc:mariadb://\${RDS_HOSTNAME}:\${RDS_PORT}/\${RDS_DB_NAME}
-              username: \${RDS_USERNAME}
-              password: \${RDS_PASSWORD}
+              url: jdbc:mariadb://\${DB_HOST}:\${DB_PORT}/\${DB_NAME}
+              username: \${DB_USERNAME}
+              password: \${DB_PASSWORD}
           
             jpa:
               generate-ddl: false
