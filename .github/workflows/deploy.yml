@@ -41,9 +41,9 @@ jobs:
       - name: Gradle 빌드
         run: ./gradlew clean build
         env:
-          DB_URL: DB URL = ${{ secrets.DB_URL }}
-          DB_USER_NAME: USER = ${{ secrets.DB_USER_NAME }}
-          DB_PASSWORD: PSW = ${{ secrets.DB_PASSWORD }}
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USER_NAME: ${{ secrets.DB_USER_NAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
       - name: Get current time
         uses: 1466587594/get-current-time@v2
@@ -75,11 +75,12 @@ jobs:
       - name: Generate deployment package
         run: |
           mkdir -p deploy
-          cp build/libs/*.jar deploy/application.jar
+          JAR_FILE=$(find build/libs -name "*.jar" | head -n 1)
+          cp "$JAR_FILE" deploy/application.jar
           cp Procfile deploy/Procfile
           cp -r .ebextensions deploy/.ebextensions
           cp -r .platform deploy/.platform
-          cd deploy && zip -r deploy.zip .  
+          cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v22
