@@ -39,8 +39,21 @@ public class AwsS3ServiceImpl implements AwsS3Service {
         return this.uploadFile(file);
     }
 
+    // 이미지만 등록하는 메소드
+    @Override
+    public String uploadImage(MultipartFile file) throws AwsS3Exception {
+
+        if (file.isEmpty() || Objects.isNull(file.getOriginalFilename())) {
+            throw new AwsS3Exception();
+        }
+
+        // 이미지 파일인지 검증하는 로직
+        this.validateFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
+
+        return this.uploadFile(file);
+    }
+
     private String uploadFile(MultipartFile file) throws AwsS3Exception {
-//        this.validateFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
         try {
             return this.uploadFileToS3(file);
         } catch (IOException e) {
@@ -49,19 +62,19 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     }
 
     // 이미지 파일만 허용하는 검증
-//    private void validateFileExtension(String filename) throws AwsS3Exception {
-//        int lastDotIndex = filename.lastIndexOf(".");
-//        if (lastDotIndex == -1) {
-//            throw new AwsS3Exception();
-//        }
-//
-//        String extension = filename.substring(lastDotIndex + 1).toLowerCase();
-//        List<String> allowedExtentionList = Arrays.asList("jpg", "jpeg", "png", "gif");
-//
-//        if (!allowedExtentionList.contains(extension)) {
-//            throw new AwsS3Exception();
-//        }
-//    }
+    private void validateFileExtension(String filename) throws AwsS3Exception {
+        int lastDotIndex = filename.lastIndexOf(".");
+        if (lastDotIndex == -1) {
+            throw new AwsS3Exception();
+        }
+
+        String extension = filename.substring(lastDotIndex + 1).toLowerCase();
+        List<String> allowedExtentionList = Arrays.asList("jpg", "jpeg", "png", "gif");
+
+        if (!allowedExtentionList.contains(extension)) {
+            throw new AwsS3Exception("이미지 파일이 아닙니다.");
+        }
+    }
 
     private String uploadFileToS3(MultipartFile image) throws IOException, AwsS3Exception {
         String originalFilename = image.getOriginalFilename(); //원본 파일 명
