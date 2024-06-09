@@ -11,6 +11,7 @@ import org.triumers.kmsback.comment.command.Application.dto.CmdCommentDTO;
 import org.triumers.kmsback.comment.command.Domain.aggregate.entity.CmdComment;
 import org.triumers.kmsback.comment.command.Domain.repository.CommentRepository;
 import org.triumers.kmsback.common.exception.NotAuthorizedException;
+import org.triumers.kmsback.common.exception.NotLoginException;
 
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public class CmdCommentServiceTest {
 
     @DisplayName("댓글 추가 테스트")
     @Test
-    public void testAddComment() {
+    public void testAddComment() throws NotLoginException {
         CmdCommentDTO dto = new CmdCommentDTO();
         dto.setContent("Test Comment");
         dto.setAuthorId(1L);
@@ -52,7 +53,7 @@ public class CmdCommentServiceTest {
 
     @DisplayName("댓글 수정 테스트")
     @Test
-    public void testUpdateCommentSuccess() throws NotAuthorizedException {
+    public void testUpdateCommentSuccess() throws NotAuthorizedException, NotLoginException {
         CmdComment existingComment = new CmdComment();
         existingComment.setId(1);
         existingComment.setAuthorId(1L);
@@ -98,7 +99,7 @@ public class CmdCommentServiceTest {
 
         when(commentRepository.findById(1)).thenReturn(Optional.of(existingComment));
 
-        assertDoesNotThrow(() -> commentService.deleteComment(1, 1L, false));
+        assertDoesNotThrow(() -> commentService.deleteComment(1));
         verify(commentRepository, times(1)).delete(existingComment);
     }
 
@@ -111,7 +112,7 @@ public class CmdCommentServiceTest {
 
         when(commentRepository.findById(1)).thenReturn(Optional.of(existingComment));
 
-        assertThrows(NotAuthorizedException.class, () -> commentService.deleteComment(1, 2L, false));
+        assertThrows(NotAuthorizedException.class, () -> commentService.deleteComment(1));
         verify(commentRepository, never()).delete(existingComment);
     }
 

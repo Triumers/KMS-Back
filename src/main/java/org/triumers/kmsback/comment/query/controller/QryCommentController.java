@@ -20,11 +20,21 @@ public class QryCommentController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<QryComment>> getCommentsByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(qryCommentService.getCommentsByUserId(userId));
+        try {
+
+            return ResponseEntity.ok(qryCommentService.getCommentsByUserId(userId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<QryComment>> getCommentsByPostId(@PathVariable Long postId) {
-        return ResponseEntity.ok(qryCommentService.getCommentsByPostId(postId));
+        try {
+
+            return ResponseEntity.ok(qryCommentService.getCommentsByPostId(postId));
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }
