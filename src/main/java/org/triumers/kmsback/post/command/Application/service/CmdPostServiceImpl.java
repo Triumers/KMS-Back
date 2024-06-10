@@ -1,6 +1,8 @@
 package org.triumers.kmsback.post.command.Application.service;
 
 import jakarta.mail.MessagingException;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +70,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     public CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post) throws NotLoginException {
 
         Employee employee = authService.whoAmI();
-        CmdPost registPost = new CmdPost(post.getId(), post.getTitle(), post.getContent(), post.getPostImg(),
+        CmdPost registPost = new CmdPost(post.getId(), post.getTitle(), sanitizeHTML(post.getContent()), post.getPostImg(),
                 LocalDateTime.now(), employee.getId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
 
         if (post.getId() != null) {
@@ -81,6 +83,17 @@ public class CmdPostServiceImpl implements CmdPostService {
         post.setId(registPost.getId());
 
         return post;
+    }
+
+    public static String sanitizeHTML(String html) {
+
+        Whitelist whitelist = Whitelist.relaxed();
+        // 허용되지 않을 태그와 속성 추가
+        whitelist.removeTags("script", "style", "head", "header", "foot", "footer");
+        whitelist.removeAttributes( "style","onclick");
+
+        String cleanedHTML = Jsoup.clean(html, whitelist);
+        return cleanedHTML;
     }
 
     public List<CmdTag> registTag(List<CmdTagDTO> tags, int postId) {
