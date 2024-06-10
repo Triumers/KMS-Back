@@ -33,17 +33,6 @@ public class QryEmployeeController {
         }
     }
 
-    @GetMapping("/id-with/{id}")
-    public ResponseEntity<QryResponseEmployeeVO> findByIdIncludeEnd(@PathVariable int id) {
-
-        try {
-            QryEmployeeDTO employee = qryEmployeeService.findByIdIncludeEnd(id);
-            return ResponseEntity.status(HttpStatus.OK).body(new QryResponseEmployeeVO("조회 성공", List.of(employee)));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new QryResponseEmployeeVO("조회 실패", null));
-        }
-    }
-
     @GetMapping("/all")
     public ResponseEntity<QryResponseEmployeeVO> findAll() {
 
