@@ -52,7 +52,8 @@ public class AuthController {
 
             if (authService.isHaveAuthenticator(account)) {
 
-                if (IpAddressUtil.getClientIp(request).equals(defaultIpAddress)) {
+                if (IpAddressUtil.getClientIp(request).equals(defaultIpAddress) ||
+                        IpAddressUtil.getClientIp(request).equals("0:0:0:0:0:0:0:1")) {
                     return ResponseEntity.status(HttpStatus.OK).body(new CmdResponseMessageVO("환영합니다."));
                 }
 

@@ -72,8 +72,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String name = customUserDetails.getName();
         String secret = customUserDetails.getSecretCode();
 
+        String clientIpAddress = IpAddressUtil.getClientIp(request);
+
         // Authenticator 등록된 계정 2차 인증
-        if (!IpAddressUtil.getClientIp(request).equals(defaultIpAddress)) {
+        if (!clientIpAddress.equals(defaultIpAddress) && !clientIpAddress.equals("0:0:0:0:0:0:0:1")) {
             if (!otpValidator.validateOTP(secret, otpCode)) {
                 throw new BadCredentialsException("Invalid OTP");
             }
