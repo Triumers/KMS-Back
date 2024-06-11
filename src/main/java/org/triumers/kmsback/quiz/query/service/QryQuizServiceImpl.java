@@ -23,6 +23,11 @@ public class QryQuizServiceImpl implements QryQuizService {
     @Override
     public List<QryQuizDTO> findQuizByStatus(boolean status) {
         List<QryQuiz> qryQuizs = quizMapper.findQuizByStatus(status);
+
+        if (qryQuizs.isEmpty()) {
+            return null;
+        }
+
         List<QryQuizDTO> qryQuizDTOs = new ArrayList<>();
 
         for (QryQuiz qryQuiz : qryQuizs) {
@@ -44,6 +49,11 @@ public class QryQuizServiceImpl implements QryQuizService {
     @Override
     public QryQuizDTO findQuizById(int id) {
         QryQuiz qryQuiz = quizMapper.findQuizById(id);
+
+        if (qryQuiz == null) {
+            return null;
+        }
+
         QryQuizDTO qryQuizDTO = new QryQuizDTO();
 
         qryQuizDTO.setId(qryQuiz.getId());
@@ -61,6 +71,11 @@ public class QryQuizServiceImpl implements QryQuizService {
     @Override
     public QryQuizDTO findQuizByPostId(int postId) {
         QryQuiz qryQuiz = quizMapper.findQuizByPostId(postId);
+
+        if (qryQuiz == null) {
+            return null;
+        }
+
         QryQuizDTO qryQuizDTO = new QryQuizDTO();
         qryQuizDTO.setId(qryQuiz.getId());
         qryQuizDTO.setContent(qryQuiz.getContent());
