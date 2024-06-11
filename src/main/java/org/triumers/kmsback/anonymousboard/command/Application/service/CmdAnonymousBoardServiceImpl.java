@@ -6,9 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardDTO;
 import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAnonymousBoard;
+import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAnonymousBoardComment;
+import org.triumers.kmsback.anonymousboard.command.domain.repository.CmdAnonymousBoardCommentRepository;
 import org.triumers.kmsback.anonymousboard.command.domain.repository.CmdAnonymousBoardRepository;
 import org.triumers.kmsback.common.util.MacAddressUtil;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -17,9 +20,12 @@ public class CmdAnonymousBoardServiceImpl implements CmdAnonymousBoardService {
 
     private final CmdAnonymousBoardRepository cmdAnonymousBoardRepository;
 
+    private final CmdAnonymousBoardCommentRepository cmdAnonymousBoardCommentRepository;
+
     @Autowired
-    public CmdAnonymousBoardServiceImpl(CmdAnonymousBoardRepository cmdAnonymousBoardRepository) {
+    public CmdAnonymousBoardServiceImpl(CmdAnonymousBoardRepository cmdAnonymousBoardRepository, CmdAnonymousBoardCommentRepository cmdAnonymousBoardCommentRepository) {
         this.cmdAnonymousBoardRepository = cmdAnonymousBoardRepository;
+        this.cmdAnonymousBoardCommentRepository = cmdAnonymousBoardCommentRepository;
     }
 
     // 엔티티를 DTO로 변환하는 메서드
@@ -73,6 +79,14 @@ public class CmdAnonymousBoardServiceImpl implements CmdAnonymousBoardService {
         CmdAnonymousBoard cmdAnonymousBoard = optionalCmdAnonymousBoard.orElseThrow(
                 () -> new NoSuchElementException("Anonymous board not found with id: " + id)
         );
+
+        // 게시글의 모든 댓글 삭제
+        List<CmdAnonymousBoardComment> comments = cmdAnonymousBoard.getComments();
+        for (CmdAnonymousBoardComment comment : comments) {
+            cmdAnonymousBoardCommentRepository.delete(comment);
+        }
+
+        // 게시글 삭제
         cmdAnonymousBoardRepository.delete(cmdAnonymousBoard);
     }
 }

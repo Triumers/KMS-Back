@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_anonymous_board")
@@ -34,9 +36,21 @@ public class CmdAnonymousBoard {
     @Column(name = "MAC_ADDRESS", nullable = false)
     private String macAddress;
 
+    @OneToMany(mappedBy = "anonymousBoard", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CmdAnonymousBoardComment> comments = new ArrayList<>();
+
     public CmdAnonymousBoard(String title, String content, String macAddress) {
         this.title = title;
         this.content = content;
+        this.macAddress = macAddress;
+    }
+
+    public CmdAnonymousBoard(int id, String nickname, String title, String content, LocalDateTime createdDate, String macAddress) {
+        this.id = id;
+        this.nickname = nickname;
+        this.title = title;
+        this.content = content;
+        this.createdDate = createdDate;
         this.macAddress = macAddress;
     }
 }

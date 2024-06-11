@@ -1,6 +1,7 @@
 package org.triumers.kmsback.anonymousboard.command.Application.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,7 +49,7 @@ class CmdAnonymousBoardCommentServiceImplTests {
         cmdAnonymousBoardCommentDTO.setAnonymousBoard(savedAnonymousBoard);
     }
 
-    // 유효한 입력값으로 댓글 저장 성공 여부를 확인
+    @DisplayName("익명게시판 게시글 댓글 저장 성공 여부 테스트")
     @Test
     void saveAnonymousBoardComment_ValidInput_Success() {
         // when
@@ -61,7 +62,7 @@ class CmdAnonymousBoardCommentServiceImplTests {
         assertNotNull(savedCmdAnonymousBoardCommentDTO.getMacAddress());
     }
 
-    // 내용이 비어있는 경우 예외 발생 여부를 확인
+    @DisplayName("익명게시판 게시글 댓글 내용이 비어있는 경우 예외 발생 여부 테스트")
     @Test
     void saveAnonymousBoardComment_EmptyContent_ThrowsIllegalArgumentException() {
         // given
@@ -71,7 +72,7 @@ class CmdAnonymousBoardCommentServiceImplTests {
         assertThrows(IllegalArgumentException.class, () -> cmdAnonymousBoardCommentService.saveAnonymousBoardComment(cmdAnonymousBoardCommentDTO));
     }
 
-    // 유효하지 않은 게시글인 경우 예외 발생 여부를 확인
+    @DisplayName("익명게시판 유효하지 않은 게시글의 댓글 작성 시 예외 발생 여부 테스트")
     @Test
     void saveAnonymousBoardComment_InvalidAnonymousBoard_ThrowsIllegalArgumentException() {
         // given
@@ -82,7 +83,7 @@ class CmdAnonymousBoardCommentServiceImplTests {
         assertThrows(IllegalArgumentException.class, () -> cmdAnonymousBoardCommentService.saveAnonymousBoardComment(cmdAnonymousBoardCommentDTO));
     }
 
-    // 유효한 ID로 댓글 삭제 성공 여부를 확인
+    @DisplayName("익명게시판 게시글 댓글 삭제 성공 여부 테스트")
     @Test
     void deleteAnonymousBoardComment_ValidId_Success() {
         // given
@@ -95,7 +96,7 @@ class CmdAnonymousBoardCommentServiceImplTests {
         assertFalse(cmdAnonymousBoardCommentRepository.findById(savedCmdAnonymousBoardCommentDTO.getId()).isPresent());
     }
 
-    // 유효하지 않은 ID로 삭제 시도 시 예외 발생 여부를 확인
+    @DisplayName("익명게시판 게시글 댓글 유효하지 않은 ID로 삭제 시도 시 예외 발생 여부 테스트")
     @Test
     void deleteAnonymousBoardComment_InvalidId_ThrowsNoSuchElementException() {
         // given
@@ -105,7 +106,7 @@ class CmdAnonymousBoardCommentServiceImplTests {
         assertThrows(NoSuchElementException.class, () -> cmdAnonymousBoardCommentService.deleteAnonymousBoardComment(invalidId));
     }
 
-    // 맥 어드레스 검증
+    @DisplayName("맥 어드레스 유효성 검증 테스트")
     @Test
     void saveAnonymousBoardComment_verifyMacAddress() throws Exception {
         // when
@@ -121,7 +122,7 @@ class CmdAnonymousBoardCommentServiceImplTests {
         assertThat(isValidMacAddress(actualMacAddress)).isTrue();
     }
 
-    // 실제 맥 주소와 일치하는지 검증
+    @DisplayName("실제 맥 주소와 일치하는지 테스트")
     @Test
     void saveAnonymousBoardComment_checkMacAddress() throws Exception {
         // when
