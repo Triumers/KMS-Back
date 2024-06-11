@@ -1,6 +1,7 @@
 package org.triumers.kmsback.anonymousboard.query.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,6 +55,7 @@ class QryAnonymousBoardServiceImplTests {
         cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO5);
     }
 
+    @DisplayName("익명게시판 게시글 전부 조회 성공 여부 테스트")
     @Test
     void findAllAnonymousBoard() {
         Pageable pageable = PageRequest.of(0, PAGE_SIZE);
@@ -64,6 +66,7 @@ class QryAnonymousBoardServiceImplTests {
         assertThat(anonymousBoardList).isNotEmpty();
     }
 
+    @DisplayName("제목으로 익명게시판 게시글 조회 성공 여부 테스트")
     @Test
     void searchAnonymousBoardByTitle() {
         String keyword = "제목";
@@ -75,6 +78,7 @@ class QryAnonymousBoardServiceImplTests {
         assertThat(anonymousBoardList).isNotEmpty();
     }
 
+    @DisplayName("내용으로 익명게시판 게시글 조회 성공 여부 테스트")
     @Test
     void searchAnonymousBoardByContent() {
         String keyword = "내용";
@@ -86,6 +90,7 @@ class QryAnonymousBoardServiceImplTests {
         assertThat(anonymousBoardList).isNotEmpty();
     }
 
+    @DisplayName("제목+내용으로 익명게시판 게시글 조회 성공 여부 테스트")
     @Test
     void searchAnonymousBoardByTitleAndContent() {
         String keyword = "내용";
@@ -97,6 +102,7 @@ class QryAnonymousBoardServiceImplTests {
         assertThat(anonymousBoardList).isNotEmpty();
     }
 
+    @DisplayName("익명게시판 게시글 단일 조회 성공 여부 테스트")
     @Test
     void findAnonymousBoardById() {
         Pageable pageable = PageRequest.of(0, PAGE_SIZE);
@@ -112,6 +118,7 @@ class QryAnonymousBoardServiceImplTests {
         assertThat(foundAnonymousBoard.getMacAddress()).isNotNull();
     }
 
+    @DisplayName("제목으로 조회한 익명게시판 게시글 전체 개수 조회 테스트")
     @Test
     void searchAnonymousBoardByTitleCount() {
         String keyword = "title";
@@ -121,6 +128,7 @@ class QryAnonymousBoardServiceImplTests {
         assertThat(page.getTotalElements()).isNotZero();
     }
 
+    @DisplayName("내용으로 조회한 익명게시판 게시글 전체 개수 조회 테스트")
     @Test
     void searchAnonymousBoardByContentCount() {
         String keyword = "content";
@@ -130,6 +138,7 @@ class QryAnonymousBoardServiceImplTests {
         assertThat(page.getTotalElements()).isNotZero();
     }
 
+    @DisplayName("제목+내용으로 조회한 익명게시판 게시글 전체 개수 조회 테스트")
     @Test
     void searchAnonymousBoardByTitleAndContentCount() {
         String keyword = "title";
