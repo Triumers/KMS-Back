@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.triumers.kmsback.common.auth.authenticator.service.OTPValidator;
+import org.triumers.kmsback.common.util.IpAddressUtil;
 import org.triumers.kmsback.user.command.Application.dto.CustomUserDetails;
 import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 
@@ -28,6 +30,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
     private final String defaultPassword;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Value("in-house-ip-address")
+    private String defaultIpAddress;
 
     private final OTPValidator otpValidator;
     private int otpCode = 0;
@@ -67,8 +72,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String name = customUserDetails.getName();
         String secret = customUserDetails.getSecretCode();
 
+        String clientIpAddress = IpAddressUtil.getClientIp(request);
+
         // Authenticator 등록된 계정 2차 인증
-        if (secret != null && !secret.isEmpty()) {
+        if (!clientIpAddress.equals(defaultIpAddress) && !clientIpAddress.equals("0:0:0:0:0:0:0:1")) {
             if (!otpValidator.validateOTP(secret, otpCode)) {
                 throw new BadCredentialsException("Invalid OTP");
             }

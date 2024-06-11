@@ -1,11 +1,14 @@
 package org.triumers.kmsback.anonymousboard.command.Application.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardCommentDTO;
 import org.triumers.kmsback.anonymousboard.command.Application.dto.CmdAnonymousBoardDTO;
+import org.triumers.kmsback.anonymousboard.command.domain.aggregate.entity.CmdAnonymousBoard;
 import org.triumers.kmsback.anonymousboard.command.domain.repository.CmdAnonymousBoardRepository;
 import org.triumers.kmsback.common.util.MacAddressUtil;
 
@@ -26,14 +29,26 @@ class CmdAnonymousBoardServiceImplTests {
 
     private CmdAnonymousBoardDTO cmdAnonymousBoardDTO;
 
+    private CmdAnonymousBoardCommentDTO cmdAnonymousBoardCommentDTO;
+
+    private CmdAnonymousBoard savedAnonymousBoard;
+
     @BeforeEach
     void setUp() {
         cmdAnonymousBoardDTO = new CmdAnonymousBoardDTO();
-        cmdAnonymousBoardDTO.setTitle("Test Title");
-        cmdAnonymousBoardDTO.setContent("Test Content");
+        cmdAnonymousBoardDTO.setTitle("Test Board");
+        cmdAnonymousBoardDTO.setContent("Test Board Content");
+
+        savedAnonymousBoard = cmdAnonymousBoardRepository.save(new CmdAnonymousBoard(cmdAnonymousBoardDTO.getTitle(), cmdAnonymousBoardDTO.getContent(), "test_mac_address"));
+
+        cmdAnonymousBoardCommentDTO = new CmdAnonymousBoardCommentDTO();
+        cmdAnonymousBoardCommentDTO.setNickname("Test Nickname");
+        cmdAnonymousBoardCommentDTO.setContent("Test Comment");
+        cmdAnonymousBoardCommentDTO.setAnonymousBoard(savedAnonymousBoard);
+
     }
 
-    // 유효한 입력값으로 게시글 저장 성공 여부를 확인
+    @DisplayName("익명게시판 게시글 저장 성공 여부 테스트")
     @Test
     void saveAnonymousBoard_ValidInput_Success() {
         // when
@@ -46,7 +61,7 @@ class CmdAnonymousBoardServiceImplTests {
         assertNotNull(savedCmdAnonymousBoardDTO.getMacAddress());
     }
 
-    // 제목이 비어있는 경우 예외 발생 여부를 확인
+    @DisplayName("익명게시판 게시글 제목이 비어있는 경우 예외 발생 여부 테스트")
     @Test
     void saveAnonymousBoard_EmptyTitle_ThrowsIllegalArgumentException() {
         // given
@@ -56,7 +71,7 @@ class CmdAnonymousBoardServiceImplTests {
         assertThrows(IllegalArgumentException.class, () -> cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO));
     }
 
-    // 내용이 비어있는 경우 예외 발생 여부를 확인
+    @DisplayName("익명게시판 게시글 내용이 비어있는 경우 예외 발생 여부 테스트")
     @Test
     void saveAnonymousBoard_EmptyContent_ThrowsIllegalArgumentException() {
         // given
@@ -66,7 +81,7 @@ class CmdAnonymousBoardServiceImplTests {
         assertThrows(IllegalArgumentException.class, () -> cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO));
     }
 
-    // 유효한 ID로 게시글 삭제 성공 여부를 확인
+    @DisplayName("익명게시판 게시글 삭제 성공 여부 테스트")
     @Test
     void deleteAnonymousBoard_ValidId_Success() {
         // given
@@ -79,7 +94,7 @@ class CmdAnonymousBoardServiceImplTests {
         assertFalse(cmdAnonymousBoardRepository.findById(savedCmdAnonymousBoardDTO.getId()).isPresent());
     }
 
-    // 유효하지 않은 ID로 삭제 시도 시 예외 발생 여부를 확인
+    @DisplayName("익명게시판 게시글 유효하지 않은 ID로 삭제 시도 시 예외 발생 여부 테스트")
     @Test
     void deleteAnonymousBoard_InvalidId_ThrowsNoSuchElementException() {
         // given
@@ -89,7 +104,7 @@ class CmdAnonymousBoardServiceImplTests {
         assertThrows(NoSuchElementException.class, () -> cmdAnonymousBoardService.deleteAnonymousBoard(invalidId));
     }
 
-    // 맥 어드레스 유효성 검증
+    @DisplayName("맥 어드레스 유효성 검증 테스트")
     @Test
     void saveAnonymousBoard_verifyMacAddress() throws Exception {
         // when
@@ -111,7 +126,7 @@ class CmdAnonymousBoardServiceImplTests {
         return macAddress.matches(macRegex);
     }
 
-    // 실제 맥 주소와 일치하는지 검증
+    @DisplayName("실제 맥 주소와 일치하는지 테스트")
     @Test
     void saveAnonymousBoard_checkMacAddress() throws Exception {
         // given
