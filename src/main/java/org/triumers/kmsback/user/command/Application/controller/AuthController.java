@@ -1,5 +1,6 @@
 package org.triumers.kmsback.user.command.Application.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.triumers.kmsback.common.util.IpAddressUtil;
 import org.triumers.kmsback.user.command.Application.dto.AuthDTO;
 import org.triumers.kmsback.user.command.Application.dto.PasswordDTO;
 import org.triumers.kmsback.user.command.Application.service.AuthService;
@@ -31,13 +33,16 @@ public class AuthController {
     @Value("${password}")
     private String defaultPassword;
 
+    @Value("in-house-ip-address")
+    private String defaultIpAddress;
+
     @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
     @PostMapping("/check-authenticator")
-    public ResponseEntity<CmdResponseMessageVO> isHaveAuthenticator(@RequestBody CmdRequestAccountVO accountVO) {
+    public ResponseEntity<CmdResponseMessageVO> isHaveAuthenticator(HttpServletRequest request, @RequestBody CmdRequestAccountVO accountVO) {
 
         AuthDTO account = new AuthDTO();
         account.setEmail(accountVO.getEmail());
@@ -46,6 +51,11 @@ public class AuthController {
         try {
 
             if (authService.isHaveAuthenticator(account)) {
+
+                if (IpAddressUtil.getClientIp(request).equals(defaultIpAddress)) {
+                    return ResponseEntity.status(HttpStatus.OK).body(new CmdResponseMessageVO("환영합니다."));
+                }
+
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body(new CmdResponseMessageVO("2차 인증 필요"));
             }
             return ResponseEntity.status(HttpStatus.OK).body(new CmdResponseMessageVO("2차 인증 등록을 권장합니다."));
