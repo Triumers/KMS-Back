@@ -28,4 +28,14 @@ public class AwsS3Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @PostMapping("/upload-image")
+    public ResponseEntity<String> uploadImage(@RequestPart(value = "image", required = false) MultipartFile file) {
+        try {
+            String fileLoc = awsS3Service.uploadImage(file);
+            return ResponseEntity.status(HttpStatus.OK).body(fileLoc);
+        } catch (AwsS3Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }
