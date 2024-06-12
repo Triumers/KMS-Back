@@ -30,19 +30,30 @@ public class CmdAnonymousBoardCommentController {
     public ResponseEntity<CmdAnonymousBoardCommentDTO> createAnonymousBoardComment(
             @PathVariable int anonymousBoardId,
             @RequestBody CmdAnonymousBoardCommentDTO cmdAnonymousBoardCommentDTO) {
-        CmdAnonymousBoard anonymousBoard = cmdAnonymousBoardRepository.findById(anonymousBoardId)
-                .orElseThrow(() -> new NoSuchElementException("Anonymous board not found with id: " + anonymousBoardId));
 
-        cmdAnonymousBoardCommentDTO.setAnonymousBoard(anonymousBoard);
-        CmdAnonymousBoardCommentDTO savedAnonymousBoardComment = cmdAnonymousBoardCommentService.saveAnonymousBoardComment(cmdAnonymousBoardCommentDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedAnonymousBoardComment);
+        try {
+            CmdAnonymousBoard anonymousBoard = cmdAnonymousBoardRepository.findById(anonymousBoardId)
+                    .orElseThrow(() -> new NoSuchElementException("Anonymous board not found with id: " + anonymousBoardId));
+
+            cmdAnonymousBoardCommentDTO.setAnonymousBoard(anonymousBoard);
+            CmdAnonymousBoardCommentDTO savedAnonymousBoardComment = cmdAnonymousBoardCommentService.saveAnonymousBoardComment(cmdAnonymousBoardCommentDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedAnonymousBoardComment);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     // 댓글 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAnonymousBoardComment(@PathVariable int id) {
-        cmdAnonymousBoardCommentService.deleteAnonymousBoardComment(id);
-        return ResponseEntity.noContent().build();
+
+        try {
+            cmdAnonymousBoardCommentService.deleteAnonymousBoardComment(id);
+            return ResponseEntity.noContent().build();
+        }  catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @ExceptionHandler(NoSuchElementException.class)

@@ -19,22 +19,38 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<CmdCommentDTO> addComment(@RequestBody CmdCommentDTO comment) {
-        return ResponseEntity.ok(commentService.addComment(comment));
+        try {
+            return ResponseEntity.ok(commentService.addComment(comment));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PutMapping("/{commentId}")
     public ResponseEntity<CmdCommentDTO> updateComment(@PathVariable Integer commentId, @RequestBody CmdCommentDTO comment) throws NotAuthorizedException {
-        return ResponseEntity.ok(commentService.updateComment(commentId, comment));
+        try {
+            return ResponseEntity.ok(commentService.updateComment(commentId, comment));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer commentId, @RequestParam Long userId, @RequestParam boolean isAdmin) throws NotAuthorizedException {
-        commentService.deleteComment(commentId, userId, isAdmin);
-        return ResponseEntity.noContent().build();
+        try {
+            commentService.deleteComment(commentId, userId, isAdmin);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @ExceptionHandler(NotAuthorizedException.class)
     public ResponseEntity<String> handleNotAuthorizedException(NotAuthorizedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+        try {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 }

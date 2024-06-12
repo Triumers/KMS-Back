@@ -31,24 +31,28 @@ public class ManagerController {
     @PostMapping("/signup")
     public ResponseEntity<CmdResponseMessageVO> signup(@Valid @RequestBody CmdRequestSignupUserVO request) {
 
-        ManageUserDTO newEmployee = new ManageUserDTO();
+        try {
+            ManageUserDTO newEmployee = new ManageUserDTO();
 
-        newEmployee.setEmail(request.getEmail());
-        newEmployee.setPassword(request.getPassword());
-        newEmployee.setName(request.getName());
-        newEmployee.setProfileImg(request.getProfileImg());
-        newEmployee.setRole(request.getRole());
-        newEmployee.setStartDate(request.getStartDate());
-        newEmployee.setEndDate(request.getEndDate());
-        newEmployee.setPhoneNumber(request.getPhoneNumber());
-        newEmployee.setTeamId(request.getTeamId());
-        newEmployee.setPositionId(request.getPositionId());
-        newEmployee.setRankId(request.getRankId());
+            newEmployee.setEmail(request.getEmail());
+            newEmployee.setPassword(request.getPassword());
+            newEmployee.setName(request.getName());
+            newEmployee.setProfileImg(request.getProfileImg());
+            newEmployee.setRole(request.getRole());
+            newEmployee.setStartDate(request.getStartDate());
+            newEmployee.setEndDate(request.getEndDate());
+            newEmployee.setPhoneNumber(request.getPhoneNumber());
+            newEmployee.setTeamId(request.getTeamId());
+            newEmployee.setPositionId(request.getPositionId());
+            newEmployee.setRankId(request.getRankId());
 
-        managerService.signup(newEmployee);
+            managerService.signup(newEmployee);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CmdResponseMessageVO(newEmployee.getName() + " 회원 추가 성공"));
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CmdResponseMessageVO(newEmployee.getName() + " 회원 추가 성공"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PostMapping("/edit/role")
@@ -67,6 +71,8 @@ public class ManagerController {
         } catch (NotAuthorizedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                     new CmdResponseMessageVO(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -85,6 +91,8 @@ public class ManagerController {
         } catch (NotAuthorizedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                     new CmdResponseMessageVO(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -110,6 +118,8 @@ public class ManagerController {
         } catch (NotAuthorizedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                     new CmdResponseMessageVO(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 }
