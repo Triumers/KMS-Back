@@ -48,6 +48,8 @@
           JOIN tbl_department AS dept ON team.DEPARTMENT_ID = dept.ID
           JOIN tbl_center AS center ON dept.CENTER_ID = center.ID
          WHERE emp.ID = #{employeeId}
+            OR (tabRel.TEAM_ID = (SELECT E.TEAM_ID FROM tbl_employee E WHERE E.ID = #{employeeId})
+                                                                               AND tabRel.TOP_TAB_ID = 2);
     </select>
 
     <select id="findGroupIdByEmployeeId" parameterType="int">
