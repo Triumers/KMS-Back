@@ -80,7 +80,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         System.out.println("clientIpAddress.equals(defaultIpAddress) = " + clientIpAddress.equals(defaultIpAddress));
 
         // 내부망 또는 개발환경인지 검증하는 로직
-        if (!clientIpAddress.equals(defaultIpAddress) && !clientIpAddress.equals("0:0:0:0:0:0:0:1")) {
+        if (!clientIpAddress.equals("121.170.161.69") && !clientIpAddress.equals("0:0:0:0:0:0:0:1")) {
 
             System.out.println(username + " 사용자 외부 환경에서 접속");
             System.out.println("접속 IP Address : " + clientIpAddress);
