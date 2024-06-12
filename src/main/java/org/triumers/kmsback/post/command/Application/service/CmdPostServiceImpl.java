@@ -87,13 +87,26 @@ public class CmdPostServiceImpl implements CmdPostService {
 
     public static String sanitizeHTML(String html) {
 
+        // 공백, 줄바꿈 대체
+        String spacePlaceholder = "___SPACE___";
+        String newlinePlaceholder = "___NEWLINE___";
+        String htmlWithPlaceholders = html
+                .replaceAll(" ", spacePlaceholder)
+                .replaceAll("\n", newlinePlaceholder)
+                .replaceAll("\r\n", newlinePlaceholder);
+
         Whitelist whitelist = Whitelist.relaxed();
         // 허용되지 않을 태그와 속성 추가
         whitelist.removeTags("script", "style", "head", "header", "foot", "footer");
-        whitelist.removeAttributes( "style","onclick");
+        whitelist.removeAttributes("style", "onclick");
 
-        String cleanedHTML = Jsoup.clean(html, whitelist);
-        return cleanedHTML;
+        String cleanedHtmlWithPlaceholders = Jsoup.clean(htmlWithPlaceholders, whitelist);
+
+        String cleanedHtml = cleanedHtmlWithPlaceholders
+                .replaceAll(spacePlaceholder, " ")
+                .replaceAll(newlinePlaceholder, "\n");
+
+        return cleanedHtml;
     }
 
     public List<CmdTag> registTag(List<CmdTagDTO> tags, int postId) {
