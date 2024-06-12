@@ -32,52 +32,68 @@ public class QryDutyController {
     @GetMapping("/position/all")
     public ResponseEntity<QryResponsePositionListVO> findAllPosition() {
 
-        List<QryPositionDTO> positionDTOList = qryDutyService.findAllPosition();
-        List<QryPositionVO> positionVOList = new ArrayList<>();
+        try {
+            List<QryPositionDTO> positionDTOList = qryDutyService.findAllPosition();
+            List<QryPositionVO> positionVOList = new ArrayList<>();
 
-        for (QryPositionDTO positionDTO : positionDTOList) {
-            positionVOList.add(new QryPositionVO(positionDTO.getId(), positionDTO.getName()));
+            for (QryPositionDTO positionDTO : positionDTOList) {
+                positionVOList.add(new QryPositionVO(positionDTO.getId(), positionDTO.getName()));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(new QryResponsePositionListVO(positionVOList));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(new QryResponsePositionListVO(positionVOList));
     }
 
     @GetMapping("/position/{positionName}")
     public ResponseEntity<QryResponsePositionListVO> findPositionByName(@PathVariable String positionName) {
 
-        List<QryPositionDTO> positionDTOList = qryDutyService.findPositionByName(positionName);
-        List<QryPositionVO> positionVOList = new ArrayList<>();
+        try {
+            List<QryPositionDTO> positionDTOList = qryDutyService.findPositionByName(positionName);
+            List<QryPositionVO> positionVOList = new ArrayList<>();
 
-        for (QryPositionDTO positionDTO : positionDTOList) {
-            positionVOList.add(new QryPositionVO(positionDTO.getId(), positionDTO.getName()));
+            for (QryPositionDTO positionDTO : positionDTOList) {
+                positionVOList.add(new QryPositionVO(positionDTO.getId(), positionDTO.getName()));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(new QryResponsePositionListVO(positionVOList));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(new QryResponsePositionListVO(positionVOList));
     }
 
     @GetMapping("/rank/all")
     public ResponseEntity<QryResponseRankListVO> findAllRank() {
 
-        List<QryRankDTO> rankDTOList = qryDutyService.findAllRank();
-        List<QryRankVO> rankVOList = new ArrayList<>();
+        try {
+            List<QryRankDTO> rankDTOList = qryDutyService.findAllRank();
+            List<QryRankVO> rankVOList = new ArrayList<>();
 
-        for (QryRankDTO rankDTO : rankDTOList) {
-            rankVOList.add(new QryRankVO(rankDTO.getId(), rankDTO.getName()));
+            for (QryRankDTO rankDTO : rankDTOList) {
+                rankVOList.add(new QryRankVO(rankDTO.getId(), rankDTO.getName()));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(new QryResponseRankListVO(rankVOList));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(new QryResponseRankListVO(rankVOList));
     }
 
     @GetMapping("/rank/{rankName}")
     public ResponseEntity<QryResponseRankListVO> findRankByName(@PathVariable String rankName) {
 
-        List<QryRankDTO> rankDTOList = qryDutyService.findRankByName(rankName);
-        List<QryRankVO> rankVOList = new ArrayList<>();
+        try {
+            List<QryRankDTO> rankDTOList = qryDutyService.findRankByName(rankName);
+            List<QryRankVO> rankVOList = new ArrayList<>();
 
-        for (QryRankDTO rankDTO : rankDTOList) {
-            rankVOList.add(new QryRankVO(rankDTO.getId(), rankDTO.getName()));
+            for (QryRankDTO rankDTO : rankDTOList) {
+                rankVOList.add(new QryRankVO(rankDTO.getId(), rankDTO.getName()));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(new QryResponseRankListVO(rankVOList));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(new QryResponseRankListVO(rankVOList));
     }
 }

@@ -3,6 +3,7 @@ package org.triumers.kmsback.approval.query.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.triumers.kmsback.approval.query.dto.QryRequestApprovalWithEmployeeDTO;
@@ -28,7 +29,11 @@ public class QryRequestApprovalController {
     // 본인이 요청한 결재 단일 조회
     @GetMapping("/{approvalId}")
     public QryRequestApprovalWithEmployeeDTO findById(@PathVariable("approvalId") int approvalId) throws NotLoginException, WrongInputValueException {
-        return qryRequestApprovalService.findById(approvalId);
+        try {
+            return qryRequestApprovalService.findById(approvalId);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     // 본인이 요청한 결재 전체/유형별/기간별/상태별/검색 조회
@@ -43,22 +48,30 @@ public class QryRequestApprovalController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) throws NotLoginException, WrongInputValueException {
-        return qryRequestApprovalService.findQryRequestApprovalInfo(
-                typeId,
-                startDate,
-                endDate,
-                keyword,
-                status,
-                isCanceled,
-                page,
-                size
-        );
+        try {
+            return qryRequestApprovalService.findQryRequestApprovalInfo(
+                    typeId,
+                    startDate,
+                    endDate,
+                    keyword,
+                    status,
+                    isCanceled,
+                    page,
+                    size
+            );
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     // 본인이 요청받은 결재 단일 조회
     @GetMapping("/received/{requestApprovalId}")
     public QryRequestApprovalWithEmployeeDTO findReceivedById(@PathVariable("requestApprovalId") int requestApprovalId) throws NotLoginException, WrongInputValueException {
-        return qryRequestApprovalService.findReceivedById(requestApprovalId);
+        try {
+            return qryRequestApprovalService.findReceivedById(requestApprovalId);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     // 본인이 요청받은 결재 전체/유형별/기간별/상태별/검색 조회
@@ -73,16 +86,20 @@ public class QryRequestApprovalController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) throws NotLoginException, WrongInputValueException {
-        return qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
-                typeId,
-                startDate,
-                endDate,
-                keyword,
-                status,
-                isCanceled,
-                page,
-                size
-        );
+        try {
+            return qryRequestApprovalService.findReceivedQryRequestApprovalInfo(
+                    typeId,
+                    startDate,
+                    endDate,
+                    keyword,
+                    status,
+                    isCanceled,
+                    page,
+                    size
+            );
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

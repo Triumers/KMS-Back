@@ -28,15 +28,24 @@ public class QryAnonymousBoardCommentController {
     public ResponseEntity<Page<QryAnonymousBoardCommentDTO>> getAnonymousBoardCommentList(
             @PathVariable int anonymousBoardId,
             @PageableDefault(size = 10) Pageable pageable) {
-        Page<QryAnonymousBoardCommentDTO> anonymousBoardCommentList = qryAnonymousBoardCommentService.findAllAnonymousBoardComment(anonymousBoardId, pageable);
-        return ResponseEntity.ok(anonymousBoardCommentList);
+        try {
+            Page<QryAnonymousBoardCommentDTO> anonymousBoardCommentList = qryAnonymousBoardCommentService.findAllAnonymousBoardComment(anonymousBoardId, pageable);
+            return ResponseEntity.ok(anonymousBoardCommentList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     // 댓글 개수 조회
     @GetMapping("/count")
     public ResponseEntity<Long> getAnonymousBoardCommentCount(@PathVariable int anonymousBoardId) {
-        long commentCount = qryAnonymousBoardCommentService.countAnonymousBoardComment(anonymousBoardId);
-        return ResponseEntity.ok(commentCount);
+
+        try {
+            long commentCount = qryAnonymousBoardCommentService.countAnonymousBoardComment(anonymousBoardId);
+            return ResponseEntity.ok(commentCount);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @ExceptionHandler(NoSuchElementException.class)

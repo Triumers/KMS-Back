@@ -36,6 +36,8 @@ public class AwsS3Controller {
             return ResponseEntity.status(HttpStatus.OK).body(fileLoc);
         } catch (AwsS3Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 }

@@ -29,61 +29,99 @@ public class QryPostController {
     @PostMapping("/tab")
     public ResponseEntity<Page<QryPostAndTagsDTO>> findPostListByTab(@RequestBody QryRequestPost request) throws NotLoginException, WrongInputValueException {
 
-        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize());
-        Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(request, pageable);
+        try {
+            PageRequest pageable = PageRequest.of(request.getPage(), request.getSize());
+            Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(request, pageable);
 
-        return ResponseEntity.status(HttpStatus.OK).body(postList);
+            return ResponseEntity.status(HttpStatus.OK).body(postList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PostMapping("/tab/all")
     public ResponseEntity<Page<QryPostAndTagsDTO>> findAllPostListByEmployee(@RequestBody QryRequestPost request) throws NotLoginException, WrongInputValueException {
 
-        PageRequest pageable = PageRequest.of(request.getPage(), request.getSize());
-        Page<QryPostAndTagsDTO> postList = qryPostService.findAllPostListByEmployee(request, pageable);
+        try {
+            PageRequest pageable = PageRequest.of(request.getPage(), request.getSize());
+            Page<QryPostAndTagsDTO> postList = qryPostService.findAllPostListByEmployee(request, pageable);
 
-        return ResponseEntity.status(HttpStatus.OK).body(postList);
+            return ResponseEntity.status(HttpStatus.OK).body(postList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("find/{id}")
     public ResponseEntity<QryPostAndTagsDTO> findPostById(@PathVariable int id) throws NotLoginException, WrongInputValueException {
-        QryPostAndTagsDTO post = qryPostService.findPostById(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(post);
+        try {
+            QryPostAndTagsDTO post = qryPostService.findPostById(id);
+
+            return ResponseEntity.status(HttpStatus.OK).body(post);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/{id}/history")
     public ResponseEntity<List<QryPostAndTagsDTO>> findHistoryListByOriginId(@PathVariable int id) throws NotLoginException, WrongInputValueException {
-        List<QryPostAndTagsDTO> history = qryPostService.findHistoryListByOriginId(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(history);
+        try {
+            List<QryPostAndTagsDTO> history = qryPostService.findHistoryListByOriginId(id);
+
+            return ResponseEntity.status(HttpStatus.OK).body(history);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/{id}/like")
     public ResponseEntity<List<QryEmployeeDTO>> findLikeListByPostId(@PathVariable int id) throws WrongInputValueException {
-        List<QryEmployeeDTO> likeList = qryPostService.findLikeListByPostId(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(likeList);
+        try {
+            List<QryEmployeeDTO> likeList = qryPostService.findLikeListByPostId(id);
+
+            return ResponseEntity.status(HttpStatus.OK).body(likeList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/{id}/like/employee")
     public ResponseEntity<Boolean> findIsLikedByPostId(@PathVariable int id) throws NotLoginException {
-        Boolean isLiked = qryPostService.findIsLikedByPostId(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(isLiked);
+        try {
+            Boolean isLiked = qryPostService.findIsLikedByPostId(id);
+
+            return ResponseEntity.status(HttpStatus.OK).body(isLiked);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/{id}/favorite/employee")
     public ResponseEntity<Boolean> findIsFavoriteByPostId(@PathVariable int id) throws NotLoginException {
-        Boolean isFavorite = qryPostService.findIsFavoriteByPostId(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(isFavorite);
+        try {
+            Boolean isFavorite = qryPostService.findIsFavoriteByPostId(id);
+
+            return ResponseEntity.status(HttpStatus.OK).body(isFavorite);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/{id}/isEditing")
-    public ResponseEntity<Boolean> getEditingState(@PathVariable int id){
-        Boolean isEditing = qryPostService.getIsEditingById(id);
+    public ResponseEntity<Boolean> getEditingState(@PathVariable int id) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(isEditing);
+        try {
+            Boolean isEditing = qryPostService.getIsEditingById(id);
+
+            return ResponseEntity.status(HttpStatus.OK).body(isEditing);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
 }
