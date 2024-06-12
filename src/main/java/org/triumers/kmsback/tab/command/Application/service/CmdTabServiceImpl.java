@@ -58,7 +58,8 @@ public class CmdTabServiceImpl implements CmdTabService {
 
         cmdJoinEmployeeRepository.deleteById(deleteEmployee.getId());
 
-        CmdJoinEmployeeDTO deleteEmployeeDTO = new CmdJoinEmployeeDTO(deleteEmployee.getId(), deleteEmployee.getIsLeader(), deleteEmployee.getEmployeeId(), deleteEmployee.getTabId());
+        CmdJoinEmployeeDTO deleteEmployeeDTO = new CmdJoinEmployeeDTO(deleteEmployee.getId(), deleteEmployee.getIsLeader(),
+                                                                      deleteEmployee.getEmployeeId(), deleteEmployee.getTabId());
         return deleteEmployeeDTO;
     }
 
@@ -69,12 +70,16 @@ public class CmdTabServiceImpl implements CmdTabService {
         CmdTabDTO topTab = registTopTab(tabRelation.getTopTab());
         CmdTabDTO bottomTab = registBottomTab(tabRelation.getBottomTab());
 
-        CmdTabRelation newTab = new CmdTabRelation(tabRelation.getIsPublic(), bottomTab.getId(),
-                topTab.getId(), tabRelation.getTeamId());
-        cmdTabRelationRepository.save(newTab);
+        CmdTabRelation newTab = cmdTabRelationRepository.findByBottomTabIdAndTopTabIdAndTeamId(bottomTab.getId(), topTab.getId(), tabRelation.getTeamId());
 
-        CmdJoinEmployeeDTO joinEmployee = new CmdJoinEmployeeDTO(true, employeeId, newTab.getId());
-        addEmployeeTab(joinEmployee);
+        if(newTab == null){
+            newTab = new CmdTabRelation(tabRelation.getIsPublic(), bottomTab.getId(),
+                    topTab.getId(), tabRelation.getTeamId());
+            cmdTabRelationRepository.save(newTab);
+
+            CmdJoinEmployeeDTO joinEmployee = new CmdJoinEmployeeDTO(true, employeeId, newTab.getId());
+            addEmployeeTab(joinEmployee);
+        }
 
         CmdTabRelationDTO newTabRelation = new CmdTabRelationDTO(newTab.getId(), newTab.getIsPublic(),
                 bottomTab, topTab, newTab.getTeamId());

@@ -9,4 +9,6 @@ import org.triumers.kmsback.tab.command.domain.aggregate.entity.CmdTabRelation;
 public interface CmdTabRelationRepository extends JpaRepository<CmdTabRelation, Integer> {
 
     CmdTabRelation findById(int id);
+
+    CmdTabRelation findByBottomTabIdAndTopTabIdAndTeamId(Integer bottomId, Integer topId, Integer teamId);
 }
