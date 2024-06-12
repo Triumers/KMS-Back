@@ -35,9 +35,15 @@ public class CmdTabServiceImpl implements CmdTabService {
     @Override
     @Transactional
     public CmdJoinEmployeeDTO addEmployeeTab(CmdJoinEmployeeDTO employee) {
-        CmdJoinEmployee newEmployee = new CmdJoinEmployee(employee.getIsLeader(),employee.getEmployeeId(),
-                                                          employee.getTabId());
-        cmdJoinEmployeeRepository.save(newEmployee);
+
+        CmdJoinEmployee newEmployee = cmdJoinEmployeeRepository.
+                findByEmployeeIdAndTabId(employee.getEmployeeId(), employee.getTabId());
+
+        if(newEmployee == null){
+            newEmployee = new CmdJoinEmployee(employee.getIsLeader(),employee.getEmployeeId(),
+                    employee.getTabId());
+            cmdJoinEmployeeRepository.save(newEmployee);
+        }
 
         CmdJoinEmployeeDTO joinEmployeeDTO = new CmdJoinEmployeeDTO(newEmployee.getId(), newEmployee.getIsLeader(), newEmployee.getEmployeeId(), newEmployee.getTabId());
         return joinEmployeeDTO;
