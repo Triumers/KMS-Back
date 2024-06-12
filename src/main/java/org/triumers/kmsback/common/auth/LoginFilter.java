@@ -73,10 +73,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String secret = customUserDetails.getSecretCode();
 
         String clientIpAddress = IpAddressUtil.getClientIp(request);
+        
+        // 아래 프린트문은 임시용
+        System.out.println("clientIpAddress = " + clientIpAddress);
+        System.out.println("defaultIpAddress = " + defaultIpAddress);
+        System.out.println("clientIpAddress.equals(defaultIpAddress) = " + clientIpAddress.equals(defaultIpAddress));
 
         // 내부망 또는 개발환경인지 검증하는 로직
         if (!clientIpAddress.equals(defaultIpAddress) && !clientIpAddress.equals("0:0:0:0:0:0:0:1")) {
 
+            System.out.println(username + " 사용자 외부 환경에서 접속");
+            System.out.println("접속 IP Address : " + clientIpAddress);
             // 2차 인증
             if (!otpValidator.validateOTP(secret, otpCode)) {
                 throw new BadCredentialsException("Invalid OTP");
