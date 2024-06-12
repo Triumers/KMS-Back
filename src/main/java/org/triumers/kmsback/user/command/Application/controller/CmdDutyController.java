@@ -24,65 +24,89 @@ public class CmdDutyController {
     @PostMapping("/add/position")
     public ResponseEntity<CmdResponseMessageVO> addPosition(@RequestBody CmdRequestDutyVO request) {
 
-        CmdPositionDTO positionDTO = new CmdPositionDTO(request.getPositionId(), request.getPositionName());
+        try {
+            CmdPositionDTO positionDTO = new CmdPositionDTO(request.getPositionId(), request.getPositionName());
 
-        cmdDutyService.addPosition(positionDTO);
+            cmdDutyService.addPosition(positionDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CmdResponseMessageVO(positionDTO.getName() + " 직책 추가 성공"));
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CmdResponseMessageVO(positionDTO.getName() + " 직책 추가 성공"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PutMapping("/edit/position")
     public ResponseEntity<CmdResponseMessageVO> editPosition(@RequestBody CmdRequestDutyVO request) {
 
-        CmdPositionDTO positionDTO = new CmdPositionDTO(request.getPositionId(), request.getPositionName());
-        cmdDutyService.editPositionName(positionDTO);
+        try {
+            CmdPositionDTO positionDTO = new CmdPositionDTO(request.getPositionId(), request.getPositionName());
+            cmdDutyService.editPositionName(positionDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CmdResponseMessageVO(request.getPositionName() + " 직책 " + positionDTO.getName() + " 직책으로 수정 성공"));
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CmdResponseMessageVO(request.getPositionName() + " 직책 " + positionDTO.getName() + " 직책으로 수정 성공"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @DeleteMapping("/remove/position")
     public ResponseEntity<CmdResponseMessageVO> removePosition(@RequestBody CmdRequestDutyVO request) {
 
-        CmdPositionDTO positionDTO = new CmdPositionDTO(request.getPositionId(), request.getPositionName());
+        try {
+            CmdPositionDTO positionDTO = new CmdPositionDTO(request.getPositionId(), request.getPositionName());
 
-        cmdDutyService.removePosition(positionDTO);
+            cmdDutyService.removePosition(positionDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CmdResponseMessageVO("직책 삭제 성공"));
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CmdResponseMessageVO("직책 삭제 성공"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PostMapping("/add/rank")
     public ResponseEntity<CmdResponseMessageVO> addRank(@RequestBody CmdRequestDutyVO request) {
 
-        CmdRankDTO rankDTO = new CmdRankDTO(request.getRankId(), request.getRankName());
+        try {
+            CmdRankDTO rankDTO = new CmdRankDTO(request.getRankId(), request.getRankName());
 
-        cmdDutyService.addRank(rankDTO);
+            cmdDutyService.addRank(rankDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CmdResponseMessageVO(request.getRankName() + " 직급 추가 성공"));
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CmdResponseMessageVO(request.getRankName() + " 직급 추가 성공"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PutMapping("/edit/rank")
     public ResponseEntity<CmdResponseMessageVO> editRank(@RequestBody CmdRequestDutyVO request) {
 
-        CmdRankDTO rankDTO = new CmdRankDTO(request.getRankId(), request.getRankName());
+        try {
+            CmdRankDTO rankDTO = new CmdRankDTO(request.getRankId(), request.getRankName());
 
-        cmdDutyService.editRankName(rankDTO);
+            cmdDutyService.editRankName(rankDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CmdResponseMessageVO(rankDTO.getName() + " 직급으로 수정 성공"));
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CmdResponseMessageVO(rankDTO.getName() + " 직급으로 수정 성공"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @DeleteMapping("/remove/rank")
     public ResponseEntity<CmdResponseMessageVO> removeRank(@RequestBody CmdRequestDutyVO request) {
 
-        CmdRankDTO rankDTO = new CmdRankDTO(request.getRankId(), request.getRankName());
+        try {
+            CmdRankDTO rankDTO = new CmdRankDTO(request.getRankId(), request.getRankName());
 
-        cmdDutyService.removeRank(rankDTO);
+            cmdDutyService.removeRank(rankDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new CmdResponseMessageVO("직급 삭제 성공"));
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CmdResponseMessageVO("직급 삭제 성공"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 }

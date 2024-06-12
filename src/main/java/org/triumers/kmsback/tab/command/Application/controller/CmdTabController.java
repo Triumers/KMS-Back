@@ -20,35 +20,51 @@ public class CmdTabController {
     @PostMapping("/regist/employee")
     public ResponseEntity<CmdJoinEmployeeDTO> registEmployeeTab(@RequestBody CmdJoinEmployeeDTO joinEmployeeDTO){
 
-        if(joinEmployeeDTO.getEmployeeId() == null || joinEmployeeDTO.getTabId() == null){
+        try {
+            if(joinEmployeeDTO.getEmployeeId() == null || joinEmployeeDTO.getTabId() == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+
+            CmdJoinEmployeeDTO joinEmployee = cmdTabService.addEmployeeTab(joinEmployeeDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(joinEmployee);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        CmdJoinEmployeeDTO joinEmployee = cmdTabService.addEmployeeTab(joinEmployeeDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(joinEmployee);
     }
 
     @DeleteMapping("/delete/employee")
     public ResponseEntity<CmdJoinEmployeeDTO> deleteEmployeeTab(@RequestBody CmdJoinEmployeeDTO joinEmployeeDTO){
 
-        CmdJoinEmployeeDTO deletedEmployee = cmdTabService.deleteEmployeeTab(joinEmployeeDTO);
+        try {
+            CmdJoinEmployeeDTO deletedEmployee = cmdTabService.deleteEmployeeTab(joinEmployeeDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(deletedEmployee);
+            return ResponseEntity.status(HttpStatus.CREATED).body(deletedEmployee);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PostMapping("/regist/new/{userId}")
     public ResponseEntity<CmdTabRelationDTO> registTab(@RequestBody CmdTabRelationDTO tabRelationDTO, @PathVariable Integer userId){
 
-        if(tabRelationDTO.getTopTab() == null || userId == null){
+        try {
+            if(tabRelationDTO.getTopTab() == null || userId == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+
+            CmdTabRelationDTO registTab = cmdTabService.registTab(tabRelationDTO, userId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(registTab);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        CmdTabRelationDTO registTab = cmdTabService.registTab(tabRelationDTO, userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(registTab);
     }
 
     @GetMapping("/name/{id}")
-    public ResponseEntity<String> getTabName(@PathVariable int id){
-        return ResponseEntity.status(HttpStatus.CREATED).body(cmdTabService.getTabName(id));
+    public ResponseEntity<String> getTabName(@PathVariable int id) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(cmdTabService.getTabName(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 }

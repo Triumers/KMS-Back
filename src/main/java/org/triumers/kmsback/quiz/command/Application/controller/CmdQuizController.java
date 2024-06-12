@@ -23,22 +23,37 @@ public class CmdQuizController {
     /* 설명. 퀴즈 등록 */
     @PostMapping("/regist")
     public ResponseEntity<CmdQuizDTO> addQuiz(@RequestBody CmdRequestQuizVo request) {
-        CmdQuizDTO registQuiz = cmdQuizService.registQuiz(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(registQuiz);
+
+        try {
+            CmdQuizDTO registQuiz = cmdQuizService.registQuiz(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(registQuiz);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     /* 설명. 퀴즈 수정 */
     @PutMapping("/edit")
     public ResponseEntity<CmdQuizDTO> editQuiz(@RequestBody CmdRequestQuizVo request) {
-        CmdQuizDTO editQuiz = cmdQuizService.editQuiz(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(editQuiz);
+
+        try {
+            CmdQuizDTO editQuiz = cmdQuizService.editQuiz(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(editQuiz);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     /* 설명. 퀴즈 삭제 */
     @DeleteMapping("/remove")
     public ResponseEntity<CmdQuizDTO> deleteQuiz(@RequestBody CmdRequestRemoveQuizVo request) {
-        cmdQuizService.removeQuiz(request.getId());
-        return ResponseEntity.noContent().build();
+
+        try {
+            cmdQuizService.removeQuiz(request.getId());
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 }
 

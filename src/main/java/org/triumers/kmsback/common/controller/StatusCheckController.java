@@ -17,19 +17,31 @@ public class StatusCheckController {
     @GetMapping("/health-check")
     public ResponseEntity<String> checkHealthStatus() {
 
-        return ResponseEntity.status(HttpStatus.OK).body("Server is up and running");
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body("Server is up and running");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/ip-address-check")
     public ResponseEntity<String> checkIpAddressCheck(HttpServletRequest request) {
 
-        return ResponseEntity.status(HttpStatus.OK).body("Current Ip Address: " + IpAddressUtil.getClientIp(request));
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body("Current Ip Address: " + IpAddressUtil.getClientIp(request));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/is-in-house")
     public ResponseEntity<String> isInHouse(HttpServletRequest request) {
-        String ipAddress = IpAddressUtil.getClientIp(request);
-        String inHouseIpAddress = defaultIpAddress;
-        return ResponseEntity.status(HttpStatus.OK).body("current: " + ipAddress + " / in-house: " + inHouseIpAddress + " / is same?: " + ipAddress.equals(inHouseIpAddress));
+        try {
+            String ipAddress = IpAddressUtil.getClientIp(request);
+            String inHouseIpAddress = defaultIpAddress;
+            return ResponseEntity.status(HttpStatus.OK).body("current: " + ipAddress + " / in-house: " + inHouseIpAddress + " / is same?: " + ipAddress.equals(inHouseIpAddress));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 }

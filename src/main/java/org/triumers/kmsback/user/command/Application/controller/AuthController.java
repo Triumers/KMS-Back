@@ -62,6 +62,8 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.OK).body(new CmdResponseMessageVO("2차 인증 등록을 권장합니다."));
         } catch (WrongInputValueException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CmdResponseMessageVO(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -84,6 +86,8 @@ public class AuthController {
         } catch (WrongInputTypeException | WrongInputValueException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new CmdResponseMessageVO("잘못된 입력입니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -112,6 +116,8 @@ public class AuthController {
         } catch (WrongInputTypeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new CmdResponseMessageVO("잘못된 입력입니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 }

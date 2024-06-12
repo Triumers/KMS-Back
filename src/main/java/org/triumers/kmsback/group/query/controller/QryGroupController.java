@@ -1,5 +1,6 @@
 package org.triumers.kmsback.group.query.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +25,12 @@ public class QryGroupController {
     @GetMapping("/employee")
     public ResponseEntity<List<QryGroupDTO>> getGroupsByEmployeeId() throws NotLoginException {
 
-        List<QryGroupDTO> groupInfo = qryGroupService.findGroupByEmployeeId();
-
-        return ResponseEntity.ok(groupInfo);
+        try {
+            List<QryGroupDTO> groupInfo = qryGroupService.findGroupByEmployeeId();
+            return ResponseEntity.ok(groupInfo);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
 }
