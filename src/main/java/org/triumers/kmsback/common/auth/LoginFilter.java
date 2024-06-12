@@ -31,7 +31,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final String defaultPassword;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Value("in-house-ip-address")
+    @Value("${in-house-ip-address}")
     private String defaultIpAddress;
 
     private final OTPValidator otpValidator;
@@ -74,14 +74,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String clientIpAddress = IpAddressUtil.getClientIp(request);
 
-//        // Authenticator 등록된 계정 2차 인증
-//        if (!clientIpAddress.equals(defaultIpAddress) && !clientIpAddress.equals("0:0:0:0:0:0:0:1")) {
-//            if (!otpValidator.validateOTP(secret, otpCode)) {
-//                throw new BadCredentialsException("Invalid OTP");
-//            }
-//        }
+        // 내부망 또는 개발환경인지 검증하는 로직
+        if (!clientIpAddress.equals(defaultIpAddress) && !clientIpAddress.equals("0:0:0:0:0:0:0:1")) {
 
-        if (secret != null && !secret.isEmpty()) {
+            // 2차 인증
             if (!otpValidator.validateOTP(secret, otpCode)) {
                 throw new BadCredentialsException("Invalid OTP");
             }
