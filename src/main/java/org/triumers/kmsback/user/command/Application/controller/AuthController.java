@@ -33,7 +33,7 @@ public class AuthController {
     @Value("${password}")
     private String defaultPassword;
 
-    @Value("in-house-ip-address")
+    @Value("${in-house-ip-address}")
     private String defaultIpAddress;
 
     @Autowired
@@ -52,7 +52,7 @@ public class AuthController {
 
             if (authService.isHaveAuthenticator(account)) {
 
-                if (IpAddressUtil.getClientIp(request).equals(defaultIpAddress) ||
+                if (IpAddressUtil.getClientIp(request).equals("121.170.161.69") ||
                         IpAddressUtil.getClientIp(request).equals("0:0:0:0:0:0:0:1")) {
                     return ResponseEntity.status(HttpStatus.OK).body(new CmdResponseMessageVO("환영합니다."));
                 }
