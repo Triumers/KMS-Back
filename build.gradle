@@ -76,9 +76,9 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.14.3'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}
 
 //jib {
 //    from {
