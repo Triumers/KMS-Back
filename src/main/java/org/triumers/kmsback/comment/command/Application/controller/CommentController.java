@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.triumers.kmsback.comment.command.Application.dto.CmdCommentDTO;
 import org.triumers.kmsback.comment.command.Application.service.CommentService;
 import org.triumers.kmsback.common.exception.NotAuthorizedException;
+import org.triumers.kmsback.common.exception.NotLoginException;
 
 
 @RestController
@@ -19,38 +20,49 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<CmdCommentDTO> addComment(@RequestBody CmdCommentDTO comment) {
+
         try {
             return ResponseEntity.ok(commentService.addComment(comment));
+        } catch (NotLoginException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.badRequest().body(null);
         }
+
     }
 
     @PutMapping("/{commentId}")
     public ResponseEntity<CmdCommentDTO> updateComment(@PathVariable Integer commentId, @RequestBody CmdCommentDTO comment) throws NotAuthorizedException {
         try {
             return ResponseEntity.ok(commentService.updateComment(commentId, comment));
+        } catch (NotLoginException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Integer commentId, @RequestParam Long userId, @RequestParam boolean isAdmin) throws NotAuthorizedException {
+    public ResponseEntity<Void> deleteComment(@PathVariable Integer commentId) {
         try {
-            commentService.deleteComment(commentId, userId, isAdmin);
+            commentService.deleteComment(commentId);
             return ResponseEntity.noContent().build();
+        } catch (NotLoginException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
     @ExceptionHandler(NotAuthorizedException.class)
     public ResponseEntity<String> handleNotAuthorizedException(NotAuthorizedException ex) {
         try {
+
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.badRequest().body(null);
         }
     }
 }
