@@ -39,14 +39,14 @@
                tabRel.IS_PUBLIC AS isPublic,
                joinEmp.IS_LEADER AS isLeader
           FROM
-               tbl_join_employee AS joinEmp
-          JOIN tbl_tab_relation AS tabRel ON joinEmp.TAB_ID = tabRel.ID
+               tbl_tab_relation AS tabRel
+          LEFT join tbl_join_employee AS joinEmp ON joinEmp.TAB_ID = tabRel.ID
           LEFT JOIN tbl_tab_top AS tabTop ON tabRel.TOP_TAB_ID = tabTop.ID
           LEFT JOIN tbl_tab_bottom AS tabBottom ON tabRel.BOTTOM_TAB_ID = tabBottom.ID
-          JOIN tbl_employee AS emp ON joinEmp.EMPLOYEE_ID = emp.ID
-          JOIN tbl_team AS team ON emp.TEAM_ID = team.ID
-          JOIN tbl_department AS dept ON team.DEPARTMENT_ID = dept.ID
-          JOIN tbl_center AS center ON dept.CENTER_ID = center.ID
+          LEFT JOIN tbl_employee AS emp ON joinEmp.EMPLOYEE_ID = emp.ID
+          LEFT JOIN tbl_team AS team ON emp.TEAM_ID = team.ID
+          LEFT JOIN tbl_department AS dept ON team.DEPARTMENT_ID = dept.ID
+          LEFT JOIN tbl_center AS center ON dept.CENTER_ID = center.ID
          WHERE emp.ID = #{employeeId}
             OR (tabRel.TEAM_ID = (SELECT E.TEAM_ID FROM tbl_employee E WHERE E.ID = #{employeeId})
                                                                                AND tabRel.TOP_TAB_ID = 2);
