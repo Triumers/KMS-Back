@@ -10,6 +10,7 @@
         FROM tbl_comment c
                  JOIN tbl_employee e ON c.AUTHOR_ID = e.ID
         WHERE c.POST_ID = #{postId}
+          AND c.DELETED_AT IS NULL
         ORDER BY c.CREATED_AT ASC
     </select>
 
@@ -17,6 +18,7 @@
         SELECT c.ID, c.POST_ID, c.CONTENT, c.CREATED_AT
         FROM tbl_comment c
         WHERE c.AUTHOR_ID = #{userId}
+          AND c.DELETED_AT IS NULL
         ORDER BY c.CREATED_AT ASC
     </select>
 

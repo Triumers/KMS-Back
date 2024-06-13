@@ -2,6 +2,8 @@ package org.triumers.kmsback.comment.command.Domain.aggregate.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.triumers.kmsback.post.command.domain.aggregate.entity.CmdPost;
 import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 
@@ -13,6 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@SQLDelete(sql = "UPDATE tbl_comment SET deleted_at = CURRENT_TIMESTAMP WHERE ID = ?")
+@Where(clause = "deleted_at IS NULL")
 @Table(name = "tbl_comment")
 public class CmdComment {
 
