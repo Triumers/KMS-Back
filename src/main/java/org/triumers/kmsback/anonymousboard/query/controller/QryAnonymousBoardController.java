@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.triumers.kmsback.anonymousboard.query.dto.QryAnonymousBoardDTO;
@@ -22,8 +23,12 @@ public class QryAnonymousBoardController {
 
     @GetMapping
     public ResponseEntity<Page<QryAnonymousBoardDTO>> getAllAnonymousBoards(@PageableDefault(size = 10) Pageable pageable) {
-        Page<QryAnonymousBoardDTO> anonymousBoardPage = qryAnonymousBoardService.findAllAnonymousBoard(pageable);
-        return ResponseEntity.ok(anonymousBoardPage);
+        try {
+            Page<QryAnonymousBoardDTO> anonymousBoardPage = qryAnonymousBoardService.findAllAnonymousBoard(pageable);
+            return ResponseEntity.ok(anonymousBoardPage);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     // 프론트에서 검색어 인코딩해서 보내야 함
@@ -32,13 +37,21 @@ public class QryAnonymousBoardController {
             @RequestParam(value = "keyword", required = true) String keyword,
             @RequestParam(value = "type", required = false, defaultValue = "titleandcontent") String type,
             @PageableDefault(size = 10) Pageable pageable) {
-        Page<QryAnonymousBoardDTO> anonymousBoardPage = qryAnonymousBoardService.searchAnonymousBoard(keyword, type, pageable);
-        return ResponseEntity.ok(anonymousBoardPage);
+        try {
+            Page<QryAnonymousBoardDTO> anonymousBoardPage = qryAnonymousBoardService.searchAnonymousBoard(keyword, type, pageable);
+            return ResponseEntity.ok(anonymousBoardPage);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<QryAnonymousBoardDTO> getAnonymousBoardById(@PathVariable int id) {
-        QryAnonymousBoardDTO anonymousBoard = qryAnonymousBoardService.findAnonymousBoardById(id);
-        return ResponseEntity.ok(anonymousBoard);
+        try {
+            QryAnonymousBoardDTO anonymousBoard = qryAnonymousBoardService.findAnonymousBoardById(id);
+            return ResponseEntity.ok(anonymousBoard);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 }

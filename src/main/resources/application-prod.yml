@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://${{ secrets.DB_HOST }}:3306/${{ secrets.DB_NAME }}
+    username: ${{ secrets.DB_USER }}
+    password: ${{ secrets.DB_PASSWORD }}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MariaDBDialect

@@ -40,7 +40,7 @@ public class OTPUserController {
         } catch (WriterException | IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("QR 코드 생성 중 오류 발생");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 }

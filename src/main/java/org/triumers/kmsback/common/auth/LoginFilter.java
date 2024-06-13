@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.triumers.kmsback.common.auth.authenticator.service.OTPValidator;
+import org.triumers.kmsback.common.util.IpAddressUtil;
 import org.triumers.kmsback.user.command.Application.dto.CustomUserDetails;
 import org.triumers.kmsback.user.command.domain.aggregate.enums.UserRole;
 
@@ -28,6 +30,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
     private final String defaultPassword;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Value("${in-house-ip-address}")
+    private String defaultIpAddress;
 
     private final OTPValidator otpValidator;
     private int otpCode = 0;
@@ -67,8 +72,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String name = customUserDetails.getName();
         String secret = customUserDetails.getSecretCode();
 
-        // Authenticator 등록된 계정 2차 인증
-        if (secret != null && !secret.isEmpty()) {
+        String clientIpAddress = IpAddressUtil.getClientIp(request);
+        
+        // 아래 프린트문은 임시용
+        System.out.println("clientIpAddress = " + clientIpAddress);
+        System.out.println("defaultIpAddress = " + defaultIpAddress);
+        System.out.println("clientIpAddress.equals(defaultIpAddress) = " + clientIpAddress.equals(defaultIpAddress));
+
+        // 내부망 또는 개발환경인지 검증하는 로직
+        if (!clientIpAddress.equals("121.170.161.69") && !clientIpAddress.equals("0:0:0:0:0:0:0:1")) {
+
+            System.out.println(username + " 사용자 외부 환경에서 접속");
+            System.out.println("접속 IP Address : " + clientIpAddress);
+            // 2차 인증
             if (!otpValidator.validateOTP(secret, otpCode)) {
                 throw new BadCredentialsException("Invalid OTP");
             }

@@ -6,4 +6,6 @@ import org.triumers.kmsback.common.exception.AwsS3Exception;
 public interface AwsS3Service {
 
     String upload(MultipartFile file) throws AwsS3Exception;
+
+    String uploadImage(MultipartFile file) throws AwsS3Exception;
 }

@@ -1,6 +1,8 @@
 package org.triumers.kmsback.post.command.Application.service;
 
 import jakarta.mail.MessagingException;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +70,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     public CmdPostAndTagsDTO registPost(CmdPostAndTagsDTO post) throws NotLoginException {
 
         Employee employee = authService.whoAmI();
-        CmdPost registPost = new CmdPost(post.getId(), post.getTitle(), post.getContent(), post.getPostImg(),
+        CmdPost registPost = new CmdPost(post.getId(), post.getTitle(), sanitizeHTML(post.getContent()), post.getPostImg(),
                 LocalDateTime.now(), employee.getId(), post.getOriginId(), post.getTabRelationId(), post.getCategoryId());
 
         if (post.getId() != null) {
@@ -81,6 +83,30 @@ public class CmdPostServiceImpl implements CmdPostService {
         post.setId(registPost.getId());
 
         return post;
+    }
+
+    public static String sanitizeHTML(String html) {
+
+        // 공백, 줄바꿈 대체
+        String spacePlaceholder = "___SPACE___";
+        String newlinePlaceholder = "___NEWLINE___";
+        String htmlWithPlaceholders = html
+                .replaceAll(" ", spacePlaceholder)
+                .replaceAll("\n", newlinePlaceholder)
+                .replaceAll("\r\n", newlinePlaceholder);
+
+        Whitelist whitelist = Whitelist.relaxed();
+        // 허용되지 않을 태그와 속성 추가
+        whitelist.removeTags("script", "style", "head", "header", "foot", "footer");
+        whitelist.removeAttributes("style", "onclick");
+
+        String cleanedHtmlWithPlaceholders = Jsoup.clean(htmlWithPlaceholders, whitelist);
+
+        String cleanedHtml = cleanedHtmlWithPlaceholders
+                .replaceAll(spacePlaceholder, " ")
+                .replaceAll(newlinePlaceholder, "\n");
+
+        return cleanedHtml;
     }
 
     public List<CmdTag> registTag(List<CmdTagDTO> tags, int postId) {
@@ -257,9 +283,10 @@ public class CmdPostServiceImpl implements CmdPostService {
                 " 우리는 이제 글을 업그레이드 할 것이다." +
                         "다음 { } 안에 들어간 내용이 우리가 업그레이드 해야하는 글이다.\n "+
                         "내용 :{ "+ content + " }"
-                        + "\n { } 안에 들어간 내용의 태그 안에 있는 내용들이 맞는지 확인하고" +
-                        " 태그 안의 내용을 업그레이드 및 정리한 후에," +
+                        + "\n { } 안에 들어간 내용들이 맞는지 확인하고" +
+                        " 내용을 업그레이드 및 정리한 후에," +
                         " 업그레이드 한 내용을 아래 예시처럼 답변 : {} 안에 담아 반환한다." +
+                        " 이때 마크다운 형식은 유지한다." +
                         "예시\n" +
                         example();
         return prompt;

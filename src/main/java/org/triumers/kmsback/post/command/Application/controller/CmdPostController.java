@@ -28,72 +28,108 @@ public class CmdPostController {
     @PostMapping("/regist")
     public ResponseEntity<CmdPostAndTagsDTO> registPost(@RequestBody CmdPostAndTagsDTO newPost) throws NotLoginException {
 
-        if(newPost.getTitle() == null || newPost.getContent() == null){
+        try {
+            if(newPost.getTitle() == null || newPost.getContent() == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+
+            CmdPostAndTagsDTO savedPost = cmdPostService.registPost(newPost);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        CmdPostAndTagsDTO savedPost = cmdPostService.registPost(newPost);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
 
     @PostMapping("/modify")
     public ResponseEntity<CmdPostAndTagsDTO> modifyPost(@RequestBody CmdPostAndTagsDTO modifyPost) throws NotLoginException {
 
-        if(modifyPost.getTitle() == null || modifyPost.getContent() == null){
+        try {
+            if(modifyPost.getTitle() == null || modifyPost.getContent() == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+
+            CmdPostAndTagsDTO modifiedPost = cmdPostService.modifyPost(modifyPost);
+            return ResponseEntity.status(HttpStatus.OK).body(modifiedPost);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        CmdPostAndTagsDTO modifiedPost = cmdPostService.modifyPost(modifyPost);
-        return ResponseEntity.status(HttpStatus.OK).body(modifiedPost);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<CmdPostAndTagsDTO> deletePost(@PathVariable int id) throws NotLoginException, NotAuthorizedException {
 
-        CmdPostAndTagsDTO deletedPost = cmdPostService.deletePost(id);
+        try {
+            CmdPostAndTagsDTO deletedPost = cmdPostService.deletePost(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(deletedPost);
+            return ResponseEntity.status(HttpStatus.OK).body(deletedPost);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PostMapping("/like")
     public ResponseEntity<CmdLikeDTO> likePost(@RequestBody CmdLikeDTO cmdLikeDTO) throws NotLoginException {
 
-        if(cmdLikeDTO.getPostId() == null){
+        try {
+            if(cmdLikeDTO.getPostId() == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+
+            CmdLikeDTO like = cmdPostService.likePost(cmdLikeDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(like);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        CmdLikeDTO like = cmdPostService.likePost(cmdLikeDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(like);
     }
 
     @PostMapping("/favorite")
     public ResponseEntity<CmdFavoritesDTO> favoritePost(@RequestBody CmdFavoritesDTO cmdFavoritesDTO) throws NotLoginException {
 
-        if(cmdFavoritesDTO.getPostId() == null){
+        try {
+            if(cmdFavoritesDTO.getPostId() == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+
+            CmdFavoritesDTO favorite = cmdPostService.favoritePost(cmdFavoritesDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(favorite);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        CmdFavoritesDTO favorite = cmdPostService.favoritePost(cmdFavoritesDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(favorite);
     }
 
     @PostMapping("/ai")
-    public ResponseEntity<String> requestToAI(@RequestBody CmdRequestPostAI request){
-        return ResponseEntity.status(HttpStatus.OK).body(cmdPostService.requestToGPT(request));
+    public ResponseEntity<String> requestToAI(@RequestBody CmdRequestPostAI request) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(cmdPostService.requestToGPT(request));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PostMapping("/isEditing/{id}")
     public void editingPost(@PathVariable int id){
-        cmdPostService.changeEditing(id);
+        try {
+            cmdPostService.changeEditing(id);
+        } catch (Exception e) {
+            System.out.println("[error] " + e.getMessage());
+        }
     }
 
     @PostMapping("/upload")
     public String uploadFile(@RequestBody MultipartFile file) throws AwsS3Exception {
-        return cmdPostService.uploadFile(file);
+        try {
+            return cmdPostService.uploadFile(file);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @GetMapping("/isAuthor/{originId}")
     public Boolean isAuthorizedToPost(@PathVariable int originId) throws NotLoginException {
-        return cmdPostService.isAuthorizedToPost(originId);
+        try {
+            return cmdPostService.isAuthorizedToPost(originId);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

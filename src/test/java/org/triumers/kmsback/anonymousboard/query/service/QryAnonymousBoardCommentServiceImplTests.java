@@ -1,6 +1,7 @@
 package org.triumers.kmsback.anonymousboard.query.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -68,6 +69,7 @@ class QryAnonymousBoardCommentServiceImplTests {
         anonymousBoardId = savedAnonymousBoardDTO.getId();
     }
 
+    @DisplayName("익명게시판 게시글 댓글 전부 조회 성공 여부 테스트")
     @Test
     void findAllAnonymousBoardComment_ValidAnonymousBoardId_ReturnsComments() {
         PageRequest pageRequest = PageRequest.of(0, 10);
@@ -79,6 +81,7 @@ class QryAnonymousBoardCommentServiceImplTests {
         assertEquals("Test Comment 1", commentPage.getContent().get(1).getContent());
     }
 
+    @DisplayName("익명게시판 유효하지 않은 게시글의 댓글 조회할 시 예외 발생 여부 테스트")
     @Test
     void findAllAnonymousBoardComment_InvalidAnonymousBoardId_ThrowsNoSuchElementException() {
         PageRequest pageRequest = PageRequest.of(0, 10);
@@ -89,6 +92,7 @@ class QryAnonymousBoardCommentServiceImplTests {
         });
     }
 
+    @DisplayName("익명게시판 게시글 댓글 개수 조회 성공 여부 테스트")
     @Test
     void countAnonymousBoardComment_ValidAnonymousBoardId_ReturnsCommentCount() {
         long commentCount = qryAnonymousBoardCommentService.countAnonymousBoardComment(anonymousBoardId);
@@ -96,6 +100,7 @@ class QryAnonymousBoardCommentServiceImplTests {
         assertEquals(2, commentCount);
     }
 
+    @DisplayName("익명게시판 유효하지 않은 게시글의 댓글 개수 조회할 시 예외 발생 여부 테스트")
     @Test
     void countAnonymousBoardComment_InvalidAnonymousBoardId_ReturnsZero() {
         int invalidAnonymousBoardId = 999;

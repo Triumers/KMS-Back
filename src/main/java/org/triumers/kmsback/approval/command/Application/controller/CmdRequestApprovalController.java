@@ -26,14 +26,24 @@ public class CmdRequestApprovalController {
 
     @PostMapping
     public ResponseEntity<Void> createApproval(@RequestBody CmdApprovalRequestDTO requestDto) throws NotLoginException {
-        cmdRequestApprovalService.createApproval(requestDto);
-        return ResponseEntity.ok().build();
+
+        try {
+            cmdRequestApprovalService.createApproval(requestDto);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PostMapping("/approval-type")
     public ResponseEntity<String> addNewApprovalType(@RequestBody String type) {
-        cmdApprovalTypeService.addNewApprovalType(type);
-        return new ResponseEntity<>("New approval type added successfully", HttpStatus.OK);
+
+        try {
+            cmdApprovalTypeService.addNewApprovalType(type);
+            return new ResponseEntity<>("New approval type added successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PostMapping("/{approvalId}/cancel")
