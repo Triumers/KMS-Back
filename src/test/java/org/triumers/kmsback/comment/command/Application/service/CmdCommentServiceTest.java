@@ -1,119 +1,157 @@
 package org.triumers.kmsback.comment.command.Application.service;
 
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import org.triumers.kmsback.comment.command.Application.dto.CmdCommentDTO;
-import org.triumers.kmsback.comment.command.Domain.aggregate.entity.CmdComment;
 import org.triumers.kmsback.comment.command.Domain.repository.CommentRepository;
+import org.triumers.kmsback.comment.query.aggregate.entity.QryComment;
+import org.triumers.kmsback.comment.query.domain.service.QryCommentService;
+import org.triumers.kmsback.common.LoggedInUser;
 import org.triumers.kmsback.common.exception.NotAuthorizedException;
 import org.triumers.kmsback.common.exception.NotLoginException;
+import org.triumers.kmsback.common.exception.WrongInputValueException;
+import org.triumers.kmsback.user.query.service.QryAuthService;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
+@SpringBootTest
+@Transactional
 public class CmdCommentServiceTest {
-    @Mock
+
+    @Autowired
+    private LoggedInUser loggedInUser;
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private QryCommentService qryCommentService;
+
+    @Autowired
+    private QryAuthService qryAuthService;
+
+    @Autowired
     private CommentRepository commentRepository;
-
-    @InjectMocks
-    private CommentServiceImpl commentService;
-
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @DisplayName("댓글 추가 테스트")
     @Test
-    public void testAddComment() throws NotLoginException {
+    public void testAddComment() throws NotLoginException, WrongInputValueException {
+
+        // given
+        loggedInUser.setting();
+        long userId = qryAuthService.myInfo().getId();
+
         CmdCommentDTO dto = new CmdCommentDTO();
         dto.setContent("Test Comment");
-        dto.setAuthorId(1L);
         dto.setPostId(1L);
 
-        CmdComment savedComment = new CmdComment();
-        savedComment.setId(1);
-        savedComment.setContent(dto.getContent());
-        savedComment.setAuthorId(dto.getAuthorId());
-        savedComment.setPostId(dto.getPostId());
+        // when
+        commentService.addComment(dto);
 
-        when(commentRepository.save(any(CmdComment.class))).thenReturn(savedComment);
-
-        CmdCommentDTO result = commentService.addComment(dto);
-        assertEquals(dto.getContent(), result.getContent());
+        // then
+        List<QryComment> result = qryCommentService.getCommentsByUserId(userId);
+        assertFalse(result.isEmpty());
     }
 
     @DisplayName("댓글 수정 테스트")
     @Test
-    public void testUpdateCommentSuccess() throws NotAuthorizedException, NotLoginException {
-        CmdComment existingComment = new CmdComment();
-        existingComment.setId(1);
-        existingComment.setAuthorId(1L);
-        existingComment.setContent("Old Comment");
+    public void testUpdateCommentSuccess() throws NotAuthorizedException, NotLoginException, WrongInputValueException {
+
+        // given
+        loggedInUser.setting();
+        long userId = qryAuthService.myInfo().getId();
 
         CmdCommentDTO dto = new CmdCommentDTO();
-        dto.setId(1);
-        dto.setAuthorId(1L);
-        dto.setContent("Updated Comment");
+        dto.setContent("Old Comment");
+        dto.setPostId(1L);
+        commentService.addComment(dto);
 
-        when(commentRepository.findById(1)).thenReturn(Optional.of(existingComment));
-        when(commentRepository.save(any(CmdComment.class))).thenReturn(existingComment);
+        long commentId = qryCommentService.getCommentsByUserId(userId).get(0).getId();
 
-        CmdCommentDTO result = commentService.updateComment(1, dto);
-        assertEquals(dto.getContent(), result.getContent());
+        CmdCommentDTO newComment = new CmdCommentDTO();
+        newComment.setContent("New Comment");
+
+        // when
+        commentService.updateComment((int) commentId, newComment);
+
+        // then
+        assertEquals(commentRepository.findById((int) commentId).getContent(), newComment.getContent());
     }
 
 
     @DisplayName("댓글 수정 예외처리 테스트")
     @Test
-    public void testUpdateCommentNotAuthorized() {
-        CmdComment existingComment = new CmdComment();
-        existingComment.setId(1);
-        existingComment.setAuthorId(1L);
-        existingComment.setContent("Old Comment");
+    public void testUpdateCommentNotAuthorized() throws NotLoginException, WrongInputValueException, NotAuthorizedException {
+
+        // given
+        loggedInUser.settingHrManager();
+        long userId = qryAuthService.myInfo().getId();
 
         CmdCommentDTO dto = new CmdCommentDTO();
-        dto.setId(1);
-        dto.setAuthorId(2L);  // 다른 사용자 ID
-        dto.setContent("Updated Comment");
+        dto.setContent("Origin Auth Comment");
+        dto.setPostId(1L);
+        commentService.addComment(dto);
 
-        when(commentRepository.findById(1)).thenReturn(Optional.of(existingComment));
+        long commentId = qryCommentService.getCommentsByUserId(userId).get(0).getId();
 
-        assertThrows(NotAuthorizedException.class, () -> commentService.updateComment(1, dto));
+        CmdCommentDTO newComment = new CmdCommentDTO();
+        newComment.setContent("New Comment");
+
+        // when
+        loggedInUser.setting();
+
+        // then
+        assertThrows(NotAuthorizedException.class, () -> commentService.updateComment((int) commentId, newComment));
     }
 
     @DisplayName("댓글 삭제 테스트")
     @Test
-    public void testDeleteCommentSuccess() throws NotAuthorizedException {
-        CmdComment existingComment = new CmdComment();
-        existingComment.setId(1);
-        existingComment.setAuthorId(1L);
+    public void testDeleteCommentSuccess() throws NotAuthorizedException, NotLoginException, WrongInputValueException {
 
-        when(commentRepository.findById(1)).thenReturn(Optional.of(existingComment));
+        // given
+        loggedInUser.setting();
+        long userId = qryAuthService.myInfo().getId();
 
-        assertDoesNotThrow(() -> commentService.deleteComment(1));
-        verify(commentRepository, times(1)).delete(existingComment);
+        CmdCommentDTO dto = new CmdCommentDTO();
+        dto.setContent("Target Comment");
+        dto.setPostId(1L);
+        commentService.addComment(dto);
+
+        long commentId = qryCommentService.getCommentsByUserId(userId).get(0).getId();
+
+        // when
+        commentService.deleteComment((int) commentId);
+
+        // then
+        assertNull(commentRepository.findById((int) commentId));
     }
 
     @DisplayName("댓글 삭제 예외처리 테스트")
     @Test
-    public void testDeleteCommentNotAuthorized() {
-        CmdComment existingComment = new CmdComment();
-        existingComment.setId(1);
-        existingComment.setAuthorId(1L);
+    public void testDeleteCommentNotAuthorized() throws NotLoginException, WrongInputValueException {
 
-        when(commentRepository.findById(1)).thenReturn(Optional.of(existingComment));
+        // given
+        loggedInUser.settingHrManager();
+        long userId = qryAuthService.myInfo().getId();
 
-        assertThrows(NotAuthorizedException.class, () -> commentService.deleteComment(1));
-        verify(commentRepository, never()).delete(existingComment);
+        CmdCommentDTO dto = new CmdCommentDTO();
+        dto.setContent("Origin Auth Comment");
+        dto.setPostId(1L);
+        commentService.addComment(dto);
+
+        long commentId = qryCommentService.getCommentsByUserId(userId).get(0).getId();
+
+        // when
+        loggedInUser.setting();
+
+        // then
+        assertNotNull(commentRepository.findById((int) commentId));
     }
 
 }

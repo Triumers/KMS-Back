@@ -7,4 +7,6 @@ import java.util.List;
 
 
 public interface CommentRepository extends JpaRepository<CmdComment, Integer> {
+
+    CmdComment findById(int id);
 }
