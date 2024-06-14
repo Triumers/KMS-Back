@@ -1,6 +1,7 @@
 package org.triumers.kmsback.comment.query.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,11 +21,19 @@ public class QryCommentController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<QryComment>> getCommentsByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(qryCommentService.getCommentsByUserId(userId));
+        try {
+            return ResponseEntity.ok(qryCommentService.getCommentsByUserId(userId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<QryComment>> getCommentsByPostId(@PathVariable Long postId) {
-        return ResponseEntity.ok(qryCommentService.getCommentsByPostId(postId));
+        try {
+            return ResponseEntity.ok(qryCommentService.getCommentsByPostId(postId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 }

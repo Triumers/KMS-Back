@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.4'
-    id 'com.google.cloud.tools.jib' version '3.3.1'
+//    id 'com.google.cloud.tools.jib' version '3.3.1'
 }
 
 group = 'org.triumers'
@@ -76,24 +76,24 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.14.3'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}
 
-jib {
-    from {
-        image = 'amazoncorretto:17'
-    }
-    to {
-        image = 'giyeonlee/triumers-back:latest'
-        auth {
-            username = findProperty("docker.username") ?: System.getenv("DOCKER_USERNAME")
-            password = findProperty("docker.password") ?: System.getenv("DOCKER_PASSWORD")
-        }
-    }
-    container {
-        jvmFlags = ['-Xms512m', '-Xmx512m']
-        ports = ['5000']
-        environment = [ 'SPRING_PROFILES_ACTIVE': 'prod' ]
-    }
-}
+//jib {
+//    from {
+//        image = 'amazoncorretto:17'
+//    }
+//    to {
+//        image = 'giyeonlee/triumers-back:latest'
+//        auth {
+//            username = findProperty("docker.username") ?: System.getenv("DOCKER_USERNAME")
+//            password = findProperty("docker.password") ?: System.getenv("DOCKER_PASSWORD")
+//        }
+//    }
+//    container {
+//        jvmFlags = ['-Xms512m', '-Xmx512m']
+//        ports = ['5000']
+//        environment = [ 'SPRING_PROFILES_ACTIVE': 'prod' ]
+//    }
+//}

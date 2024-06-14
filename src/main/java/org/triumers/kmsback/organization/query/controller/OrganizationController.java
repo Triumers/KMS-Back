@@ -35,186 +35,244 @@ public class OrganizationController {
     @GetMapping("/center/detail/all")
     public ResponseEntity<List<QryCenterVO>> findAllCenterDetail() {
 
-        List<QryCenterDTO> allCenter = qryCenterService.findAllCenterDetailList();
-        List<QryCenterVO> allCenterVO = new ArrayList<>();
+        try {
+            List<QryCenterDTO> allCenter = qryCenterService.findAllCenterDetailList();
+            List<QryCenterVO> allCenterVO = new ArrayList<>();
 
-        for (QryCenterDTO centerDTO : allCenter) {
-            allCenterVO.add(centerDetailToVO(centerDTO));
+            for (QryCenterDTO centerDTO : allCenter) {
+                allCenterVO.add(centerDetailToVO(centerDTO));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(allCenterVO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(allCenterVO);
     }
 
     @GetMapping("/center/all")
     public ResponseEntity<List<QryCenterVO>> findAllCenter() {
 
-        List<QryCenterDTO> allCenter = qryCenterService.findAllCenterList();
-        List<QryCenterVO> allCenterVO = new ArrayList<>();
+        try {
+            List<QryCenterDTO> allCenter = qryCenterService.findAllCenterList();
+            List<QryCenterVO> allCenterVO = new ArrayList<>();
 
-        for (QryCenterDTO centerDTO : allCenter) {
-            allCenterVO.add(centerDetailToVO(centerDTO));
+            for (QryCenterDTO centerDTO : allCenter) {
+                allCenterVO.add(centerDetailToVO(centerDTO));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(allCenterVO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(allCenterVO);
     }
 
     @GetMapping("/center/id/{id}")
     public ResponseEntity<QryCenterVO> findCenterById(@PathVariable("id") int id) {
 
-        QryCenterDTO qryCenterDTO = qryCenterService.findCenterById(id);
-
-        return ResponseEntity.status(HttpStatus.OK).body(centerDetailToVO(qryCenterDTO));
+        try {
+            QryCenterDTO qryCenterDTO = qryCenterService.findCenterById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(centerDetailToVO(qryCenterDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/center/detail/id/{id}")
     public ResponseEntity<QryCenterVO> findCenterDetailById(@PathVariable("id") int id) {
 
-        QryCenterDTO qryCenterDTO = qryCenterService.findCenterDetailById(id);
-
-        return ResponseEntity.status(HttpStatus.OK).body(centerDetailToVO(qryCenterDTO));
+        try {
+            QryCenterDTO qryCenterDTO = qryCenterService.findCenterDetailById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(centerDetailToVO(qryCenterDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PostMapping("center/name")
     public ResponseEntity<List<QryCenterVO>> findCenterByName(@RequestBody QryRequestSearchNameVO request) {
 
-        List<QryCenterDTO> allCenter = qryCenterService.findCenterListByName(request.getName());
-        List<QryCenterVO> allCenterVO = new ArrayList<>();
+        try {
+            List<QryCenterDTO> allCenter = qryCenterService.findCenterListByName(request.getName());
+            List<QryCenterVO> allCenterVO = new ArrayList<>();
 
-        for (QryCenterDTO centerDTO : allCenter) {
-            allCenterVO.add(centerDetailToVO(centerDTO));
+            for (QryCenterDTO centerDTO : allCenter) {
+                allCenterVO.add(centerDetailToVO(centerDTO));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(allCenterVO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(allCenterVO);
     }
 
     @GetMapping("/department/id/{id}")
     public ResponseEntity<QryDepartmentVO> findDepartmentById(@PathVariable("id") int id) {
 
-        QryDepartmentDTO qryDepartmentDTO = qryDepartmentService.findDepartmentById(id);
-
-        return ResponseEntity.status(HttpStatus.OK).body(departmentDetailToVO(qryDepartmentDTO));
+        try {
+            QryDepartmentDTO qryDepartmentDTO = qryDepartmentService.findDepartmentById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(departmentDetailToVO(qryDepartmentDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/department/detail/id/{id}")
     public ResponseEntity<QryDepartmentVO> findDepartmentDetailById(@PathVariable("id") int id) {
 
-        QryDepartmentDTO qryDepartmentDTO = qryDepartmentService.findDepartmentDetailById(id);
-
-        return ResponseEntity.status(HttpStatus.OK).body(departmentDetailToVO(qryDepartmentDTO));
+        try {
+            QryDepartmentDTO qryDepartmentDTO = qryDepartmentService.findDepartmentDetailById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(departmentDetailToVO(qryDepartmentDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @PostMapping("/department/name")
     public ResponseEntity<List<QryDepartmentVO>> findDepartmentByName(@RequestBody QryRequestSearchNameVO request) {
 
-        List<QryDepartmentDTO> allDepartment = qryDepartmentService.findDepartmentListByName(request.getName());
-        List<QryDepartmentVO> allDepartmentVO = new ArrayList<>();
+        try {
+            List<QryDepartmentDTO> allDepartment = qryDepartmentService.findDepartmentListByName(request.getName());
+            List<QryDepartmentVO> allDepartmentVO = new ArrayList<>();
 
-        for (QryDepartmentDTO departmentDTO : allDepartment) {
-            allDepartmentVO.add(departmentDetailToVO(departmentDTO));
+            for (QryDepartmentDTO departmentDTO : allDepartment) {
+                allDepartmentVO.add(departmentDetailToVO(departmentDTO));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(allDepartmentVO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(allDepartmentVO);
     }
 
     @GetMapping("/department/center-id/{centerId}")
     public ResponseEntity<List<QryDepartmentVO>> findDepartmentCenterById(@PathVariable("centerId") int centerId) {
 
-        List<QryDepartmentDTO> allDepartment = qryDepartmentService.findDepartmentListByCenterId(centerId);
-        List<QryDepartmentVO> allDepartmentVO = new ArrayList<>();
+        try {
+            List<QryDepartmentDTO> allDepartment = qryDepartmentService.findDepartmentListByCenterId(centerId);
+            List<QryDepartmentVO> allDepartmentVO = new ArrayList<>();
 
-        for (QryDepartmentDTO departmentDTO : allDepartment) {
-            allDepartmentVO.add(departmentDetailToVO(departmentDTO));
+            for (QryDepartmentDTO departmentDTO : allDepartment) {
+                allDepartmentVO.add(departmentDetailToVO(departmentDTO));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(allDepartmentVO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(allDepartmentVO);
     }
 
     @GetMapping("/department/detail/center-id/{centerId}")
     public ResponseEntity<List<QryDepartmentVO>> findDepartmentDetailCenterById(@PathVariable("centerId") int centerId) {
 
-        List<QryDepartmentDTO> allDepartment = qryDepartmentService.findDepartmentDetailListByCenterId(centerId);
-        List<QryDepartmentVO> allDepartmentVO = new ArrayList<>();
+        try {
+            List<QryDepartmentDTO> allDepartment = qryDepartmentService.findDepartmentDetailListByCenterId(centerId);
+            List<QryDepartmentVO> allDepartmentVO = new ArrayList<>();
 
-        for (QryDepartmentDTO departmentDTO : allDepartment) {
-            allDepartmentVO.add(departmentDetailToVO(departmentDTO));
+            for (QryDepartmentDTO departmentDTO : allDepartment) {
+                allDepartmentVO.add(departmentDetailToVO(departmentDTO));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(allDepartmentVO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(allDepartmentVO);
     }
 
     @GetMapping("/team/id/{id}")
     public ResponseEntity<QryTeamVO> findTeamById(@PathVariable("id") int id) {
 
-        QryTeamDTO team;
         try {
-            team = qryTeamService.findQryTeamById(id);
-        } catch (WrongInputValueException e) {
+            QryTeamDTO team;
+            try {
+                team = qryTeamService.findQryTeamById(id);
+            } catch (WrongInputValueException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(teamDetailToVO(team));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(teamDetailToVO(team));
     }
 
     @GetMapping("/team/detail/id/{id}")
     public ResponseEntity<QryTeamVO> findTeamDetailById(@PathVariable("id") int id) {
 
-        QryTeamDTO team;
         try {
-            team = qryTeamService.findQryTeamDetailById(id);
-        } catch (WrongInputValueException e) {
+            QryTeamDTO team;
+            try {
+                team = qryTeamService.findQryTeamDetailById(id);
+            } catch (WrongInputValueException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(teamDetailToVO(team));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(teamDetailToVO(team));
     }
 
     @PostMapping("/team/name")
     public ResponseEntity<List<QryTeamVO>> findTeamByName(@RequestBody QryRequestSearchNameVO request) {
 
-        List<QryTeamDTO> allTeam;
         try {
-            allTeam = qryTeamService.findTeamListByName(request.getName());
-        } catch (WrongInputValueException e) {
+            List<QryTeamDTO> allTeam;
+            try {
+                allTeam = qryTeamService.findTeamListByName(request.getName());
+            } catch (WrongInputValueException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+
+
+            List<QryTeamVO> allTeamVO = new ArrayList<>();
+
+            for (QryTeamDTO team : allTeam) {
+                allTeamVO.add(teamDetailToVO(team));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(allTeamVO);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        List<QryTeamVO> allTeamVO = new ArrayList<>();
-
-        for (QryTeamDTO team : allTeam) {
-            allTeamVO.add(teamDetailToVO(team));
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(allTeamVO);
     }
 
     @GetMapping("/team/department-id/{departmentId}")
     public ResponseEntity<List<QryTeamVO>> findTeamByDepartmentId(@PathVariable("departmentId") int departmentId) {
 
-        List<QryTeamDTO> allTeam;
         try {
-            allTeam = qryTeamService.findTeamListByDepartmentId(departmentId);
-        } catch (WrongInputValueException e) {
+            List<QryTeamDTO> allTeam;
+            try {
+                allTeam = qryTeamService.findTeamListByDepartmentId(departmentId);
+            } catch (WrongInputValueException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+            List<QryTeamVO> allTeamVO = new ArrayList<>();
+
+            for (QryTeamDTO team : allTeam) {
+                allTeamVO.add(teamDetailToVO(team));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(allTeamVO);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        List<QryTeamVO> allTeamVO = new ArrayList<>();
-
-        for (QryTeamDTO team : allTeam) {
-            allTeamVO.add(teamDetailToVO(team));
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(allTeamVO);
     }
 
     @GetMapping("/team/detail/department-id/{departmentId}")
     public ResponseEntity<List<QryTeamVO>> findTeamDetailByDepartmentId(@PathVariable("departmentId") int departmentId) {
 
-        List<QryTeamDTO> allTeam = qryTeamService.findTeamDetailListByDepartmentId(departmentId);
-        List<QryTeamVO> allTeamVO = new ArrayList<>();
+        try {
+            List<QryTeamDTO> allTeam = qryTeamService.findTeamDetailListByDepartmentId(departmentId);
+            List<QryTeamVO> allTeamVO = new ArrayList<>();
 
-        for (QryTeamDTO team : allTeam) {
-            allTeamVO.add(teamDetailToVO(team));
+            for (QryTeamDTO team : allTeam) {
+                allTeamVO.add(teamDetailToVO(team));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(allTeamVO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(allTeamVO);
     }
 
     private QryCenterVO centerDetailToVO(QryCenterDTO qryCenterDTO) {

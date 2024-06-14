@@ -23,21 +23,30 @@ public class CmdAnonymousBoardController {
     // 게시글 작성
     @PostMapping
     public ResponseEntity<CmdAnonymousBoardDTO> createAnonymousBoard(@RequestBody CmdAnonymousBoardDTO cmdAnonymousBoardDTO) {
-        if (cmdAnonymousBoardDTO.getTitle() == null || cmdAnonymousBoardDTO.getTitle().isEmpty()) {
+        try {
+
+            if (cmdAnonymousBoardDTO.getTitle() == null || cmdAnonymousBoardDTO.getTitle().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+            if (cmdAnonymousBoardDTO.getContent() == null || cmdAnonymousBoardDTO.getContent().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            CmdAnonymousBoardDTO savedAnonymousBoard = cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedAnonymousBoard);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        if (cmdAnonymousBoardDTO.getContent() == null || cmdAnonymousBoardDTO.getContent().isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-        CmdAnonymousBoardDTO savedAnonymousBoard = cmdAnonymousBoardService.saveAnonymousBoard(cmdAnonymousBoardDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedAnonymousBoard);
     }
 
     // 게시글 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAnonymousBoard(@PathVariable int id) {
-        cmdAnonymousBoardService.deleteAnonymousBoard(id);
-        return ResponseEntity.noContent().build();
+        try {
+            cmdAnonymousBoardService.deleteAnonymousBoard(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @ExceptionHandler(NoSuchElementException.class)

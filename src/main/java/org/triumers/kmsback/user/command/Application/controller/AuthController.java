@@ -33,7 +33,7 @@ public class AuthController {
     @Value("${password}")
     private String defaultPassword;
 
-    @Value("in-house-ip-address")
+    @Value("${in-house-ip-address}")
     private String defaultIpAddress;
 
     @Autowired
@@ -52,7 +52,7 @@ public class AuthController {
 
             if (authService.isHaveAuthenticator(account)) {
 
-                if (IpAddressUtil.getClientIp(request).equals(defaultIpAddress) ||
+                if (IpAddressUtil.getClientIp(request).equals("121.170.161.69") ||
                         IpAddressUtil.getClientIp(request).equals("0:0:0:0:0:0:0:1")) {
                     return ResponseEntity.status(HttpStatus.OK).body(new CmdResponseMessageVO("환영합니다."));
                 }
@@ -62,6 +62,8 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.OK).body(new CmdResponseMessageVO("2차 인증 등록을 권장합니다."));
         } catch (WrongInputValueException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CmdResponseMessageVO(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -84,6 +86,8 @@ public class AuthController {
         } catch (WrongInputTypeException | WrongInputValueException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new CmdResponseMessageVO("잘못된 입력입니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -112,6 +116,8 @@ public class AuthController {
         } catch (WrongInputTypeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new CmdResponseMessageVO("잘못된 입력입니다."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 }
