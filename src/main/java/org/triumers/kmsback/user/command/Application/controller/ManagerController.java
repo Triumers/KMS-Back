@@ -51,6 +51,7 @@ public class ManagerController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new CmdResponseMessageVO(newEmployee.getName() + " 회원 추가 성공"));
         } catch (Exception e) {
+            System.err.println("signup: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -72,6 +73,7 @@ public class ManagerController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                     new CmdResponseMessageVO(e.getMessage()));
         } catch (Exception e) {
+            System.err.println("editUserRole: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -92,6 +94,7 @@ public class ManagerController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                     new CmdResponseMessageVO(e.getMessage()));
         } catch (Exception e) {
+            System.err.println("initializePassword: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -119,6 +122,7 @@ public class ManagerController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
                     new CmdResponseMessageVO(e.getMessage()));
         } catch (Exception e) {
+            System.err.println("editInfo: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }

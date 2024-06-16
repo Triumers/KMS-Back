@@ -38,6 +38,7 @@ public class QryAuthController {
         } catch (WrongInputValueException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new QryResponseEmployeeVO(e.getMessage(), null));
         } catch (Exception e) {
+            System.err.println("myInfo: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -53,6 +54,7 @@ public class QryAuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
                     body(new QryResponseDocsVO(e.getMessage(), null, null));
         } catch (Exception e) {
+            System.err.println("findMyPost: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -68,6 +70,7 @@ public class QryAuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
                     body(new QryResponseDocsVO(e.getMessage(), null, null));
         } catch (Exception e) {
+            System.err.println("findMyComment: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -83,6 +86,7 @@ public class QryAuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
                     body(new QryResponseDocsVO(e.getMessage(), null, null));
         } catch (Exception e) {
+            System.err.println("findLikePost: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -98,6 +102,7 @@ public class QryAuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
                     body(new QryResponseDocsVO(e.getMessage(), null, null));
         } catch (Exception e) {
+            System.err.println("findFavoritePost: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
