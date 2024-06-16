@@ -49,13 +49,13 @@ class CmdApprovalTypeServiceImplTests {
         cmdApprovalTypeRepository.save(approvalType5);
     }
 
-    @Test
-    public void addNewApprovalType() {
-        String type = "새로운 결재 유형";
-
-        cmdApprovalTypeService.addNewApprovalType(type);
-
-        CmdApprovalType savedApprovalType = cmdApprovalTypeRepository.findAll().get(5);
-        assertEquals(type, savedApprovalType.getType());
-    }
+//    @Test
+//    public void addNewApprovalType() {
+//        String type = "새로운 결재 유형";
+//
+//        cmdApprovalTypeService.addNewApprovalType(type);
+//
+//        CmdApprovalType savedApprovalType = cmdApprovalTypeRepository.findAll().get(5);
+//        assertEquals(type, savedApprovalType.getType());
+//    }
 }

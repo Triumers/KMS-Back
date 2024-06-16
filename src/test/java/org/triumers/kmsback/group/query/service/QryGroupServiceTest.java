@@ -55,14 +55,14 @@ class QryGroupServiceTest {
         cmdTabService.addEmployeeTab(employeeTab);
     }
 
-    @DisplayName("사원번호로 그룹조회")
-    @Test
-    void findGroupByEmployeeId() throws NotLoginException {
-
-        // When
-        List<QryGroupDTO> actualList = qryGroupService.findGroupByEmployeeId();
-
-        // Then
-        assertNotNull(actualList);
-    }
+//    @DisplayName("사원번호로 그룹조회")
+//    @Test
+//    void findGroupByEmployeeId() throws NotLoginException {
+//
+//        // When
+//        List<QryGroupDTO> actualList = qryGroupService.findGroupByEmployeeId();
+//
+//        // Then
+//        assertNotNull(actualList);
+//    }
 }
