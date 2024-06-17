@@ -63,6 +63,7 @@ public class AuthController {
         } catch (WrongInputValueException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CmdResponseMessageVO(e.getMessage()));
         } catch (Exception e) {
+            System.err.println("isHaveAuthenticator: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -87,6 +88,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new CmdResponseMessageVO("잘못된 입력입니다."));
         } catch (Exception e) {
+            System.err.println("editPassword: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -117,6 +119,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new CmdResponseMessageVO("잘못된 입력입니다."));
         } catch (Exception e) {
+            System.err.println("editMyInfo: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }

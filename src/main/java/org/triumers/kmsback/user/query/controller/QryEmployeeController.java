@@ -29,6 +29,7 @@ public class QryEmployeeController {
             QryEmployeeDTO employee = qryEmployeeService.findEmployeeById(id);
             return ResponseEntity.status(HttpStatus.OK).body(new QryResponseEmployeeVO("조회 성공", List.of(employee)));
         } catch (Exception e) {
+            System.err.println("findById: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new QryResponseEmployeeVO("조회 실패", null));
         }
     }
@@ -40,6 +41,7 @@ public class QryEmployeeController {
             List<QryEmployeeDTO> result = qryEmployeeService.findAllEmployee();
             return ResponseEntity.status(HttpStatus.OK).body(new QryResponseEmployeeVO("조회 성공", result));
         } catch (Exception e) {
+            System.err.println("findAll: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new QryResponseEmployeeVO("조회 실패", null));
         }
     }
@@ -51,6 +53,7 @@ public class QryEmployeeController {
             QryEmployeeDTO employee = qryEmployeeService.findEmployeeByEmail(email);
             return ResponseEntity.status(HttpStatus.OK).body(new QryResponseEmployeeVO("조회 성공", List.of(employee)));
         } catch (Exception e) {
+            System.err.println("findByEmail: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new QryResponseEmployeeVO("조회 실패", null));
         }
     }
@@ -62,6 +65,7 @@ public class QryEmployeeController {
             List<QryEmployeeDTO> result = qryEmployeeService.findEmployeeByName(request.getName());
             return ResponseEntity.status(HttpStatus.OK).body(new QryResponseEmployeeVO("조회 성공", result));
         } catch (Exception e) {
+            System.err.println("createEmployee: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new QryResponseEmployeeVO("조회 실패", null));
         }
     }
@@ -73,6 +77,7 @@ public class QryEmployeeController {
             List<QryEmployeeDTO> result = qryEmployeeService.findEmployeeByTeamId(teamId);
             return ResponseEntity.status(HttpStatus.OK).body(new QryResponseEmployeeVO("조회 성공", result));
         } catch (Exception e) {
+            System.err.println("findByTeamId: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new QryResponseEmployeeVO("조회 실패", null));
         }
     }

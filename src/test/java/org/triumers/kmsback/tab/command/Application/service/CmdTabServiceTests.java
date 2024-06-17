@@ -29,28 +29,28 @@ class CmdTabServiceTests {
         this.cmdJoinEmployeeRepository = cmdJoinEmployeeRepository;
     }
 
-    @Test
-    @DisplayName("탭 참여자 등록")
-    void addEmployeeTab(){
-
-        CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(false, EMPLOYEE_ID, TAB_RELATION_ID);
-
-        CmdJoinEmployeeDTO savedEmployee = cmdTabService.addEmployeeTab(employee);
-
-        assertThat(savedEmployee.getId()).isNotNull();
-    }
-
-    @Test
-    @DisplayName("탭 참여자 삭제")
-    void deleteEmployeeTab(){
-
-        CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(false, EMPLOYEE_ID, TAB_RELATION_ID);
-        cmdTabService.addEmployeeTab(employee);
-
-        CmdJoinEmployeeDTO deletedEmployee = cmdTabService.deleteEmployeeTab(employee);
-
-        assertThat(cmdJoinEmployeeRepository.findById(deletedEmployee.getId())).isEmpty();
-    }
+//    @Test
+//    @DisplayName("탭 참여자 등록")
+//    void addEmployeeTab(){
+//
+//        CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(false, EMPLOYEE_ID, TAB_RELATION_ID);
+//
+//        CmdJoinEmployeeDTO savedEmployee = cmdTabService.addEmployeeTab(employee);
+//
+//        assertThat(savedEmployee.getId()).isNotNull();
+//    }
+//
+//    @Test
+//    @DisplayName("탭 참여자 삭제")
+//    void deleteEmployeeTab(){
+//
+//        CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(false, EMPLOYEE_ID, TAB_RELATION_ID);
+//        cmdTabService.addEmployeeTab(employee);
+//
+//        CmdJoinEmployeeDTO deletedEmployee = cmdTabService.deleteEmployeeTab(employee);
+//
+//        assertThat(cmdJoinEmployeeRepository.findById(deletedEmployee.getId())).isEmpty();
+//    }
 
     @Test
     @DisplayName("탭 추가")

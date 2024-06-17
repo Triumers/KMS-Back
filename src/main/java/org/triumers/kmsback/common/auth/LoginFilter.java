@@ -101,8 +101,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.addHeader("Authorization", "Bearer " + token);
         response.addHeader("UserRole", role.name());
 
-        // Default 비밀번호인 경우 비밀번호 변경을 유도하기 위해 210 반환
-        if (bCryptPasswordEncoder.matches(defaultPassword, customUserDetails.getPassword())) {
+        // Default 비밀번호면서 Authenticator 등록이 안된 경우 비밀번호 변경을 유도하기 위해 210 반환
+        // 첫 로그인인 경우를 위한 메소드
+        if (bCryptPasswordEncoder.matches(defaultPassword, customUserDetails.getPassword()) && secret == null) {
             response.setStatus(210);
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write("비밀번호를 변경해주세요.");
