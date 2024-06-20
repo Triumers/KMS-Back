@@ -6,7 +6,16 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.triumers.kmsback.organization.command.Application.dto.CmdCenterDTO;
+import org.triumers.kmsback.organization.command.Application.dto.CmdDepartmentDTO;
+import org.triumers.kmsback.organization.command.Application.dto.CmdTeamDTO;
+import org.triumers.kmsback.organization.command.Application.service.CmdCenterService;
+import org.triumers.kmsback.organization.command.Application.service.CmdDepartmentService;
+import org.triumers.kmsback.organization.command.Application.service.CmdTeamService;
+import org.triumers.kmsback.user.command.Application.dto.CmdPositionDTO;
+import org.triumers.kmsback.user.command.Application.dto.CmdRankDTO;
 import org.triumers.kmsback.user.command.Application.dto.ManageUserDTO;
+import org.triumers.kmsback.user.command.Application.service.CmdDutyService;
 import org.triumers.kmsback.user.command.Application.service.ManagerService;
 import org.triumers.kmsback.user.command.domain.repository.EmployeeRepository;
 import org.triumers.kmsback.user.command.domain.service.CustomUserDetailsService;
@@ -27,11 +36,69 @@ public class LoggedInUser {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private CmdCenterService cmdCenterService;
+
+    @Autowired
+    private CmdDepartmentService cmdDepartmentService;
+
+    @Autowired
+    private CmdTeamService cmdTeamService;
+
+    @Autowired
+    private CmdDutyService cmdDutyService;
+
+    // 테스트용 본부 생성
+    private int addCenterForTest() {
+        CmdCenterDTO centerDTO = new CmdCenterDTO();
+        centerDTO.setName("UniqueCenterNameForTest");
+        return cmdCenterService.addCenter(centerDTO);
+    }
+
+    // 테스트용 부서 생성
+    private int addDepartmentForTest() {
+        int centerId = addCenterForTest();
+        CmdDepartmentDTO departmentDTO = new CmdDepartmentDTO();
+        departmentDTO.setName("UniqDepartmentNameForTest");
+        departmentDTO.setCenterId(centerId);
+        return cmdDepartmentService.addDepartment(departmentDTO);
+    }
+
+    // 테스트용 팀 생성
+    private int addTeamForTest() {
+        int departmentId = addDepartmentForTest();
+        CmdTeamDTO teamDTO = new CmdTeamDTO();
+        teamDTO.setName("UniqTeamNameForTest");
+        teamDTO.setDepartmentId(departmentId);
+
+        return cmdTeamService.addTeam(teamDTO);
+    }
+
+    // 테스트용 직책 생성
+    private int addPositionForTest() {
+        CmdPositionDTO positionDTO = new CmdPositionDTO();
+        positionDTO.setName("UniqPositionNameForTest");
+
+        return cmdDutyService.addPosition(positionDTO);
+    }
+
+    // 테스트용 직급 생성
+    private int addRankForTest() {
+        CmdRankDTO rankDTO = new CmdRankDTO();
+        rankDTO.setName("UniqRankNameForTest");
+
+        return cmdDutyService.addRank(rankDTO);
+    }
+
     // 테스트용 계정 DTO 생성
     private ManageUserDTO createRightAuthDTO() {
+        int teamId = addTeamForTest();
+        int positionId = addPositionForTest();
+        int rankId = addRankForTest();
+
         return new ManageUserDTO(RIGHT_FORMAT_EMAIL, RIGHT_FORMAT_PASSWORD, RIGHT_FORMAT_NAME, null,
-                RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
-                1);
+                RIGHT_FORMAT_USER_ROLE, null, null, RIGHT_PHONE_NUMBER, teamId, positionId,
+                rankId);
     }
 
     // 테스트용 관리자 계정 DTO 생성
