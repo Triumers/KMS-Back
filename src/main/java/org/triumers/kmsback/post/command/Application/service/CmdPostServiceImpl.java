@@ -89,7 +89,7 @@ public class CmdPostServiceImpl implements CmdPostService {
     public static String sanitizeHTML(String html) {
 
         Whitelist whitelist = Whitelist.basic();
-        // 허용되지 않을 태그와 속성 추가
+        // 허용되지 않을 태그, 속성 추가
         whitelist.removeTags("script", "style", "head", "header", "foot", "footer");
         whitelist.removeAttributes("style", "onclick");
 
