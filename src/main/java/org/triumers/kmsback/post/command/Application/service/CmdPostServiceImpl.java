@@ -2,6 +2,7 @@ package org.triumers.kmsback.post.command.Application.service;
 
 import jakarta.mail.MessagingException;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.safety.Whitelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -87,24 +88,16 @@ public class CmdPostServiceImpl implements CmdPostService {
 
     public static String sanitizeHTML(String html) {
 
-        // 공백, 줄바꿈 대체
-        String spacePlaceholder = "___SPACE___";
-        String newlinePlaceholder = "___NEWLINE___";
-        String htmlWithPlaceholders = html
-                .replaceAll(" ", spacePlaceholder)
-                .replaceAll("\n", newlinePlaceholder)
-                .replaceAll("\r\n", newlinePlaceholder);
-
-        Whitelist whitelist = Whitelist.relaxed();
+        Whitelist whitelist = Whitelist.basic();
         // 허용되지 않을 태그와 속성 추가
         whitelist.removeTags("script", "style", "head", "header", "foot", "footer");
         whitelist.removeAttributes("style", "onclick");
 
-        String cleanedHtmlWithPlaceholders = Jsoup.clean(htmlWithPlaceholders, whitelist);
+        // 개행 사라지지 않도록 처리
+        Document.OutputSettings settings = new Document.OutputSettings();
+        settings.prettyPrint(false);
 
-        String cleanedHtml = cleanedHtmlWithPlaceholders
-                .replaceAll(spacePlaceholder, " ")
-                .replaceAll(newlinePlaceholder, "\n");
+        String cleanedHtml = Jsoup.clean(html,"", whitelist, settings);
 
         return cleanedHtml;
     }
