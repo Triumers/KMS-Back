@@ -177,7 +177,7 @@ class QryPostServiceTest {
     void findLikeListByPostId() throws NotLoginException, WrongInputValueException {
 
         CmdPostAndTagsDTO post = registPost();
-        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, post.getId());
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(null, post.getId());
         cmdPostService.favoritePost(favorite);
 
         List<QryEmployeeDTO> likeList = qryPostService.findLikeListByPostId(post.getId());
