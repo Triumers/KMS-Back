@@ -112,10 +112,12 @@ class QryPostServiceTest {
     @DisplayName("사용자가 좋아요한 게시글 조회")
     void findLikePostByEmployeeId() throws NotLoginException {
 
-        CmdLikeDTO like = new CmdLikeDTO(1, 1);
+        CmdPostAndTagsDTO post = registPost();
+        CmdLikeDTO like = new CmdLikeDTO(null, post.getId());
         cmdPostService.likePost(like);
 
-        List<QryPostAndTagsDTO> likedPost = qryPostService.findLikePostByEmployeeId(1);
+        Employee employee = authService.whoAmI();
+        List<QryPostAndTagsDTO> likedPost = qryPostService.findLikePostByEmployeeId(employee.getId());
 
         assertThat(likedPost).isNotNull();
     }
@@ -124,10 +126,11 @@ class QryPostServiceTest {
     @DisplayName("게시글id로 사용자 좋아요 여부 조회")
     void isLikeByPostId() throws NotLoginException {
 
-        CmdLikeDTO like = new CmdLikeDTO(1, 1);
+        CmdPostAndTagsDTO post = registPost();
+        CmdLikeDTO like = new CmdLikeDTO(null, post.getId());
         cmdPostService.likePost(like);
 
-        Boolean isLiked = qryPostService.findIsLikedByPostId(1);
+        Boolean isLiked = qryPostService.findIsLikedByPostId(post.getId());
 
         assertThat(isLiked).isTrue();
     }
@@ -136,10 +139,11 @@ class QryPostServiceTest {
     @DisplayName("게시글id로 사용자 즐겨찾기 여부 조회")
     void isFavoriteByPostId() throws NotLoginException {
 
-        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, 1);
+        CmdPostAndTagsDTO post = registPost();
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(null, post.getId());
         cmdPostService.favoritePost(favorite);
 
-        Boolean isFavorite = qryPostService.findIsFavoriteByPostId(1);
+        Boolean isFavorite = qryPostService.findIsFavoriteByPostId(post.getId());
 
         assertThat(isFavorite).isTrue();
     }
@@ -148,9 +152,12 @@ class QryPostServiceTest {
     @DisplayName("사용자가 즐겨찾기한 게시글 조회")
     void findFavoritePostByEmployeeId() throws NotLoginException {
 
-        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, 1);
+        CmdPostAndTagsDTO post = registPost();
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(null, post.getId());
         cmdPostService.favoritePost(favorite);
-        List<QryPostAndTagsDTO> favoritePost = qryPostService.findFavoritePostByEmployeeId(1);
+
+        Employee employee = authService.whoAmI();
+        List<QryPostAndTagsDTO> favoritePost = qryPostService.findFavoritePostByEmployeeId(employee.getId());
 
         assertThat(favoritePost).isNotNull();
     }
