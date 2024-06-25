@@ -103,9 +103,13 @@ public class LoggedInUser {
 
     // 테스트용 관리자 계정 DTO 생성
     private ManageUserDTO createHrManagerDTO() {
+        int teamId = addTeamForTest();
+        int positionId = addPositionForTest();
+        int rankId = addRankForTest();
+
         return new ManageUserDTO(HR_MANAGER_EMAIL, RIGHT_FORMAT_PASSWORD, RIGHT_FORMAT_NAME, null,
-                HR_MANAGER_ROLE, null, null, RIGHT_PHONE_NUMBER, 1, 1,
-                1);
+                HR_MANAGER_ROLE, null, null, RIGHT_PHONE_NUMBER, teamId, positionId,
+                rankId);
     }
 
     // 테스트용 계정 회원가입
