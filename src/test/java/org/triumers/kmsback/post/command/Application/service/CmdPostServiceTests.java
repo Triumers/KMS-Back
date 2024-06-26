@@ -14,6 +14,13 @@ import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.common.exception.WrongInputTypeException;
 import org.triumers.kmsback.post.command.Application.dto.*;
 import org.triumers.kmsback.post.command.domain.aggregate.vo.CmdRequestPostAI;
+import org.triumers.kmsback.tab.command.Application.controller.CmdTabController;
+import org.triumers.kmsback.tab.command.Application.dto.CmdTabDTO;
+import org.triumers.kmsback.tab.command.Application.dto.CmdTabRelationDTO;
+import org.triumers.kmsback.tab.command.Application.service.CmdTabService;
+import org.triumers.kmsback.tab.command.domain.aggregate.entity.CmdTabRelation;
+import org.triumers.kmsback.user.command.Application.service.AuthService;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,12 +35,16 @@ public class CmdPostServiceTests {
     private final CmdPostService cmdPostService;
     private final OpenAIService openAIService;
     private final LoggedInUser loggedInUser;
+    private final AuthService authService;
+    private final CmdTabService cmdTabService;
 
     @Autowired
-    public CmdPostServiceTests(CmdPostService cmdPostService, OpenAIService openAIService, LoggedInUser loggedInUser) {
+    public CmdPostServiceTests(CmdPostService cmdPostService, OpenAIService openAIService, LoggedInUser loggedInUser, AuthService authService, CmdTabService cmdTabService) {
         this.cmdPostService = cmdPostService;
         this.openAIService = openAIService;
         this.loggedInUser = loggedInUser;
+        this.authService = authService;
+        this.cmdTabService = cmdTabService;
     }
 
     @BeforeEach
@@ -60,10 +71,10 @@ public class CmdPostServiceTests {
 
         List<String> modifyTags = new ArrayList<>();
         modifyTags.add("개발");
-        modifyTags.add("tag1");
-        modifyTags.add("tag2");
-        modifyTags.add("tag3");
-        modifyTags.add("tag4");
+        modifyTags.add("tag11");
+        modifyTags.add("tag12");
+        modifyTags.add("tag13");
+        modifyTags.add("tag14");
 
         CmdPostAndTagsDTO modifyPost = createTestPost("modify");
         modifyPost.setTags(modifyTags);
@@ -90,7 +101,7 @@ public class CmdPostServiceTests {
 
         CmdPostAndTagsDTO savedPost = cmdPostService.registPost(createTestPost());
 
-        CmdLikeDTO like = new CmdLikeDTO(1, savedPost.getId());
+        CmdLikeDTO like = new CmdLikeDTO(null, savedPost.getId());
         CmdLikeDTO likePost = cmdPostService.likePost(like);
 
         assertThat(likePost.getId()).isNotNull();
@@ -103,7 +114,7 @@ public class CmdPostServiceTests {
 
         CmdPostAndTagsDTO savedPost = cmdPostService.registPost(createTestPost());
 
-        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, savedPost.getId());
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(null, savedPost.getId());
         CmdFavoritesDTO likePost = cmdPostService.favoritePost(favorite);
 
         assertThat(likePost.getId()).isNotNull();
@@ -131,11 +142,11 @@ public class CmdPostServiceTests {
         cmdPostService.requestToGPT(request);
     }
 
-    private CmdPostAndTagsDTO createTestPost(){
+    private CmdPostAndTagsDTO createTestPost() throws NotLoginException {
         return createTestPost("");
     }
 
-    private CmdPostAndTagsDTO createTestPost(String type){
+    private CmdPostAndTagsDTO createTestPost(String type) throws NotLoginException {
         List<String> tags = new ArrayList<>();
         tags.add("개발");
         tags.add("tag1");
@@ -143,7 +154,20 @@ public class CmdPostServiceTests {
         tags.add("tag3");
         tags.add("tag4");
 
-        return new CmdPostAndTagsDTO(type + "Title",  type + "Content", null, LocalDateTime.now(), 1, 1, tags);
+        CmdTabRelationDTO tab = createTestTab();
+
+        return new CmdPostAndTagsDTO(type + "Title",  type + "Content", null, LocalDateTime.now(), null, tab.getId(), tags);
+    }
+
+    private CmdTabRelationDTO createTestTab() throws NotLoginException {
+
+        CmdTabDTO top = new CmdTabDTO("testTop");
+        CmdTabDTO bottom = new CmdTabDTO("testBottom");
+        CmdTabRelationDTO tabRelation = new CmdTabRelationDTO(false, bottom, top);
+
+        Employee employee = authService.whoAmI();
+
+        return cmdTabService.registTab(tabRelation, employee.getId());
     }
 
 }
