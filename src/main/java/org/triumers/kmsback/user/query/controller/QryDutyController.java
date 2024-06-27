@@ -42,6 +42,7 @@ public class QryDutyController {
 
             return ResponseEntity.status(HttpStatus.OK).body(new QryResponsePositionListVO(positionVOList));
         } catch (Exception e) {
+            System.err.println("findAllPosition: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -59,6 +60,7 @@ public class QryDutyController {
 
             return ResponseEntity.status(HttpStatus.OK).body(new QryResponsePositionListVO(positionVOList));
         } catch (Exception e) {
+            System.err.println("findPositionByName: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -76,6 +78,7 @@ public class QryDutyController {
 
             return ResponseEntity.status(HttpStatus.OK).body(new QryResponseRankListVO(rankVOList));
         } catch (Exception e) {
+            System.err.println("findAllRank: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -93,6 +96,7 @@ public class QryDutyController {
 
             return ResponseEntity.status(HttpStatus.OK).body(new QryResponseRankListVO(rankVOList));
         } catch (Exception e) {
+            System.err.println("findRankByName: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }

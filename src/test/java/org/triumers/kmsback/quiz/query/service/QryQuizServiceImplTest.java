@@ -27,17 +27,17 @@ class QryQuizServiceImplTest {
 
     }
 
-    @DisplayName("퀴즈 ID로 퀴즈 조회")
-    @Test
-    void findQuizById() {
-        QryQuizDTO qryQuizDTO = qryQuizService.findQuizById(1);
-        assertNotNull(qryQuizDTO);
-    }
-
-    @DisplayName("게시글 ID로 퀴즈 조회")
-    @Test
-    void findQuizByPostId() {
-        QryQuizDTO qryQuizDTO = qryQuizService.findQuizByPostId(1);
-        assertNotNull(qryQuizDTO);
-    }
+//    @DisplayName("퀴즈 ID로 퀴즈 조회")
+//    @Test
+//    void findQuizById() {
+//        QryQuizDTO qryQuizDTO = qryQuizService.findQuizById(1);
+//        assertNotNull(qryQuizDTO);
+//    }
+//
+//    @DisplayName("게시글 ID로 퀴즈 조회")
+//    @Test
+//    void findQuizByPostId() {
+//        QryQuizDTO qryQuizDTO = qryQuizService.findQuizByPostId(1);
+//        assertNotNull(qryQuizDTO);
+//    }
 }

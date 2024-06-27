@@ -6,10 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.triumers.kmsback.common.exception.NotLoginException;
 import org.triumers.kmsback.tab.command.Application.dto.CmdJoinEmployeeDTO;
 import org.triumers.kmsback.tab.command.Application.dto.CmdTabDTO;
 import org.triumers.kmsback.tab.command.Application.dto.CmdTabRelationDTO;
 import org.triumers.kmsback.tab.command.domain.repository.CmdJoinEmployeeRepository;
+import org.triumers.kmsback.user.command.Application.service.AuthService;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,50 +22,61 @@ class CmdTabServiceTests {
 
     private final CmdTabService cmdTabService;
     private final CmdJoinEmployeeRepository cmdJoinEmployeeRepository;
-
-    private final int EMPLOYEE_ID = 1;
-    private final int TAB_RELATION_ID = 999;
+    private final AuthService authService;
 
     @Autowired
-    CmdTabServiceTests(CmdTabService cmdTabService, CmdJoinEmployeeRepository cmdJoinEmployeeRepository) {
+    CmdTabServiceTests(CmdTabService cmdTabService, CmdJoinEmployeeRepository cmdJoinEmployeeRepository, AuthService authService) {
         this.cmdTabService = cmdTabService;
         this.cmdJoinEmployeeRepository = cmdJoinEmployeeRepository;
+        this.authService = authService;
     }
 
     @Test
     @DisplayName("탭 참여자 등록")
-    void addEmployeeTab(){
+    void addEmployeeTab() throws NotLoginException {
 
-        CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(false, EMPLOYEE_ID, TAB_RELATION_ID);
+        Employee employee = authService.whoAmI();
+        CmdTabRelationDTO tab = createTestTab();
 
-        CmdJoinEmployeeDTO savedEmployee = cmdTabService.addEmployeeTab(employee);
+        CmdJoinEmployeeDTO joinEmployee = new CmdJoinEmployeeDTO(false, employee.getId(), tab.getId());
+
+        CmdJoinEmployeeDTO savedEmployee = cmdTabService.addEmployeeTab(joinEmployee);
 
         assertThat(savedEmployee.getId()).isNotNull();
     }
 
     @Test
     @DisplayName("탭 참여자 삭제")
-    void deleteEmployeeTab(){
+    void deleteEmployeeTab() throws NotLoginException {
 
-        CmdJoinEmployeeDTO employee = new CmdJoinEmployeeDTO(false, EMPLOYEE_ID, TAB_RELATION_ID);
-        cmdTabService.addEmployeeTab(employee);
+        Employee employee = authService.whoAmI();
+        CmdTabRelationDTO tab = createTestTab();
 
-        CmdJoinEmployeeDTO deletedEmployee = cmdTabService.deleteEmployeeTab(employee);
+        CmdJoinEmployeeDTO joinEmployee = new CmdJoinEmployeeDTO(false, employee.getId(), tab.getId());
+        cmdTabService.addEmployeeTab(joinEmployee);
+
+        CmdJoinEmployeeDTO deletedEmployee = cmdTabService.deleteEmployeeTab(joinEmployee);
 
         assertThat(cmdJoinEmployeeRepository.findById(deletedEmployee.getId())).isEmpty();
     }
 
     @Test
     @DisplayName("탭 추가")
-    void registTab(){
-        boolean isPublic = false;
-        CmdTabDTO top = new CmdTabDTO("top");
-        CmdTabDTO bottom = new CmdTabDTO("bottom");
+    void registTab() throws NotLoginException {
 
-        CmdTabRelationDTO tabRelation = new CmdTabRelationDTO(isPublic, bottom, top);
-
-        CmdTabRelationDTO registTab = cmdTabService.registTab(tabRelation, EMPLOYEE_ID);
+        CmdTabRelationDTO registTab = createTestTab();
 
         assertThat(registTab.getId()).isNotNull();
+    }
+
+    private CmdTabRelationDTO createTestTab() throws NotLoginException {
+
+        CmdTabDTO top = new CmdTabDTO("testTop");
+        CmdTabDTO bottom = new CmdTabDTO("testBottom");
+        CmdTabRelationDTO tabRelation = new CmdTabRelationDTO(false, bottom, top);
+
+        Employee employee = authService.whoAmI();
+
+        return cmdTabService.registTab(tabRelation, employee.getId());
     }
 }

@@ -32,6 +32,7 @@ public class CmdDutyController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new CmdResponseMessageVO(positionDTO.getName() + " 직책 추가 성공"));
         } catch (Exception e) {
+            System.err.println("addPosition: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -46,6 +47,7 @@ public class CmdDutyController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new CmdResponseMessageVO(request.getPositionName() + " 직책 " + positionDTO.getName() + " 직책으로 수정 성공"));
         } catch (Exception e) {
+            System.err.println("editPosition: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -61,6 +63,7 @@ public class CmdDutyController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new CmdResponseMessageVO("직책 삭제 성공"));
         } catch (Exception e) {
+            System.err.println("removePosition: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -76,6 +79,7 @@ public class CmdDutyController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new CmdResponseMessageVO(request.getRankName() + " 직급 추가 성공"));
         } catch (Exception e) {
+            System.err.println("addRank: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -91,6 +95,7 @@ public class CmdDutyController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new CmdResponseMessageVO(rankDTO.getName() + " 직급으로 수정 성공"));
         } catch (Exception e) {
+            System.err.println("editRank: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -106,6 +111,7 @@ public class CmdDutyController {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new CmdResponseMessageVO("직급 삭제 성공"));
         } catch (Exception e) {
+            System.err.println("removeRank: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }

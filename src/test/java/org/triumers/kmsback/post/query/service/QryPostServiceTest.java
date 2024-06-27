@@ -18,6 +18,11 @@ import org.triumers.kmsback.post.command.Application.dto.CmdPostAndTagsDTO;
 import org.triumers.kmsback.post.command.Application.service.CmdPostService;
 import org.triumers.kmsback.post.query.aggregate.vo.QryRequestPost;
 import org.triumers.kmsback.post.query.dto.QryPostAndTagsDTO;
+import org.triumers.kmsback.tab.command.Application.dto.CmdTabDTO;
+import org.triumers.kmsback.tab.command.Application.dto.CmdTabRelationDTO;
+import org.triumers.kmsback.tab.command.Application.service.CmdTabService;
+import org.triumers.kmsback.user.command.Application.service.AuthService;
+import org.triumers.kmsback.user.command.domain.aggregate.entity.Employee;
 import org.triumers.kmsback.user.query.dto.QryEmployeeDTO;
 
 import java.time.LocalDateTime;
@@ -33,13 +38,17 @@ class QryPostServiceTest {
 
     private final QryPostService qryPostService;
     private final CmdPostService cmdPostService;
+    private final AuthService authService;
+    private final CmdTabService cmdTabService;
 
     private final LoggedInUser loggedInUser;
 
     @Autowired
-    QryPostServiceTest(QryPostService qryPostService, CmdPostService cmdPostService, LoggedInUser loggedInUser) {
+    QryPostServiceTest(QryPostService qryPostService, CmdPostService cmdPostService, AuthService authService, CmdTabService cmdTabService, LoggedInUser loggedInUser) {
         this.qryPostService = qryPostService;
         this.cmdPostService = cmdPostService;
+        this.authService = authService;
+        this.cmdTabService = cmdTabService;
         this.loggedInUser = loggedInUser;
     }
 
@@ -51,11 +60,11 @@ class QryPostServiceTest {
     @DisplayName("tab 게시글 리스트 조회")
     void findPostListByTab() throws NotLoginException, WrongInputValueException {
 
-        registPost();
+        CmdPostAndTagsDTO savedPost = registPost();
 
         PageRequest pageRequest = PageRequest.of(0, 10);
 
-        QryRequestPost request = new QryRequestPost(1, null);
+        QryRequestPost request = new QryRequestPost(savedPost.getTabRelationId(), null);
 
         Page<QryPostAndTagsDTO> postList = qryPostService.findPostListByTab(request, pageRequest);
 
@@ -66,11 +75,11 @@ class QryPostServiceTest {
     @DisplayName("회원이 속한 전체 게시글 리스트 조회")
     void findAllPostListByTab() throws NotLoginException, WrongInputValueException {
 
-        registPost();
+        CmdPostAndTagsDTO savedPost = registPost();
 
         PageRequest pageRequest = PageRequest.of(0, 10);
 
-        QryRequestPost request = new QryRequestPost(1, null);
+        QryRequestPost request = new QryRequestPost(null, null);
 
         Page<QryPostAndTagsDTO> postList = qryPostService.findAllPostListByEmployee(request, pageRequest);
 
@@ -91,7 +100,10 @@ class QryPostServiceTest {
     @DisplayName("사용자가 참여한 게시글 조회")
     void findPostByEmployeeId() throws NotLoginException {
 
-        List<QryPostAndTagsDTO> selectedPost = qryPostService.findPostByEmployeeId(1);
+        registPost();
+        Employee employee = authService.whoAmI();
+
+        List<QryPostAndTagsDTO> selectedPost = qryPostService.findPostByEmployeeId(employee.getId());
 
         assertThat(selectedPost).isNotNull();
     }
@@ -100,10 +112,12 @@ class QryPostServiceTest {
     @DisplayName("사용자가 좋아요한 게시글 조회")
     void findLikePostByEmployeeId() throws NotLoginException {
 
-        CmdLikeDTO like = new CmdLikeDTO(1, 1);
+        CmdPostAndTagsDTO post = registPost();
+        CmdLikeDTO like = new CmdLikeDTO(null, post.getId());
         cmdPostService.likePost(like);
 
-        List<QryPostAndTagsDTO> likedPost = qryPostService.findLikePostByEmployeeId(1);
+        Employee employee = authService.whoAmI();
+        List<QryPostAndTagsDTO> likedPost = qryPostService.findLikePostByEmployeeId(employee.getId());
 
         assertThat(likedPost).isNotNull();
     }
@@ -112,10 +126,11 @@ class QryPostServiceTest {
     @DisplayName("게시글id로 사용자 좋아요 여부 조회")
     void isLikeByPostId() throws NotLoginException {
 
-        CmdLikeDTO like = new CmdLikeDTO(1, 1);
+        CmdPostAndTagsDTO post = registPost();
+        CmdLikeDTO like = new CmdLikeDTO(null, post.getId());
         cmdPostService.likePost(like);
 
-        Boolean isLiked = qryPostService.findIsLikedByPostId(1);
+        Boolean isLiked = qryPostService.findIsLikedByPostId(post.getId());
 
         assertThat(isLiked).isTrue();
     }
@@ -124,10 +139,11 @@ class QryPostServiceTest {
     @DisplayName("게시글id로 사용자 즐겨찾기 여부 조회")
     void isFavoriteByPostId() throws NotLoginException {
 
-        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, 1);
+        CmdPostAndTagsDTO post = registPost();
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(null, post.getId());
         cmdPostService.favoritePost(favorite);
 
-        Boolean isFavorite = qryPostService.findIsFavoriteByPostId(1);
+        Boolean isFavorite = qryPostService.findIsFavoriteByPostId(post.getId());
 
         assertThat(isFavorite).isTrue();
     }
@@ -136,9 +152,12 @@ class QryPostServiceTest {
     @DisplayName("사용자가 즐겨찾기한 게시글 조회")
     void findFavoritePostByEmployeeId() throws NotLoginException {
 
-        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, 1);
+        CmdPostAndTagsDTO post = registPost();
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(null, post.getId());
         cmdPostService.favoritePost(favorite);
-        List<QryPostAndTagsDTO> favoritePost = qryPostService.findFavoritePostByEmployeeId(1);
+
+        Employee employee = authService.whoAmI();
+        List<QryPostAndTagsDTO> favoritePost = qryPostService.findFavoritePostByEmployeeId(employee.getId());
 
         assertThat(favoritePost).isNotNull();
     }
@@ -158,7 +177,7 @@ class QryPostServiceTest {
     void findLikeListByPostId() throws NotLoginException, WrongInputValueException {
 
         CmdPostAndTagsDTO post = registPost();
-        CmdFavoritesDTO favorite = new CmdFavoritesDTO(1, post.getId());
+        CmdFavoritesDTO favorite = new CmdFavoritesDTO(null, post.getId());
         cmdPostService.favoritePost(favorite);
 
         List<QryEmployeeDTO> likeList = qryPostService.findLikeListByPostId(post.getId());
@@ -186,7 +205,7 @@ class QryPostServiceTest {
         return modifyPost.getOriginId();
     }
 
-    private CmdPostAndTagsDTO createTestPost(){
+    private CmdPostAndTagsDTO createTestPost() throws NotLoginException {
         List<String> tags = new ArrayList<>();
         tags.add("개발");
         tags.add("tag1");
@@ -194,6 +213,19 @@ class QryPostServiceTest {
         tags.add("tag3");
         tags.add("tag4");
 
-        return new CmdPostAndTagsDTO("newTitle", "newContent", "imgurl", LocalDateTime.now(), 1, 1, tags);
+        CmdTabRelationDTO tab = createTestTab();
+
+        return new CmdPostAndTagsDTO("newTitle", "newContent", null, LocalDateTime.now(), null, tab.getId(), tags);
+    }
+
+    private CmdTabRelationDTO createTestTab() throws NotLoginException {
+
+        CmdTabDTO top = new CmdTabDTO("testTop");
+        CmdTabDTO bottom = new CmdTabDTO("testBottom");
+        CmdTabRelationDTO tabRelation = new CmdTabRelationDTO(false, bottom, top);
+
+        Employee employee = authService.whoAmI();
+
+        return cmdTabService.registTab(tabRelation, employee.getId());
     }
 }
