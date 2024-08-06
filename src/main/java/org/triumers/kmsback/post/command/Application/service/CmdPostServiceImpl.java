@@ -127,21 +127,32 @@ public class CmdPostServiceImpl implements CmdPostService {
 
         CmdPostAndTagsDTO modifypost = registPost(post);
 
-        CmdPost originPost = cmdPostRepository.findById(modifypost.getOriginId()).orElseThrow(IllegalArgumentException::new);
+        CmdPost originPost = cmdPostRepository.findById(modifypost.getOriginId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + modifypost.getOriginId()));
         originPost.setRecentId(modifypost.getId());
         originPost.setIsEditing(false);
         cmdPostRepository.save(originPost);
 
-        // notification
-        try {
-            CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(originPost.getAuthorId());
-            notificationService.sendMailMime(employeeDTO, originPost);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+        // 알림 발송
+        sendNotificationAsync(originPost);
 
         return modifypost;
 
+    }
+
+    private void sendNotificationAsync(CmdPost originPost) {
+        try {
+            CmdEmployeeDTO employeeDTO = cmdEmployeeService.findEmployeeById(originPost.getAuthorId());
+
+            // 이메일 알림 발송
+            notificationService.sendMailMime(employeeDTO, originPost)
+                    .exceptionally(e -> {
+                        System.err.println("메일 발송에 오류가 발생했습니다 : " + e.getMessage());
+                        return false;
+                    });
+        } catch (Exception e) {
+            System.err.println("알림 발송에 실패했습니다 : " + e.getMessage());
+        }
     }
 
     @Override
